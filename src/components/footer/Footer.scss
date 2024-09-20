@@ -44,8 +44,7 @@
       }
     }
 
-    .payment-icons,
-    .shipping-icons {
+    .payment-icons {
       ul {
         display: flex;
         flex-wrap: wrap;
@@ -53,34 +52,15 @@
         li {
           display: flex;
           margin: 5px 0;
-
           img {
             margin-right: 10px;
-            height: 20px;
-            width: 35px;
-            padding: 10px;
+            height: 40px;
+            width: 55px;
+            padding: 3px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow */
             background-color: white; /* Optional: white background for clarity */
           }
-        }
-      }
-    }
-
-    .app-links {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-
-      .qr-code {
-        width: 120px;
-        margin-bottom: 15px;
-      }
-
-      a {
-        img {
-          width: 120px;
-          margin: 5px 0;
         }
       }
     }
