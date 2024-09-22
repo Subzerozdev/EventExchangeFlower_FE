@@ -1,12 +1,11 @@
 import { GoogleCircleFilled } from "@ant-design/icons";
 import "./Login.scss";
 import { useGoogleLogin } from "@react-oauth/google";
-import { Button, Form, Input, message } from "antd";
+import { Button, Form, Input } from "antd";
 import { useNavigate } from "react-router-dom";
-import { AxiosError } from "axios"; // Import AxiosError
+import { AnyObject } from "antd/es/_util/type";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext"; // Import useUser
-import { ValidateErrorEntity } from "rc-field-form/lib/interface"; // Import ValidateErrorEntity
 
 interface LoginFormValues {
   email: string;
@@ -17,54 +16,28 @@ function Login() {
   const navigate = useNavigate();
   const { setUser } = useUser(); // Lấy setUser từ context
 
-  // Đăng nhập qua Google
   const login = useGoogleLogin({
     onSuccess: (tokenResponse) => {
       console.log(tokenResponse);
       setUser("Google User"); // Cập nhật tên người dùng (ví dụ từ Google)
-      message.success("Đăng nhập qua Google thành công!");
-      navigate("/Home");
+      navigate("/");
     },
-    onError: () => {
-      message.error("Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại!");
-    }
   });
 
-  // Xử lý khi nhấn nút đăng nhập
   const onFinish = async (values: LoginFormValues) => {
     try {
-      const response = await api.post("/user/login", values);
+      await api.post("/user/login", values);
       console.log("Success:", values);
-
-      if (response.data && response.data.success) {
-        setUser(values.email); // Cập nhật tên người dùng sau khi đăng nhập thành công
-        message.success("Đăng nhập thành công!");
-        navigate("/Home");
-      } else {
-        message.error(response.data.message || "Đăng nhập thất bại!");
-      }
-    } catch (error: unknown) {
-      // Xử lý lỗi chi tiết khi gặp lỗi từ phía server hoặc request
-      if (error instanceof AxiosError) {
-        if (error.response && error.response.status === 401) {
-          message.error("Sai tài khoản hoặc mật khẩu!");
-        } else {
-          message.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
-        }
-      } else {
-        message.error("Có lỗi xảy ra ngoài dự kiến.");
-      }
+      setUser(values.email); // Cập nhật tên người dùng sau khi đăng nhập thành công
+      navigate("/");
+    } catch (error) {
+      console.log("Error", error);
+      navigate("/");
     }
   };
 
-  // Xử lý khi form không hợp lệ
-  const onFinishFailed = (errorInfo: ValidateErrorEntity<LoginFormValues>) => {
+  const onFinishFailed = (errorInfo: AnyObject) => {
     console.log("Failed:", errorInfo);
-
-    // Catch exception ở đây
-    if (errorInfo.errorFields && errorInfo.errorFields.length > 0) {
-      message.error("Vui lòng điền đầy đủ thông tin và kiểm tra lại!");
-    }
   };
 
   return (
@@ -84,14 +57,14 @@ function Login() {
 
           <Form.Item
             name="email"
-            rules={[{ required: true, message: "Vui lòng nhập email của bạn!" }]}
+            rules={[{ required: true, message: "Please input your email!" }]}
           >
             <Input placeholder="Email address" className="login-input" />
           </Form.Item>
 
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu của bạn!" }]}
+            rules={[{ required: true, message: "Please input your password!" }]}
           >
             <Input.Password placeholder="Password" className="login-input" />
           </Form.Item>
