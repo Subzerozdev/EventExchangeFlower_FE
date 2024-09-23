@@ -6,7 +6,7 @@ import { useUser } from "../../context/UserContext"; // Kiểm tra đường d�
 function Header() {
   const navigate = useNavigate();
   const { user } = useUser(); // Lấy thông tin người dùng từ context
-
+  
   return (
     <header className="header">
       <div className="header__top">
@@ -30,7 +30,7 @@ function Header() {
 
         <div className="header__right">
           {user ? (
-            <span>{user}</span> // Hiển thị tên người dùng khi đã đăng nhập
+            <button onClick={() => navigate("/profile")} ><span>{user}</span></button> // Hiển thị tên người dùng khi đã đăng nhập
           ) : (
             <div className="header__buttons">
               <button className="header__login" onClick={() => navigate("/login")}>

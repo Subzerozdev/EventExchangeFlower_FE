@@ -85,12 +85,8 @@ const Footer: React.FC = () => {
                   src="./img/img/AmericanExpress.jpg"
                   alt="American Express"
                 />
-                <img src="./img/img/cod.jpg" alt="COD" />
+                <img src="./img/img/COD2.jpg" alt="COD" />
                 <img src="./img/img/TraGop.jpg" alt="Trả Góp" />
-              </li>
-              <li>
-                <img src="./img/img/pay.jpg" alt="Pay" />
-                <img src="./img/img/spaylater.jpg" alt="Spaylater" />
               </li>
             </ul>
           </div>

@@ -1,7 +1,13 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 // Tạo UserContext
-const UserContext = createContext<{ user: string | null; setUser: React.Dispatch<React.SetStateAction<string | null>> } | undefined>(undefined);
+const UserContext = createContext<
+  | {
+      user: string | null;
+      setUser: React.Dispatch<React.SetStateAction<string | null>>;
+    }
+  | undefined
+>(undefined);
 
 // Custom hook để sử dụng context
 export const useUser = () => {
