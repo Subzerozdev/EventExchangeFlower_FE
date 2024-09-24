@@ -9,7 +9,6 @@ interface UpdateProfileValues {
   email: string;
   name: string;
   phone: string;
-
   address: string;
 }
 

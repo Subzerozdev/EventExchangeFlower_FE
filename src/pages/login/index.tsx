@@ -58,7 +58,7 @@ function Login() {
           fullName: response.data.fullName,
           email: response.data.email,
           phone: response.data.phone || "Chưa có thông tin", // Cập nhật số điện thoại
-          address: response.data.adress,
+          address: response.data.address,
         });
 
         message.success("Đăng nhập thành công!");

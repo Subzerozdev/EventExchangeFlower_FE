@@ -29,25 +29,33 @@ function Profile() {
               Thông tin tài khoản
             </li>
             <li
-              className={location.pathname === "/profile/orders" ? "active" : ""}
+              className={
+                location.pathname === "/profile/orders" ? "active" : ""
+              }
               onClick={() => navigate("/profile/orders")}
             >
               Đơn hàng của bạn
             </li>
             <li
-              className={location.pathname === "/profile/wishlist" ? "active" : ""}
+              className={
+                location.pathname === "/profile/wishlist" ? "active" : ""
+              }
               onClick={() => navigate("/profile/wishlist")}
             >
               Danh sách yêu thích(0)
             </li>
             <li
-              className={location.pathname === "/profile/password" ? "active" : ""}
+              className={
+                location.pathname === "/profile/password" ? "active" : ""
+              }
               onClick={() => navigate("/profile/password")}
             >
               Đổi mật khẩu
             </li>
             <li
-              className={location.pathname === "/profile/address" ? "active" : ""}
+              className={
+                location.pathname === "/profile/address" ? "active" : ""
+              }
               onClick={() => navigate("/profile/address")}
             >
               Sổ địa chỉ(0)
@@ -68,6 +76,9 @@ function Profile() {
           </Descriptions.Item>
           <Descriptions.Item label="Số điện thoại">
             {user.phone || "Chưa có thông tin"}
+          </Descriptions.Item>
+          <Descriptions.Item label="Địa chỉ">
+            {user.address || "Chưa có thông tin"}
           </Descriptions.Item>
         </Descriptions>
         <Button
