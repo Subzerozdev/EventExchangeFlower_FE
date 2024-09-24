@@ -4,6 +4,7 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext";
+import { AxiosError } from "axios"; // Import AxiosError để xử lý lỗi
 
 import "./Login.scss";
 
@@ -16,6 +17,7 @@ function Login() {
   const navigate = useNavigate();
   const { setUser } = useUser();
 
+  // Đăng nhập bằng Google
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
@@ -32,25 +34,37 @@ function Login() {
           email: data.email || "",
           phone: null,
         });
-        message.success("Đăng ký qua Google thành công!");
+
+        message.success("Đăng nhập bằng Google thành công!");
         navigate("/");
       } catch (error) {
+        message.error("Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại!");
         console.log("Google Login Error:", error);
       }
     },
   });
 
+  // Đăng nhập bằng email và mật khẩu
   const onFinish = async (values: LoginFormValues) => {
     try {
       const response = await api.post("/user/login", values);
+
+      // Cập nhật thông tin người dùng sau khi đăng nhập thành công
       setUser({
         fullName: response.data.fullName,
-        email: values.email,
-        phone: null,
+        email: response.data.email,
+        phone: response.data.phone || "Chưa có thông tin", // Cập nhật số điện thoại
       });
+
+      message.success("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
-      console.log("Login Error", error);
+      if (error instanceof AxiosError && error.response?.status === 400) {
+        message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
+      } else {
+        message.error("Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại sau.");
+      }
+      console.log("Login Error:", error);
     }
   };
 
@@ -62,12 +76,15 @@ function Login() {
             <h1>Đăng nhập</h1>
           </Form.Item>
 
-          <Form.Item name="email" rules={[{ required: true, message: "Please input your email!" }]}>
-            <Input placeholder="Email address" />
+          <Form.Item name="email" rules={[{ required: true, message: "Vui lòng nhập email!" }]}>
+            <Input placeholder="Địa chỉ email" />
           </Form.Item>
 
-          <Form.Item name="password" rules={[{ required: true, message: "Please input your password!" }]}>
-            <Input.Password placeholder="Password" />
+          <Form.Item
+            name="password"
+            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+          >
+            <Input.Password placeholder="Mật khẩu" />
           </Form.Item>
 
           <Form.Item>
@@ -76,7 +93,9 @@ function Login() {
             </Button>
           </Form.Item>
 
-          <div className="divider"><span>OR</span></div>
+          <div className="divider">
+            <span>HOẶC</span>
+          </div>
 
           <Form.Item>
             <Button onClick={() => loginWithGoogle()} className="google-button">

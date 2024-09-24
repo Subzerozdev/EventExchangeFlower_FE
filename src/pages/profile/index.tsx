@@ -23,8 +23,8 @@ function Profile() {
         <div className="profile_menu">
           <ul>
             <li
-              className={location.pathname === "/profile/info" ? "active" : ""}
-              onClick={() => navigate("/profile/info")}
+              className={location.pathname === "/profile" ? "active" : ""}
+              onClick={() => navigate("/profile")}
             >
               Thông tin tài khoản
             </li>
