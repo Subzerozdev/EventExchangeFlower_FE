@@ -4,7 +4,7 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext";
-import { AxiosError } from "axios"; // Import AxiosError để xử lý lỗi
+import { AxiosError } from "axios"; // catch error 
 
 import "./Login.scss";
 
@@ -49,15 +49,19 @@ function Login() {
     try {
       const response = await api.post("/user/login", values);
 
-      // Cập nhật thông tin người dùng sau khi đăng nhập thành công
-      setUser({
-        fullName: response.data.fullName,
-        email: response.data.email,
-        phone: response.data.phone || "Chưa có thông tin", // Cập nhật số điện thoại
-      });
+      if (response.status === 200) {
+        //    Khi xác thực thành công, cập nhật thông tin người dùng nè
+        setUser({
+          fullName: response.data.fullName,
+          email: response.data.email,
+          phone: response.data.phone || "Chưa có thông tin", // Cập nhật số điện thoại
+        });
 
-      message.success("Đăng nhập thành công!");
-      navigate("/");
+        message.success("Đăng nhập thành công!");
+        navigate("/");
+      } else {
+        message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
+      }
     } catch (error) {
       if (error instanceof AxiosError && error.response?.status === 400) {
         message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
