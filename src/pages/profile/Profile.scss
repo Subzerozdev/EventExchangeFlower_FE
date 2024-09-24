@@ -28,15 +28,31 @@
       ul {
         list-style: none;
         padding: 0;
-        a {
-          text-decoration: none;
-        }
+
         li {
           margin-bottom: 50px;
           font-size: 16px;
+          cursor: pointer;
 
           &:hover {
             color: orange;
+          }
+
+          &.active {
+            color: #ff4500; // Màu của mục được chọn
+            font-weight: bold;
+            position: relative;
+
+            &::after {
+              content: "";
+              display: block;
+              width: 100%;
+              height: 2px;
+              background: orange;
+              position: absolute;
+              left: 0;
+              bottom: -5px;
+            }
           }
 
           &::after {
