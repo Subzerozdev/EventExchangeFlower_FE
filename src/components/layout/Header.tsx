@@ -1,50 +1,52 @@
 import { useNavigate } from "react-router-dom";
-import "./Header.scss";
 import { UserOutlined, UserAddOutlined } from "@ant-design/icons";
-import { useUser } from "../../context/UserContext"; // Kiểm tra đường dẫn đã đúng
+import { useUser } from "../../context/UserContext";
+
+
+import "./Header.scss";
 
 function Header() {
   const navigate = useNavigate();
-  const { user } = useUser(); // Lấy thông tin người dùng từ context
-  
+  const { user } = useUser();
+
   return (
     <header className="header">
       <div className="header__top">
         <div className="header__left">
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Icon%2FHeading%2FHoa%20(2).png?alt=media&token=c5cd5b8b-f5c2-4734-b917-7425bc3fb17b"
+            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Icon%2FHeading%2FHoa%20(6).png?alt=media&token=4bd21806-4961-4e8e-ad07-82d98ecf3589"
             alt="Logo"
             className="header__logo"
-            width={280}
+            width={330}
           />
         </div>
 
         <div className="header__center">
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Icon%2FHeading%2Fthumbnail.png?alt=media&token=b16e5be5-370a-4794-b598-a280d5d51160"
+            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Icon%2FHeading%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM%20(4).png?alt=media&token=74e908d2-b5bb-4728-90b4-1eb6c99f819a"
             alt="Heading Banner"
-            width={550}
+            width={530}
             className="header__banner"
           />
         </div>
 
         <div className="header__right">
-          {user ? (
-            <button onClick={() => navigate("/profile")} ><span>{user}</span></button> // Hiển thị tên người dùng khi đã đăng nhập
+          {user.fullName ? (
+            <button onClick={() => navigate("/profile")} >
+              <span>{user.fullName}</span>
+            </button>
           ) : (
             <div className="header__buttons">
-              <button className="header__login" onClick={() => navigate("/login")}>
+              <button onClick={() => navigate("/login")}>
                 <UserOutlined /> Đăng nhập
               </button>
-              <button className="header__register" onClick={() => navigate("/register")}>
+              <button onClick={() => navigate("/register")}>
                 <UserAddOutlined /> Đăng ký
               </button>
             </div>
           )}
         </div>
       </div>
-
-      <div className="line-separator"></div>
 
       <nav className="navbar">
         <ul className="navbar__menu">
@@ -55,10 +57,8 @@ function Header() {
           <li>Blog</li>
           <li>Liên hệ</li>
           <li>
-            <div className="header__search">
-              <input type="text" placeholder="Tìm hoa..." />
-              <button className="header__search-btn">🔍</button>
-            </div>
+            <input type="text" placeholder="Tìm hoa..." />
+            <button>🔍</button>
           </li>
         </ul>
       </nav>

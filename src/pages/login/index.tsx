@@ -1,11 +1,11 @@
 import { GoogleCircleFilled } from "@ant-design/icons";
-import "./Login.scss";
 import { useGoogleLogin } from "@react-oauth/google";
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { AnyObject } from "antd/es/_util/type";
 import api from "../../config/api";
-import { useUser } from "../../context/UserContext"; // Import useUser
+import { useUser } from "../../context/UserContext";
+
+import "./Login.scss";
 
 interface LoginFormValues {
   email: string;
@@ -14,65 +14,64 @@ interface LoginFormValues {
 
 function Login() {
   const navigate = useNavigate();
-  const { setUser } = useUser(); // Lấy setUser từ context
+  const { setUser } = useUser();
 
-  const login = useGoogleLogin({
-    onSuccess: (tokenResponse) => {
-      console.log(tokenResponse);
-      setUser("Google User"); // Cập nhật tên người dùng (ví dụ từ Google)
-      navigate("/");
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        const { data } = await api.get(
+          "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+          {
+            headers: {
+              Authorization: `Bearer ${tokenResponse.access_token}`,
+            },
+          }
+        );
+        setUser({
+          fullName: data.name || "Google User",
+          email: data.email || "",
+          phone: null,
+        });
+        message.success("Đăng ký qua Google thành công!");
+        navigate("/");
+      } catch (error) {
+        console.log("Google Login Error:", error);
+      }
     },
   });
 
   const onFinish = async (values: LoginFormValues) => {
     try {
-      await api.post("/user/login", values);
-      console.log("Success:", values);
-      setUser(values.email); // Cập nhật tên người dùng sau khi đăng nhập thành công
+      const response = await api.post("/user/login", values);
+      setUser({
+        fullName: response.data.fullName,
+        email: values.email,
+        phone: null,
+      });
       navigate("/");
     } catch (error) {
-      console.log("Error", error);
-      navigate("/");
+      console.log("Login Error", error);
     }
-  };
-
-  const onFinishFailed = (errorInfo: AnyObject) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
     <div className="login">
       <div className="login_form">
-        <Form
-          name="basic"
-          initialValues={{ remember: true }}
-          onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
-          autoComplete="off"
-        >
+        <Form name="basic" onFinish={onFinish} autoComplete="off">
           <Form.Item>
             <h1>Đăng nhập</h1>
-            <p>Đăng nhập tại đây để có thể xem được các sản phẩm</p>
           </Form.Item>
 
-          <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
-          >
-            <Input placeholder="Email address" className="login-input" />
+          <Form.Item name="email" rules={[{ required: true, message: "Please input your email!" }]}>
+            <Input placeholder="Email address" />
           </Form.Item>
 
-          <Form.Item
-            name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
-          >
-            <Input.Password placeholder="Password" className="login-input" />
+          <Form.Item name="password" rules={[{ required: true, message: "Please input your password!" }]}>
+            <Input.Password placeholder="Password" />
           </Form.Item>
-
-          <a href="#" className="forgot-password">Quên mật khẩu?</a>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="login-button">
+            <Button type="primary" htmlType="submit">
               Đăng nhập
             </Button>
           </Form.Item>
@@ -80,14 +79,10 @@ function Login() {
           <div className="divider"><span>OR</span></div>
 
           <Form.Item>
-            <Button onClick={() => login()} className="google-button">
+            <Button onClick={() => loginWithGoogle()} className="google-button">
               <GoogleCircleFilled /> Tiếp tục với Google
             </Button>
           </Form.Item>
-
-          <div className="register">
-            Bạn chưa có tài khoản? <a href="#">Đăng ký tại đây</a>
-          </div>
         </Form>
       </div>
     </div>
