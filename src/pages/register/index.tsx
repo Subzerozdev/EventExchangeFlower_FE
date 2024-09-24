@@ -8,15 +8,13 @@ import Marquee from "react-fast-marquee";
 import { useState } from "react";
 import "./Register.scss";
 
-
-
-
 interface RegisterFormValues {
   email: string;
   password: string;
   confirmPassword: string;
   phone: string;
   fullName: string;
+  address: string;
 }
 
 function Register() {
@@ -41,6 +39,7 @@ function Register() {
         fullName: data.name || "Google User",
         email: data.email || "",
         phone: null,
+        address: null,
       });
 
       message.success("Đăng ký qua Google thành công!");
@@ -61,6 +60,7 @@ function Register() {
           fullName: values.fullName,
           email: values.email,
           phone: values.phone,
+          address: values.address,
         });
         message.success("Đăng ký thành công!");
         navigate("/login");
@@ -71,7 +71,6 @@ function Register() {
       console.error("Error:", error);
       setAlertMessage("Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
     }
-
   };
 
   return (
@@ -79,7 +78,11 @@ function Register() {
       {alertMessage && (
         <Alert
           banner
-          message={<Marquee pauseOnHover gradient={false}>{alertMessage}</Marquee>}
+          message={
+            <Marquee pauseOnHover gradient={false}>
+              {alertMessage}
+            </Marquee>
+          }
           type="error"
           showIcon
           closable
@@ -127,12 +130,18 @@ function Register() {
             name="phone"
             rules={[
               { required: true, message: "Vui lòng nhập số điện thoại!" },
-              { pattern: /^(0|\+84)[3-9][0-9]{8}$/, message: "Số điện thoại không đúng định dạng!" }
+              {
+                pattern: /^(0|\+84)[3-9][0-9]{8}$/,
+                message: "Số điện thoại không đúng định dạng!",
+              },
             ]}
           >
             <Input placeholder="Số điện thoại" />
           </Form.Item>
 
+          <Form.Item name="address" rules={[{ required: true }]}>
+            <Input placeholder=" Địa chỉ" />
+          </Form.Item>
 
           <Form.Item>
             <Button type="primary" htmlType="submit">
@@ -140,7 +149,9 @@ function Register() {
             </Button>
           </Form.Item>
 
-          <div className="divider"><span>HOẶC</span></div>
+          <div className="divider">
+            <span>HOẶC</span>
+          </div>
 
           <Form.Item>
             <Button onClick={() => loginWithGoogle()} className="google-button">

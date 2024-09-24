@@ -4,7 +4,7 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext";
-import { AxiosError } from "axios"; // catch error 
+import { AxiosError } from "axios"; // catch error
 
 import "./Login.scss";
 
@@ -33,12 +33,15 @@ function Login() {
           fullName: data.name || "Google User",
           email: data.email || "",
           phone: null,
+          address: null,
         });
 
         message.success("Đăng nhập bằng Google thành công!");
         navigate("/");
       } catch (error) {
-        message.error("Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại!");
+        message.error(
+          "Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại!"
+        );
         console.log("Google Login Error:", error);
       }
     },
@@ -55,6 +58,7 @@ function Login() {
           fullName: response.data.fullName,
           email: response.data.email,
           phone: response.data.phone || "Chưa có thông tin", // Cập nhật số điện thoại
+          address: response.data.adress,
         });
 
         message.success("Đăng nhập thành công!");
@@ -66,7 +70,9 @@ function Login() {
       if (error instanceof AxiosError && error.response?.status === 400) {
         message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
       } else {
-        message.error("Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại sau.");
+        message.error(
+          "Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại sau."
+        );
       }
       console.log("Login Error:", error);
     }
@@ -80,7 +86,10 @@ function Login() {
             <h1>Đăng nhập</h1>
           </Form.Item>
 
-          <Form.Item name="email" rules={[{ required: true, message: "Vui lòng nhập email!" }]}>
+          <Form.Item
+            name="email"
+            rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+          >
             <Input placeholder="Địa chỉ email" />
           </Form.Item>
 

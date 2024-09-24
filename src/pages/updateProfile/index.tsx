@@ -3,14 +3,18 @@ import { useUser } from "../../context/UserContext"; // Import context để l�
 import { useState } from "react";
 import api from "../../config/api"; // Giả định rằng bạn có API để tương tác với backend
 import "./UpdateProfile.scss";
+import { useNavigate } from "react-router-dom";
 
 interface UpdateProfileValues {
   email: string;
   name: string;
-  password: string;
+  phone: string;
+
+  address: string;
 }
 
 function UpdateProfile() {
+  const navigate = useNavigate();
   const { user, setUser } = useUser(); // Lấy thông tin người dùng từ context
   const [loading, setLoading] = useState(false); // State để điều khiển nút loading
 
@@ -20,11 +24,18 @@ function UpdateProfile() {
       // Gửi yêu cầu cập nhật thông tin người dùng
       const response = await api.put("/user/update", values);
       console.log("Success:", response.data);
-      setUser(values.name); // Cập nhật lại tên người dùng trong context
+      setUser((prevUser) => ({
+        ...prevUser,
+        name: values.name,
+        email: values.email,
+        phone: values.phone,
+        address: values.address,
+      })); // Cập nhật lại tên người dùng trong context
       notification.success({
         message: "Cập nhật thành công!",
         description: "Thông tin tài khoản đã được cập nhật.",
       });
+      navigate("/profile");
     } catch (error) {
       console.error("Error:", error);
       notification.error({
@@ -41,7 +52,12 @@ function UpdateProfile() {
       <h1>Cập nhật hồ sơ cá nhân</h1>
       <Form
         name="updateProfile"
-        initialValues={{ name: user, email: user }} // Lấy thông tin hiện tại của user
+        initialValues={{
+          name: user?.fullName,
+          email: user?.email,
+          phone: user?.phone,
+          address: user?.address,
+        }} // Lấy thông tin hiện tại của user
         onFinish={onFinish}
         layout="vertical"
       >
@@ -54,19 +70,23 @@ function UpdateProfile() {
         </Form.Item>
 
         <Form.Item
-          label="Email"
-          name="email"
-          rules={[{ required: true, type: "email", message: "Vui lòng nhập email hợp lệ!" }]}
+          label="Số điện thoại"
+          name="phone"
+          rules={[
+            { required: true, message: "Vui lòng nhập số điện thoại của bạn!" },
+          ]}
         >
-          <Input placeholder="Nhập email" />
+          <Input placeholder="Nhập số điện thoại" />
         </Form.Item>
 
         <Form.Item
-          label="Mật khẩu mới"
-          name="password"
-          rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới!" }]}
+          label="Địa chỉ"
+          name="address"
+          rules={[
+            { required: true, message: "Vui lòng nhập địa chỉ của bạn!" },
+          ]}
         >
-          <Input.Password placeholder="Nhập mật khẩu mới" />
+          <Input placeholder="Nhập địa chỉ nhà" />
         </Form.Item>
 
         <Form.Item>

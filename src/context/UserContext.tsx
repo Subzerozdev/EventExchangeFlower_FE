@@ -4,14 +4,18 @@ interface User {
   fullName: string | null;
   email: string | null;
   phone: string | null;
+  address: string | null;
 }
 
 // Tạo UserContext
-const UserContext = createContext<{
-  user: User;
-  setUser: React.Dispatch<React.SetStateAction<User>>;
-  logout: () => void; // Thêm hàm logout vào context
-} | undefined>(undefined);
+const UserContext = createContext<
+  | {
+      user: User;
+      setUser: React.Dispatch<React.SetStateAction<User>>;
+      logout: () => void; // Thêm hàm logout vào context
+    }
+  | undefined
+>(undefined);
 
 // Custom hook để sử dụng context
 export const useUser = () => {
@@ -28,10 +32,11 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
     fullName: null,
     email: null,
     phone: null,
+    address: null,
   });
 
   const logout = () => {
-    setUser({ fullName: null, email: null, phone: null }); // Xóa thông tin người dùng
+    setUser({ fullName: null, email: null, phone: null, address: null }); // Xóa thông tin người dùng
     localStorage.removeItem("token"); // Nếu bạn sử dụng token, xóa nó
   };
 
