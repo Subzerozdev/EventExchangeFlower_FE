@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import api from '../../config/api';
 import { useNavigate } from 'react-router-dom';
+import './OTPInput.scss'; // Import file CSS
 
 interface OTPInputProps {
     email: string;
@@ -11,6 +12,7 @@ function OTPInput({ email }: OTPInputProps) {
     const [error, setError] = useState('');
     const [attempt, setAttempt] = useState(0);
     const navigate = useNavigate();
+
     const handleVerifyOtp = async () => {
         try {
             const response = await api.post(`/vertification/${otp}/${email}`);
@@ -20,7 +22,7 @@ function OTPInput({ email }: OTPInputProps) {
                 throw new Error('Invalid OTP');
             }
         } catch (err) {
-            const error = err as Error;  // ->  error 
+            const error = err as Error;
             setError(error.message);
             const newAttempt = attempt + 1;
             setAttempt(newAttempt);
@@ -32,10 +34,20 @@ function OTPInput({ email }: OTPInputProps) {
     };
 
     return (
-        <div>
-            <input type="text" value={otp} onChange={e => setOtp(e.target.value)} placeholder="Enter OTP" />
-            <button onClick={handleVerifyOtp}>Verify OTP</button>
-            {error && <p>{error}</p>}
+        <div className="otp-wrapper">
+            <div className="otp-container">
+                <input
+                    className="otp-input"
+                    type="text"
+                    value={otp}
+                    onChange={e => setOtp(e.target.value)}
+                    placeholder="Nhập mã OTP"
+                />
+                <button className="otp-button" onClick={handleVerifyOtp}>
+                    Xác nhận OTP
+                </button>
+                {error && <p className="otp-error">{error}</p>}
+            </div>
         </div>
     );
 }

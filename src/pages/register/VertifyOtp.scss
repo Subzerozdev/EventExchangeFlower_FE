@@ -1,0 +1,68 @@
+// .verify-otp {
+//     position: relative;
+//     height: 100vh;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     background-color: #f0f0f0;
+//   }
+  
+//   .otp-overlay {
+//     position: absolute;
+//     top: 0;
+//     left: 0;
+//     width: 100%;
+//     height: 100%;
+//     background: rgba(0, 0, 0, 0.7); /* Màu nền đen và độ mờ */
+//     z-index: 1;
+//   }
+  
+//   .otp-container {
+//     position: relative;
+//     z-index: 2; /* Đảm bảo container nằm trên overlay */
+//     background-color: #fff; /* Nền trắng cho container OTP */
+//     padding: 40px 60px;
+//     border-radius: 10px;
+//     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* Đổ bóng */
+//     text-align: center;
+//     width: 400px; /* Độ rộng cho container OTP */
+//   }
+  
+//   .otp-container h2 {
+//     font-size: 24px;
+//     margin-bottom: 20px;
+//     color: #333; /* Màu chữ */
+//   }
+  
+//   .otp-container input {
+//     font-size: 24px; /* Phóng to input OTP */
+//     padding: 10px 15px;
+//     margin-bottom: 20px;
+//     width: 100%;
+//     border: 2px solid #ddd;
+//     border-radius: 8px;
+//     text-align: center;
+//     box-sizing: border-box;
+//   }
+  
+//   .otp-container button {
+//     font-size: 18px;
+//     padding: 10px 20px;
+//     background-color: #4caf50;
+//     color: #fff;
+//     border: none;
+//     border-radius: 5px;
+//     cursor: pointer;
+//     transition: background-color 0.3s ease;
+//   }
+  
+//   .otp-container button:hover {
+//     background-color: #45a049;
+//   }
+  
+//   .otp-container p {
+//     color: red;
+//     font-size: 16px;
+//     margin-top: 10px;
+//   }
+  

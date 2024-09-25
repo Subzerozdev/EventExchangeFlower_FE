@@ -41,11 +41,6 @@ function App() {
           path: "updateProfile",
           element: <UpdateProfile />,
         },
-
-
-
-
-
       ],
     },
   ]);

@@ -4,20 +4,22 @@ import OTPInput from './OTPInput'; // Import OTPInput
 import "./VertifyOtp.scss";
 //----------------------
 
-
 function VerifyOtp() {
-    const location = useLocation(); // lay du lieu tu navigate
+    const location = useLocation(); // lấy dữ liệu từ navigate
     const { email } = location.state || {}; // Lấy email từ state, nếu không có thì là undefined
 
-    //check ton tai
+    // Kiểm tra nếu email không tồn tại
     if (!email) {
         return <div>Error: Email not provided!</div>;
     }
 
     return (
-        <div>
-            <h2>Xác nhận OTP</h2>
-            <OTPInput email={email} /> {/* Truyền email vào OTPInput */}
+        <div className="verify-otp">
+            <div className="otp-overlay"></div> {/* Overlay làm mờ */}
+            <div className="otp-container"> {/* Container để focus vào phần OTP */}
+                <h2>Xác nhận OTP</h2>
+                <OTPInput email={email} /> {/* Truyền email vào OTPInput */}
+            </div>
             <Footer /> {/* Hiển thị footer */}
         </div>
     );

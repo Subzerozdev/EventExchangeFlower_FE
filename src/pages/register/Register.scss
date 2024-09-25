@@ -2,51 +2,56 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background-color: #f5f5f5; // Màu nền trang
+  min-height: 100vh;
+  padding: 20px;
+  background: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Hoa%2FFlower%20project%20(4).png?alt=media&token=316266b5-3c0e-42c3-8800-9e840d606037")
+    no-repeat center center;
+  margin-top: -0.6%;
+  background-size: cover;
 
   .register_form {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9); /* Nền trắng trong suốt */
     padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); // Hiệu ứng đổ bóng
+    border-radius: 12px; /* Viền bo tròn hơn */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Tạo bóng mềm mại và sâu hơn */
     width: 100%;
-    max-width: 400px; // Giới hạn chiều rộng của form
+    max-width: 450px; /* Tăng chiều rộng tối đa của form */
     position: relative;
 
     h1 {
       text-align: center;
-      font-size: 24px;
+      font-size: 28px; /* Phóng to chữ tiêu đề */
       font-weight: bold;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
       color: #333;
     }
 
-    // Nút Đăng ký
+    /* Nút Đăng ký */
     .ant-btn-primary {
-      background-color: #1890ff;
+      background-color: #007bff; /* Màu xanh đậm */
       border: none;
-      padding: 10px 0;
+      padding: 12px 0;
       border-radius: 8px;
       font-size: 16px;
       width: 100%;
+      font-weight: bold;
       transition: all 0.3s ease;
 
       &:hover {
-        background-color: #40a9ff;
+        background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
       }
     }
 
-    // Phần OR phân cách
+    /* Phần OR phân cách */
     .divider {
       text-align: center;
-      margin: 20px 0;
+      margin: 25px 0;
       position: relative;
       color: #8c8c8c;
 
       span {
         background: #fff;
-        padding: 0 10px;
+        padding: 0 12px;
         position: relative;
         z-index: 1;
       }
@@ -63,13 +68,14 @@
       }
     }
 
-    // Nút Tiếp tục với Google
+    /* Nút Tiếp tục với Google */
     .google-button {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #d9d9d9;
       border-radius: 8px;
       font-size: 16px;
+      font-weight: bold;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -77,18 +83,19 @@
 
       svg {
         margin-right: 8px;
+        font-size: 20px;
       }
 
       &:hover {
-        background-color: #f0f0f0;
+        background-color: #f5f5f5;
         border-color: #bfbfbf;
       }
     }
 
-    // Style input
+    /* Style input */
     .ant-input,
     .ant-input-password {
-      padding: 10px;
+      padding: 12px;
       border-radius: 8px;
       font-size: 16px;
       border: 1px solid #d9d9d9;
@@ -96,18 +103,19 @@
 
       &:focus,
       &:hover {
-        border-color: #1890ff;
-        box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+        border-color: #007bff; /* Màu xanh cho input khi focus */
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Hiệu ứng ánh sáng xanh khi focus */
       }
     }
 
-    // Style khi có lỗi
+    /* Style khi có lỗi */
     .ant-form-item-explain-error {
       color: red;
       font-size: 12px;
+      margin-top: 5px;
     }
 
-    // Nút đóng modal nếu cần
+    /* Nút đóng modal nếu cần */
     .close-button {
       position: absolute;
       top: 10px;
@@ -120,6 +128,12 @@
       &:hover {
         color: red;
       }
+    }
+
+    /* Style cho phần thông báo lỗi */
+    .ant-alert {
+      margin-bottom: 20px;
+      font-size: 14px;
     }
   }
 }
