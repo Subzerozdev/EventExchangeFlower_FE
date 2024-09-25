@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 interface UpdateProfileValues {
   email: string;
-  name: string;
+  fullName: string;
   phone: string;
   address: string;
 }
@@ -19,7 +19,6 @@ function UpdateProfile() {
 
   const onFinish = async (values: UpdateProfileValues) => {
     setLoading(true);
-    
 
     try {
       // Gửi yêu cầu cập nhật thông tin người dùng, sử dụng email của người dùng trong URL
@@ -30,7 +29,7 @@ function UpdateProfile() {
       // Cập nhật lại thông tin người dùng trong context
       setUser((prevUser) => ({
         ...prevUser,
-        fullName: values.name,
+        fullName: values.fullName,
         phone: values.phone,
         address: values.address,
       }));
@@ -57,7 +56,7 @@ function UpdateProfile() {
       <Form
         name="updateProfile"
         initialValues={{
-          name: user?.fullName,
+          fullName: user?.fullName,
           email: user?.email,
           phone: user?.phone,
           address: user?.address,
@@ -67,7 +66,7 @@ function UpdateProfile() {
       >
         <Form.Item
           label="Tên"
-          name="name"
+          name="fullName"
           rules={[{ required: true, message: "Vui lòng nhập tên của bạn!" }]}
         >
           <Input placeholder="Nhập tên" />
