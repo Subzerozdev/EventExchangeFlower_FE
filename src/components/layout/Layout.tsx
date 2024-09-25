@@ -10,8 +10,8 @@ const Layout = () => {
       <main>
         <Outlet /> {/* Đây là nơi các children (nội dung của các trang con như Home, Login) sẽ được render */}
       </main>
-      {/* Nếu có Footer, bạn có thể thêm ở đây */}
-      <Footer/>
+
+      <Footer />
     </div>
   );
 };

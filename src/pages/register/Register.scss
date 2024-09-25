@@ -10,17 +10,17 @@
   background-size: cover;
 
   .register_form {
-    background-color: rgba(255, 255, 255, 0.9); /* Nền trắng trong suốt */
+    background-color: rgba(255, 255, 255, 0.9);
     padding: 40px;
-    border-radius: 12px; /* Viền bo tròn hơn */
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); /* Tạo bóng mềm mại và sâu hơn */
+    border-radius: 12px; 
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1); 
     width: 100%;
-    max-width: 450px; /* Tăng chiều rộng tối đa của form */
+    max-width: 450px; 
     position: relative;
 
     h1 {
       text-align: center;
-      font-size: 28px; /* Phóng to chữ tiêu đề */
+      font-size: 28px; 
       font-weight: bold;
       margin-bottom: 25px;
       color: #333;
@@ -28,7 +28,7 @@
 
     /* Nút Đăng ký */
     .ant-btn-primary {
-      background-color: #007bff; /* Màu xanh đậm */
+      background-color: #007bff; 
       border: none;
       padding: 12px 0;
       border-radius: 8px;
@@ -38,11 +38,11 @@
       transition: all 0.3s ease;
 
       &:hover {
-        background-color: #0056b3; /* Màu xanh đậm hơn khi hover */
+        background-color: #0056b3;
       }
     }
 
-    /* Phần OR phân cách */
+   
     .divider {
       text-align: center;
       margin: 25px 0;
@@ -68,7 +68,7 @@
       }
     }
 
-    /* Nút Tiếp tục với Google */
+  
     .google-button {
       width: 100%;
       padding: 12px;
@@ -103,8 +103,8 @@
 
       &:focus,
       &:hover {
-        border-color: #007bff; /* Màu xanh cho input khi focus */
-        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2); /* Hiệu ứng ánh sáng xanh khi focus */
+        border-color: #007bff; 
+        box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
       }
     }
 

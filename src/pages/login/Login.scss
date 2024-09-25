@@ -3,14 +3,17 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-color: #f0f2f5;
+  padding: 20px;
+  background: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Hoa%2FFlower%20project%20(5).png?alt=media&token=4888f760-ef40-4c32-8bc0-e97d61fc1c28")
+    no-repeat center center;
+  background-size: cover;
 
   .login_form {
     max-width: 400px;
     width: 100%;
     padding: 40px;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.9);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
 
