@@ -1,7 +1,7 @@
-import { Form, Input, Button, notification } from "antd"; // Import các component từ Ant Design
-import { useUser } from "../../context/UserContext"; // Import context để lấy thông tin người dùng
+import { Form, Input, Button, notification } from "antd";
+import { useUser } from "../../context/UserContext";
 import { useState } from "react";
-import api from "../../config/api"; // Giả định rằng bạn có API để tương tác với backend
+import api from "../../config/api";
 import "./UpdateProfile.scss";
 import { useNavigate } from "react-router-dom";
 
@@ -15,21 +15,26 @@ interface UpdateProfileValues {
 function UpdateProfile() {
   const navigate = useNavigate();
   const { user, setUser } = useUser(); // Lấy thông tin người dùng từ context
-  const [loading, setLoading] = useState(false); // State để điều khiển nút loading
+  const [loading, setLoading] = useState(false);
 
   const onFinish = async (values: UpdateProfileValues) => {
     setLoading(true);
+    
+
     try {
-      // Gửi yêu cầu cập nhật thông tin người dùng
-      const response = await api.put("/user/update", values);
+      // Gửi yêu cầu cập nhật thông tin người dùng, sử dụng email của người dùng trong URL
+      // Lấy token từ localStorage (nếu có)
+      const response = await api.put(`/user/${user.email}`, values, {});
       console.log("Success:", response.data);
+
+      // Cập nhật lại thông tin người dùng trong context
       setUser((prevUser) => ({
         ...prevUser,
-        name: values.name,
-        email: values.email,
+        fullName: values.name,
         phone: values.phone,
         address: values.address,
-      })); // Cập nhật lại tên người dùng trong context
+      }));
+
       notification.success({
         message: "Cập nhật thành công!",
         description: "Thông tin tài khoản đã được cập nhật.",
@@ -56,7 +61,7 @@ function UpdateProfile() {
           email: user?.email,
           phone: user?.phone,
           address: user?.address,
-        }} // Lấy thông tin hiện tại của user
+        }}
         onFinish={onFinish}
         layout="vertical"
       >
