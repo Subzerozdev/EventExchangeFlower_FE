@@ -7,6 +7,7 @@ import { useUser } from "../../context/UserContext";
 import Marquee from "react-fast-marquee";
 import { useState } from "react";
 import "./Register.scss";
+import OTPInput from "./OTPInput"; // Import OTPInput
 
 interface RegisterFormValues {
   email: string;
@@ -19,13 +20,13 @@ interface RegisterFormValues {
 
 function Register() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [isOtpSent, setIsOtpSent] = useState(false); // Trạng thái để kiểm soát khi gửi OTP
   const navigate = useNavigate();
   const { setUser } = useUser();
+  const [email, setEmail] = useState(""); // State lưu trữ email để truyền vào OTPInput
 
-  // Đăng ký qua Google
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      // Gửi yêu cầu đến Google để lấy thông tin người dùng bằng access_token
       const { data } = await api.get(
         "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
         {
@@ -49,8 +50,7 @@ function Register() {
       message.error("Có lỗi xảy ra khi đăng ký bằng Google. Vui lòng thử lại!");
     },
   });
-
-  // Xử lý khi nhấn nút đăng ký
+  //-----------------------------------------------------------------------------------------------------
   const onFinish = async (values: RegisterFormValues) => {
     try {
       const response = await api.post("/user/register", values);
@@ -62,8 +62,13 @@ function Register() {
           phone: values.phone,
           address: values.address,
         });
-        message.success("Đăng ký thành công!");
-        navigate("/login");
+        setEmail(values.email); // Lưu email vào state để truyền cho OTPInput
+        setIsOtpSent(true); // Kích hoạt OTP sau khi đăng ký thành công
+        message.success("Đăng ký thành công! Vui lòng xác nhận OTP.");
+        await api.post(`/vertification/${values.email}`); // ở đây Gửi yêu cầu API để gửi OTP qua email
+        navigate("/register/verifyOtp", { state: { email: values.email } });
+
+
       } else {
         setAlertMessage(response?.data?.message || "Đăng ký thất bại!");
       }
@@ -72,6 +77,11 @@ function Register() {
       setAlertMessage("Có lỗi xảy ra khi đăng ký. Vui lòng thử lại sau.");
     }
   };
+
+  // Hiển thị form OTP nếu đã gửi thành công
+  if (isOtpSent) {
+    return <OTPInput email={email} />;
+  }
 
   return (
     <div className="register">
@@ -89,25 +99,20 @@ function Register() {
           style={{ marginBottom: "20px" }}
         />
       )}
-
       <div className="register_form">
         <Form name="register" onFinish={onFinish} autoComplete="off">
           <Form.Item>
             <h1>Đăng ký tài khoản</h1>
           </Form.Item>
-
           <Form.Item name="email" rules={[{ required: true, type: "email" }]}>
             <Input placeholder="Email address" />
           </Form.Item>
-
           <Form.Item name="fullName" rules={[{ required: true }]}>
             <Input placeholder="Tên người dùng" />
           </Form.Item>
-
           <Form.Item name="password" rules={[{ required: true, min: 8 }]}>
             <Input.Password placeholder="Mật khẩu" />
           </Form.Item>
-
           <Form.Item
             name="confirmPassword"
             dependencies={["password"]}
@@ -125,7 +130,6 @@ function Register() {
           >
             <Input.Password placeholder="Xác nhận mật khẩu" />
           </Form.Item>
-
           <Form.Item
             name="phone"
             rules={[
@@ -138,21 +142,17 @@ function Register() {
           >
             <Input placeholder="Số điện thoại" />
           </Form.Item>
-
           <Form.Item name="address" rules={[{ required: true }]}>
-            <Input placeholder=" Địa chỉ" />
+            <Input placeholder="Địa chỉ" />
           </Form.Item>
-
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Đăng ký
             </Button>
           </Form.Item>
-
           <div className="divider">
             <span>HOẶC</span>
           </div>
-
           <Form.Item>
             <Button onClick={() => loginWithGoogle()} className="google-button">
               <GoogleCircleFilled /> Tiếp tục với Google

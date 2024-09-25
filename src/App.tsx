@@ -6,6 +6,7 @@ import Layout from "./components/layout/Layout";
 import Register from "./pages/register";
 import Profile from "./pages/profile";
 import UpdateProfile from "./pages/updateProfile";
+import VerifyOtp from "./pages/register/VerifyOtp";
 
 function App() {
   const router = createBrowserRouter([
@@ -25,6 +26,12 @@ function App() {
         {
           path: "register",
           element: <Register />,
+          children: [
+            {
+              path: "VerifyOtp",
+              element: <VerifyOtp />,
+            },
+          ],
         },
         {
           path: "profile",
@@ -34,6 +41,11 @@ function App() {
           path: "updateProfile",
           element: <UpdateProfile />,
         },
+
+
+
+
+
       ],
     },
   ]);
