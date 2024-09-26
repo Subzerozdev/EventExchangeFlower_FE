@@ -2,8 +2,8 @@ import { useNavigate } from "react-router-dom";
 import { UserOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useUser } from "../../context/UserContext";
 
-
 import "./Header.scss";
+import Link from "antd/es/typography/Link";
 
 function Header() {
   const navigate = useNavigate();
@@ -32,9 +32,20 @@ function Header() {
 
         <div className="header__right">
           {user.fullName ? (
-            <button onClick={() => navigate("/profile")} >
-              <span>{user.fullName}</span>
-            </button>
+            <Link
+              onClick={() => navigate("/profile")}
+              style={{ fontSize: "17px" }}
+            >
+              <UserOutlined />
+              <ul>
+                <li>
+                  <span>{"Thông tin Account"}</span>
+                </li>
+                <li>
+                  <span>{user.fullName}</span>
+                </li>
+              </ul>
+            </Link>
           ) : (
             <div className="header__buttons">
               <button onClick={() => navigate("/login")}>

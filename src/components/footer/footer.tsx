@@ -12,12 +12,7 @@ const Footer: React.FC = () => {
             <li>
               <a href="/help">Trung Tâm Trợ Giúp</a>
             </li>
-            <li>
-              <a href="/blog">Shopee Blog</a>
-            </li>
-            <li>
-              <a href="/mall">Shopee Mall</a>
-            </li>
+
             <li>
               <a href="/guide">Hướng Dẫn Mua Hàng</a>
             </li>
@@ -27,14 +22,9 @@ const Footer: React.FC = () => {
             <li>
               <a href="/payment">Thanh Toán</a>
             </li>
-            <li>
-              <a href="/shipping">Vận Chuyển</a>
-            </li>
+
             <li>
               <a href="/refund">Trả Hàng & Hoàn Tiền</a>
-            </li>
-            <li>
-              <a href="/policy">Chăm Sóc Khách Hàng</a>
             </li>
             <li>
               <a href="/warranty">Chính Sách Bảo Hành</a>
@@ -44,28 +34,17 @@ const Footer: React.FC = () => {
 
         {/* Cột 2: Về Shopee */}
         <div className="footer-column">
-          <h4>VỀ SHOPEE</h4>
+          <h4>MỘT SỐ THÔNG TIN VỀ SHOP</h4>
           <ul>
             <li>
-              <a href="/about">Giới Thiệu Shopee Việt Nam</a>
+              <a href="/careers">Thông Điệp Các Loại Hoa</a>
             </li>
-            <li>
-              <a href="/careers">Tuyển Dụng</a>
-            </li>
-            <li>
-              <a href="/terms">Điều Khoản Shopee</a>
-            </li>
-            <li>
-              <a href="/privacy">Chính Sách Bảo Mật</a>
-            </li>
+
             <li>
               <a href="/seller">Chính Hãng</a>
             </li>
             <li>
               <a href="/affiliate">Kênh Người Bán</a>
-            </li>
-            <li>
-              <a href="/ads">Flash Sales</a>
             </li>
           </ul>
         </div>
@@ -76,17 +55,25 @@ const Footer: React.FC = () => {
           <div className="payment-icons">
             <ul>
               <li>
-                <img src="./img/img/Visa.jpg" alt="Visa" />
-                <img src="./img/img/MasterCard.jpg" alt="MasterCard" />
-                <img src="./img/img/JCB.jpg" alt="JCB" />
+                <img src="./img/img/VNPay.jpg" alt="VnPay" />
+                <img src="./img/img/MOMO.jpg" alt="MOMO" />
+                <img src="./img/img/ZALOPay.jpg" alt="ZaloPay" />
+              </li>
+              <h4>HỖ TRỢ CÁC LOẠI NGÂN HÀNG</h4>
+              <li>
+                <img src="./img/img/Vietcombank.jpg" alt="VietcombankPay" />
+                <img src="./img/img/Tecombank.jpg" alt="MOMO" />
+                <img src="./img/img/BIDV.jpg" alt="ZaloPay" />
               </li>
               <li>
-                <img
-                  src="./img/img/AmericanExpress.jpg"
-                  alt="American Express"
-                />
-                <img src="./img/img/COD2.jpg" alt="COD" />
-                <img src="./img/img/TraGop.jpg" alt="Trả Góp" />
+                <img src="./img/img/Vietinbank.jpg" alt="VietcombankPay" />
+                <img src="./img/img/MSB.jpg" alt="MOMO" />
+                <img src="./img/img/ACB.jpg" alt="ZaloPay" />
+              </li>
+              <li>
+                <img src="./img/img/Agribank.jpg" alt="VietcombankPay" />
+                <img src="./img/img/HDBank.jpg" alt="MOMO" />
+                <img src="./img/img/VIB2.jpg" alt="ZaloPay" />
               </li>
             </ul>
           </div>
@@ -97,7 +84,7 @@ const Footer: React.FC = () => {
           <h4>THEO DÕI CHÚNG TÔI TRÊN</h4>
           <ul>
             <li>
-              <img src="./img/img/facebook.jpg" alt="Facebook" />
+              <img src="./img/img/facebook4.jpg" alt="Facebook" />
               <a href="https://facebook.com">Facebook</a>
             </li>
             <li>
@@ -105,7 +92,7 @@ const Footer: React.FC = () => {
               <a href="https://instagram.com">Instagram</a>
             </li>
             <li>
-              <img src="./img/img/in.jpg" alt="LinkedIn" />
+              <img src="./img/img/in4.jpg" alt="LinkedIn" />
               <a href="https://linkedin.com">LinkedIn</a>
             </li>
           </ul>

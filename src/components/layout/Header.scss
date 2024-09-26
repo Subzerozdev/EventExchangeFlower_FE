@@ -3,38 +3,103 @@
   padding: 0;
   box-sizing: border-box;
 }
+
 .header {
   background-color: #ca88ad;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 20px 0;
+  padding: 20px;
+
+  &__left {
+    .header__logo {
+      height: auto;
+    }
+  }
 
   &__top {
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 50px;
   }
 
-  &__center {
+  .header__center {
     flex-grow: 1;
     display: flex;
     justify-content: center;
+    margin-left: -10%;
   }
 
-  &__right {
+  .header__right {
     display: flex;
-    gap: 20px;
+    align-items: center;
+
+    a {
+      display: flex;
+      align-items: center;
+      color: white; // Màu sắc của văn bản
+      text-decoration: none;
+
+      .anticon {
+        // Class của biểu tượng UserOutlined
+        font-size: 32px; // Kích thước lớn của biểu tượng
+        margin-right: -20px; // Giảm khoảng cách giữa biểu tượng và chữ
+      }
+
+      ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+        li {
+          font-size: 16px;
+          font-weight: 500; // Độ đậm của chữ
+          line-height: 1.2; // Khoảng cách giữa các dòng
+        }
+
+        li:first-child {
+          font-size: 14px; // Kích thước nhỏ hơn cho dòng đầu tiên ("Thông tin")
+        }
+      }
+
+      &:hover {
+        color: #ccc; // Đổi màu khi hover
+      }
+    }
+
+    .header__buttons {
+      button {
+        background-color: transparent;
+        border: none;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+
+        .anticon {
+          font-size: 20px;
+          margin-right: 8px;
+        }
+
+        &:hover {
+          color: #ccc;
+        }
+
+        & + button {
+          margin-left: 16px; // Khoảng cách giữa hai nút
+        }
+      }
+    }
   }
 
   .line-separator {
-    width: 80%;
+    width: 100%;
     height: 2px;
-    background-color: #fff;
-    margin: 15px 0;
+    background-color: #ffffff;
+    margin: 5px 0;
   }
 
   .navbar {
@@ -42,17 +107,18 @@
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 15px 0;
+
+    padding: 10px 0;
 
     &__menu {
       list-style: none;
       display: flex;
-      gap: 50px;
+      gap: 30px;
 
       li {
         color: white;
-        font-size: 18px;
-        font-weight: 500;
+        font-size: 16px;
+        font-weight: thin;
         cursor: pointer;
         text-transform: uppercase;
         position: relative;
@@ -77,57 +143,41 @@
           width: 100%;
         }
       }
-      //search bar
-      li:nth-last-child(1) {
-        display: flex;
-        margin-top: -1.5%;
-        align-items: center;
+    }
 
-        input {
-          padding: 10px 20px;
-          border-radius: 25px;
-          border: 1px solid #ddd !important;
-          outline: none;
-          font-size: 16px;
-          transition: border-color 0.3s, box-shadow 0.3s;
+    .header__search {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      // margin-left: 130%; // Di chuyển phần tìm kiếm sang bên phải
 
-          &:focus {
-            border-color: #e012f3 !important;
-            box-shadow: 0 0 5px rgba(243, 156, 18, 0.5) !important;
-          }
-        }
+      input {
+        padding: 10px;
+        border-radius: 5px;
+        border: none;
+        outline: none;
+        font-size: 16px;
+      }
 
-        button {
-          background-color: #f39c12;
-          border: none;
-          padding: 10px 15px;
-          cursor: pointer;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: white;
-          font-size: 16px;
-          transition: background-color 0.3s, box-shadow 0.3s;
-
-          &:hover {
-            background-color: #e67e22 !important;
-            box-shadow: 0 0 10px rgba(230, 126, 34, 0.5) !important;
-          }
-        }
+      .header__search-btn {
+        background-color: #fff;
+        border: none;
+        padding: 10px 15px;
+        cursor: pointer;
+        border-radius: 5px;
       }
     }
   }
 
   .header__buttons {
     display: flex;
-    gap: 30px;
+    gap: 20px;
 
     button {
       background-color: transparent;
       border: 2px solid #fff;
       color: #fff;
-      padding: 10px 25px;
+      padding: 10px 20px; // Kích thước lớn hơn
       font-size: 16px;
       cursor: pointer;
       border-radius: 8px;
@@ -143,9 +193,10 @@
       display: flex;
       align-items: center;
       gap: 5px;
-      background-color: #2c5f2d;
+      font-weight: bold;
+      background-color: #f39c12;
       border: 2px solid white;
-      padding: 10px 25px;
+      padding: 10px 20px;
       transition: 0.3s;
 
       &:hover {
@@ -156,9 +207,9 @@
 
     .header__register {
       background-color: #f39c12;
-      border: 2px solid #f39c12;
+      border: 2px solid #ffffff;
       color: #fff;
-      padding: 10px 25px;
+      padding: 10px 20px;
       font-weight: bold;
       transition: 0.3s;
 
