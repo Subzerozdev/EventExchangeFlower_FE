@@ -16,7 +16,7 @@ interface RegisterFormValues {
   phone: string;
   fullName: string;
   address: string;
-  time: string;
+
 }
 
 function Register() {
