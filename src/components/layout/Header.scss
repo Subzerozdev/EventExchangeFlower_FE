@@ -127,8 +127,9 @@
           background: yellow;
           transition: width 0.3s;
           position: absolute;
-          left: 0;
-          bottom: -5px;
+          left: 50%; /* Bắt đầu từ giữa */
+          bottom: 0; /* Đặt đường viền ngay dưới chữ */
+          transform: translateX(-50%);
         }
 
         &:hover::after {
