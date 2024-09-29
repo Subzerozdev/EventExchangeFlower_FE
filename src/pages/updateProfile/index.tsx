@@ -21,8 +21,7 @@ function UpdateProfile() {
     setLoading(true);
 
     try {
-      // Gửi yêu cầu cập nhật thông tin người dùng, sử dụng email của người dùng trong URL
-      // Lấy token từ localStorage (nếu có)
+
       const response = await api.put(`/user/${user.email}`, values, {});
       console.log("Success:", response.data);
 

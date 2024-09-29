@@ -66,7 +66,7 @@ function Header() {
           <li>Hoa theo sự kiện</li>
           <li>Hoa theo lô</li>
           <li onClick={() => navigate("/blog")}>Blog</li>
-          <li>Liên hệ</li>
+          <li onClick={() => navigate("/LienHe")}>Liên hệ</li>
           <li>
             <input type="text" placeholder="Tìm hoa..." />
             <button>🔍</button>
