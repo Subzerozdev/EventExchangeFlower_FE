@@ -7,6 +7,7 @@ import Register from "./pages/register";
 import Profile from "./pages/profile";
 import UpdateProfile from "./pages/updateProfile";
 import VerifyOtp from "./pages/register/VerifyOtp";
+import BlogPage from "./pages/blog";
 
 function App() {
   const router = createBrowserRouter([
@@ -41,6 +42,11 @@ function App() {
           path: "updateProfile",
           element: <UpdateProfile />,
         },
+        {
+          path: "blog",
+          element: <BlogPage />,
+
+        }
       ],
     },
   ]);

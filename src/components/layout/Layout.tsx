@@ -1,6 +1,6 @@
 
 import Footer from "../footer/footer";
-import Header from "./Header"; // Import Header
+import Header from "../header/Header"; // Import Header
 import { Outlet } from "react-router-dom"; // Để render nội dung con
 
 const Layout = () => {
