@@ -9,7 +9,7 @@ const LienHe: React.FC = () => {
           <span>Địa chỉ:</span> 223 Lâm Văn Bền, Phường Bình Thuận, Quận 7
         </p>
         <p>
-          <span>Hotline:</span> 0912345678
+          <span>Hotline:</span> 0912345678  
         </p>
         <p>
           <span>Email:</span> hoaloicu@gmail.com

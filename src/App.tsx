@@ -9,6 +9,7 @@ import UpdateProfile from "./pages/updateProfile";
 import VerifyOtp from "./pages/register/VerifyOtp";
 import BlogPage from "./pages/blog";
 import LienHe from "./pages/lien_he";
+import AdminPage from "./pages/adminPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -51,7 +52,15 @@ function App() {
           path: "LienHe",
           element: <LienHe />,
         },
+        // {
+        //   path: "admin",
+        //   element: <AdminPage />,
+        // },
       ],
+    },
+    {
+      path: "admin",
+      element: <AdminPage />,
     },
   ]);
 
