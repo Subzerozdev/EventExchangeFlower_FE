@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext";
 import { AxiosError } from "axios"; // catch error
-
 import "./Login.scss";
 
 interface LoginFormValues {
@@ -50,10 +49,13 @@ function Login() {
   // Đăng nhập bằng email và mật khẩu
   const onFinish = async (values: LoginFormValues) => {
     try {
-      const response = await api.post("/user/login", values);
+      const response = await api.post("/auth/login", values);
 
       if (response.status === 200) {
-        //    Khi xác thực thành công, cập nhật thông tin người dùng nè
+        // Lưu token vào localStorage
+        localStorage.setItem('token', response.data.token);
+
+        // Cập nhật thông tin người dùng
         setUser({
           fullName: response.data.fullName,
           email: response.data.email,

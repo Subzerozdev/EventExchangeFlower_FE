@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import api from '../../config/api';
 import { useNavigate } from 'react-router-dom';
-import './OTPInput.scss'; 
+import './OTPInput.scss';
 
 interface OTPInputProps {
-    email: string;
+    userID: string;
 }
 
-function OTPInput({ email }: OTPInputProps) {
+function OTPInput({ userID }: OTPInputProps) {
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
     const [attempt, setAttempt] = useState(0);
@@ -15,9 +15,9 @@ function OTPInput({ email }: OTPInputProps) {
 
     const handleVerifyOtp = async () => {
         try {
-            const response = await api.post(`/vertification/${otp}/${email}`);
+            const response = await api.post(`/vertification/${otp}/${userID}`);
             if (response.data === "OTP Verify!!") {
-                navigate("/");
+                navigate("/login");
             } else {
                 throw new Error('Invalid OTP');
             }
@@ -26,7 +26,7 @@ function OTPInput({ email }: OTPInputProps) {
             setError(error.message);
             const newAttempt = attempt + 1;
             setAttempt(newAttempt);
-            if (newAttempt >= 3) {
+            if (newAttempt >= 4) {
                 setError('Bạn nhập quá số lần thử. Đang chuyển về trang đăng ký.');
                 setTimeout(() => window.location.href = "/register", 3000);
             }

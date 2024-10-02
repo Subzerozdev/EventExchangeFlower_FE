@@ -65,7 +65,7 @@ function Header() {
           <li>Tất cả sản phẩm</li>
           <li>Hoa theo sự kiện</li>
           <li>Hoa theo lô</li>
-          <li onClick={() => navigate("/admin")}>AdminPage</li>
+          {/* <li onClick={() => navigate("/admin")}>AdminPage</li> */}
           <li onClick={() => navigate("/blog")}>Blog</li>
           <li onClick={() => navigate("/LienHe")}>Liên hệ</li>
           <li>

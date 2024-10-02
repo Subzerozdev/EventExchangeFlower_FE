@@ -10,10 +10,10 @@ interface User {
 // Tạo UserContext
 const UserContext = createContext<
   | {
-      user: User;
-      setUser: React.Dispatch<React.SetStateAction<User>>;
-      logout: () => void; // Thêm hàm logout vào context
-    }
+    user: User;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
+    logout: () => void; // Thêm hàm logout vào context
+  }
   | undefined
 >(undefined);
 

@@ -16,7 +16,6 @@ interface RegisterFormValues {
   phone: string;
   fullName: string;
   address: string;
-
 }
 
 function Register() {
@@ -24,7 +23,7 @@ function Register() {
   const [isOtpSent, setIsOtpSent] = useState(false); // Trạng thái để kiểm soát khi gửi OTP
   const navigate = useNavigate();
   const { setUser } = useUser();
-  const [email, setEmail] = useState(""); // State lưu trữ email để truyền vào OTPInput
+  const [userID, setUserID] = useState(""); // State lưu trữ email để truyền vào OTPInput
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -51,10 +50,10 @@ function Register() {
       message.error("Có lỗi xảy ra khi đăng ký bằng Google. Vui lòng thử lại!");
     },
   });
-  //-----------------------------------------------------------------------------------------------------
+
   const onFinish = async (values: RegisterFormValues) => {
     try {
-      const response = await api.post("/user/register", values);
+      const response = await api.post("/auth/register", values);
 
       if (response.status === 200) {
         setUser({
@@ -63,13 +62,12 @@ function Register() {
           phone: values.phone,
           address: values.address,
         });
-        setEmail(values.email); // Lưu email vào state để truyền cho OTPInput
+        console.log(response.data.userID)
+        setUserID(response.data.userID); // Lưu email vào state để truyền cho OTPInput
         setIsOtpSent(true); // Kích hoạt OTP sau khi đăng ký thành công
         message.success("Đăng ký thành công! Vui lòng xác nhận OTP.");
-        await api.post(`/vertification/${values.email}`); // ở đây Gửi yêu cầu API để gửi OTP qua email
-        navigate("/register/verifyOtp", { state: { email: values.email } });
-
-
+        await api.post(`/vertification/${response.data.userID}`); // Gửi yêu cầu API để gửi OTP qua email
+        navigate("/register/verifyOtp", { state: { userID: response.data.userID } });
       } else {
         setAlertMessage(response?.data?.message || "Đăng ký thất bại!");
       }
@@ -81,7 +79,7 @@ function Register() {
 
   // Hiển thị form OTP nếu đã gửi thành công
   if (isOtpSent) {
-    return <OTPInput email={email} />;
+    return <OTPInput userID={userID} />;
   }
 
   return (
