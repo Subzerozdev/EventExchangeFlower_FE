@@ -8,13 +8,16 @@ import {
   BsMenuButtonWideFill,
   BsFillGearFill,
 } from "react-icons/bs";
-
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
+import "./sideBar.scss"
 interface SidebarProps {
   openSidebarToggle: boolean;
   OpenSidebar: () => void; // Add OpenSidebar to SidebarProps
 }
 
 function Sidebar({ openSidebarToggle, OpenSidebar }: SidebarProps) {
+  const navigate = useNavigate(); // Khai báo hook useNavigate để điều hướng
+
   return (
     <aside
       id="sidebar"
@@ -31,44 +34,44 @@ function Sidebar({ openSidebarToggle, OpenSidebar }: SidebarProps) {
       </div>
       <ul className="sidebar-list">
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/dashboard")} className="btn-link">
             <BsGrid1X2Fill className="icon" /> Dashboard
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/categories")} className="btn-link">
             <BsFillArchiveFill className="icon" /> Product
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/admin/categories")} className="btn-link">
             <BsFillGrid3X3GapFill className="icon" /> Category
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/customers")} className="btn-link">
             <BsPeopleFill className="icon" /> Customers
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/sellers")} className="btn-link">
             <BsPeopleFill className="icon" /> Sellers
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/inventory")} className="btn-link">
             <BsListCheck className="icon" /> Inventory
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/reports")} className="btn-link">
             <BsMenuButtonWideFill className="icon" /> Reports
-          </a>
+          </button>
         </li>
         <li className="sidebar-list-item">
-          <a href="">
+          <button onClick={() => navigate("/settings")} className="btn-link">
             <BsFillGearFill className="icon" /> Setting
-          </a>
+          </button>
         </li>
       </ul>
     </aside>

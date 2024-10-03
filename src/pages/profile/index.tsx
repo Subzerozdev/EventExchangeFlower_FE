@@ -1,6 +1,7 @@
 import { Descriptions, Button } from "antd";
 import { useUser } from "../../context/UserContext";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect } from "react";
 import "./Profile.scss";
 
 function Profile() {
@@ -8,10 +9,20 @@ function Profile() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // Kiểm tra trạng thái đăng nhập khi tải trang
+  useEffect(() => {
+    if (!user.role) {
+      // Nếu chưa đăng nhập, chuyển hướng đến trang login
+      navigate("/login");
+    }
+  }, [user, navigate]);  // Kiểm tra mỗi khi user thay đổi
+
   const handleLogout = () => {
-    logout(); // Gọi hàm logout từ context
-    navigate("/login"); // Chuyển hướng về trang đăng nhập sau khi logout
+    logout();
+    navigate("/login");
   };
+
+
 
   return (
     <div className="profile_container">

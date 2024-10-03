@@ -11,6 +11,7 @@ import BlogPage from "./pages/blog";
 import LienHe from "./pages/lien_he";
 import AdminPage from "./pages/adminPage";
 import ProtectedRoute from "./components/routes/ProtectedRoute";  // Import ProtectedRoute
+import AddCategory from "./pages/adminPage/AddCategory";
 
 function App() {
   const router = createBrowserRouter([
@@ -63,6 +64,10 @@ function App() {
         {
           path: "",
           element: <AdminPage />,  // Hiển thị trang Admin nếu đủ quyền
+        },
+        {
+          path: "categories",
+          element: <AddCategory />,  // Trang thêm category
         },
       ],
     }
