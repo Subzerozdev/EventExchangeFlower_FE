@@ -41,6 +41,8 @@ function Register() {
         email: data.email || "",
         phone: null,
         address: null,
+        role: null,
+        id: null,
       });
 
       message.success("Đăng ký qua Google thành công!");
@@ -55,19 +57,23 @@ function Register() {
     try {
       const response = await api.post("/auth/register", values);
 
+      // const user = response.data.user;
       if (response.status === 200) {
+
         setUser({
-          fullName: values.fullName,
-          email: values.email,
-          phone: values.phone,
-          address: values.address,
+          fullName: null,
+          email: null,
+          phone: null,
+          address: null,
+          role: null,
+          id: response.data,
         });
-        console.log(response.data.userID)
-        setUserID(response.data.userID); // Lưu email vào state để truyền cho OTPInput
+
+        setUserID(response.data); // Lưu email vào state để truyền cho OTPInput
         setIsOtpSent(true); // Kích hoạt OTP sau khi đăng ký thành công
         message.success("Đăng ký thành công! Vui lòng xác nhận OTP.");
-        await api.post(`/vertification/${response.data.userID}`); // Gửi yêu cầu API để gửi OTP qua email
-        navigate("/register/verifyOtp", { state: { userID: response.data.userID } });
+        await api.post(`/vertification/${response.data}`); // Gửi yêu cầu API để gửi OTP qua email
+        navigate("/register/verifyOtp", { state: { userID: response.data} });
       } else {
         setAlertMessage(response?.data?.message || "Đăng ký thất bại!");
       }

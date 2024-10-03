@@ -5,8 +5,23 @@ import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext";
 import { AxiosError } from "axios"; // catch error
+// import jwt_decode from "jwt-decode"; // Import jwt-decode để giải mã token
 import "./Login.scss";
 
+// Interface cho thông tin người dùng trong token
+// interface DecodedToken {
+//   ID: string;
+//   role: string;
+// }
+// interface User {
+
+//   email: string;
+//   fullName: string;
+//   address: string;
+//   phone: string;
+//   role: string;
+
+// }
 interface LoginFormValues {
   email: string;
   password: string;
@@ -33,6 +48,8 @@ function Login() {
           email: data.email || "",
           phone: null,
           address: null,
+          role: null,
+          id: null
         });
 
         message.success("Đăng nhập bằng Google thành công!");
@@ -50,17 +67,24 @@ function Login() {
   const onFinish = async (values: LoginFormValues) => {
     try {
       const response = await api.post("/auth/login", values);
-
+      // console.log(response.data.token); test thoi
       if (response.status === 200) {
         // Lưu token vào localStorage
-        localStorage.setItem('token', response.data.token);
+        const token = response.data.token;
+        const user = response.data.user;
+        localStorage.setItem('token', token);
 
-        // Cập nhật thông tin người dùng
+        // Giải mã token để lấy thông tin người dùng
+        // const decodedToken: DecodedToken = jwt_decode(token); // Giải mã JWT bị cấn
+
+        // Cập nhật thông tin người dùng trong context
         setUser({
-          fullName: response.data.fullName,
-          email: response.data.email,
-          phone: response.data.phone || "Chưa có thông tin", // Cập nhật số điện thoại
-          address: response.data.address,
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone || "Chưa có thông tin", // Kiểm tra nếu không có số điện thoại
+          address: user.address,
+          role: user.role,
+          id: user.id,
         });
 
         message.success("Đăng nhập thành công!");

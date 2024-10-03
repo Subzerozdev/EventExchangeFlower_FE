@@ -52,10 +52,7 @@ function App() {
           path: "LienHe",
           element: <LienHe />,
         },
-        // {
-        //   path: "admin",
-        //   element: <AdminPage />,
-        // },
+
       ],
     },
     {
