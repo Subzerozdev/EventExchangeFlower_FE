@@ -83,12 +83,17 @@ function Login() {
           email: user.email,
           phone: user.phone || "Chưa có thông tin", // Kiểm tra nếu không có số điện thoại
           address: user.address,
-          role: user.role,
+          role: user.role,   // check ROLE CHỖ NÀY CHO TUI
           id: user.id,
         });
 
         message.success("Đăng nhập thành công!");
-        navigate("/");
+        // Phân quyền dựa trên vai trò của người dùng
+        if (user.role === "ROLE_ADMIN") {
+          navigate("/admin");  // Chuyển hướng đến trang admin nếu là admin
+        } else {
+          navigate("/");
+        }
       } else {
         message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
       }

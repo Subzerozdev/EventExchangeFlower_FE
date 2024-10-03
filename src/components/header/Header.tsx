@@ -8,6 +8,10 @@ import Link from "antd/es/typography/Link";
 function Header() {
   const navigate = useNavigate();
   const { user } = useUser();
+  // const handleLogout = () => {
+  //   logout();
+  //   navigate('/login');  // Chuyển hướng đến trang đăng nhập sau khi đăng xuất
+  // };
 
   return (
     <header className="header">

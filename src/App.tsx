@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { UserProvider } from "./context/UserContext"; // Import UserProvider
+import { UserProvider } from "./context/UserContext";  // Import UserProvider
 import Login from "./pages/login";
 import Home from "./pages/home";
 import Layout from "./components/layout/Layout";
@@ -10,6 +10,7 @@ import VerifyOtp from "./pages/register/VerifyOtp";
 import BlogPage from "./pages/blog";
 import LienHe from "./pages/lien_he";
 import AdminPage from "./pages/adminPage";
+import ProtectedRoute from "./components/routes/ProtectedRoute";  // Import ProtectedRoute
 
 function App() {
   const router = createBrowserRouter([
@@ -52,13 +53,20 @@ function App() {
           path: "LienHe",
           element: <LienHe />,
         },
-
       ],
     },
+    // Sử dụng ProtectedRoute để bảo vệ trang admin
     {
       path: "admin",
-      element: <AdminPage />,
-    },
+      element: <ProtectedRoute roleRequired="ROLE_ADMIN" />,  // Đảm bảo tên đúng là ProtectedRoute
+      children: [
+        {
+          path: "",
+          element: <AdminPage />,  // Hiển thị trang Admin nếu đủ quyền
+        },
+      ],
+    }
+
   ]);
 
   return (
