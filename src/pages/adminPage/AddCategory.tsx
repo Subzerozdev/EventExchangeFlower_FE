@@ -25,7 +25,7 @@ function AddCategory() {
   const onFinish = async (values: CategoryFormValues) => {
     try {
       // Gửi yêu cầu tạo category mới đến API
-      const response = await api.post("/api/categories", values);
+      const response = await api.post("/api/admin/categories", values);
 
       if (response.status === 200) {
         message.success("Category created successfully!");
