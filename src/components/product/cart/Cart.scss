@@ -1,0 +1,139 @@
+.cart-container {
+    position: relative; // Để giỏ hàng dropdown sẽ nằm bên dưới nút bấm
+    display: inline-block;
+  
+    .cart-button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  
+    .cart-dropdown {
+      position: absolute;
+      right: 0;
+      top: 50px;
+      background-color: white;
+      box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+      width: 300px; // Độ rộng của giỏ hàng xổ xuống
+      z-index: 1;
+      padding: 20px;
+      border-radius: 8px;
+      max-height: 500px; // Giới hạn chiều cao và cuộn nếu vượt quá
+      overflow-y: auto;
+  
+      h3 {
+        text-align: center;
+        margin-bottom: 10px;
+        font-size: 18px;
+      }
+  
+      .cart-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+  
+        img {
+          width: 50px;
+          height: 50px;
+          object-fit: cover;
+          margin-right: 10px;
+          border-radius: 4px;
+        }
+  
+        .cart-details {
+          flex-grow: 1;
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+  
+          h4 {
+            font-size: 14px;
+            margin: 0;
+            color: #333;
+          }
+  
+          p {
+            font-size: 14px;
+            color: #333;
+            font-weight: bold;
+            margin-left: 10px;
+          }
+  
+          .cart-controls {
+            display: flex;
+            align-items: center;
+  
+            button {
+              background-color: #ddd;
+              border: none;
+              cursor: pointer;
+              padding: 5px;
+              margin: 0 5px;
+  
+              &:hover {
+                background-color: #bbb;
+              }
+            }
+  
+            span {
+              font-size: 14px;
+              margin: 0 5px;
+            }
+          }
+  
+          .remove {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 5px 10px;
+            border-radius: 4px;
+  
+            &:hover {
+              background-color: #c0392b;
+            }
+          }
+        }
+      }
+  
+      .cart-total {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 15px;
+        font-weight: bold;
+        color: #333;
+      }
+  
+      .checkout,
+      .clear-cart {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: white;
+        text-align: center;
+  
+        &.checkout {
+          background-color: #4CAF50;
+  
+          &:hover {
+            background-color: #45a049;
+          }
+        }
+  
+        &.clear-cart {
+          background-color: #e74c3c;
+  
+          &:hover {
+            background-color: #c0392b;
+          }
+        }
+      }
+    }
+  }
+  
