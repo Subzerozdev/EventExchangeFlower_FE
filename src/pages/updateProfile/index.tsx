@@ -6,6 +6,7 @@ import "./UpdateProfile.scss";
 import { useNavigate } from "react-router-dom";
 
 interface UpdateProfileValues {
+
   email: string;
   fullName: string;
   phone: string;
@@ -22,7 +23,7 @@ function UpdateProfile() {
 
     try {
 
-      const response = await api.put(`/user/${user.email}`, values, {});
+      const response = await api.put(`/api/user`, values, {});
       console.log("Success:", response.data);
 
       // Cập nhật lại thông tin người dùng trong context

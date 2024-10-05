@@ -66,7 +66,7 @@ function Header() {
       <nav className="navbar">
         <ul className="navbar__menu">
           <li onClick={() => navigate("/")}>Trang chủ</li>
-          <li>Tất cả sản phẩm</li>
+          <li onClick={() => navigate("/productList")}>Tất cả sản phẩm</li>
           <li>Hoa theo sự kiện</li>
           <li>Hoa theo lô</li>
           {/* <li onClick={() => navigate("/admin")}>AdminPage</li> */}

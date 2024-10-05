@@ -1,0 +1,123 @@
+.product-list-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+    
+    // Định nghĩa cột cho FilterPanel
+    .filter-panel {
+      flex: 2;
+      max-width: 250px;
+      margin-right: 20px;
+    }
+  
+    // Định nghĩa bố cục Grid cho ProductList
+    .product-list-wrapper {
+      flex: 3;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 100vh;
+  
+      .product-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); // Điều chỉnh để sản phẩm tự động lấp đầy không gian
+        grid-gap: 20px; // Khoảng cách giữa các sản phẩm
+        margin-bottom: 20px;
+  
+      }
+  
+      .product-card {
+  
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+        &:hover {
+          transform: translateY(-5px);
+          box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+  
+        img {
+          width: 100%;
+          height: 180px;
+          object-fit: cover;
+          border-radius: 4px;
+          margin-bottom: 15px;
+        }
+  
+        h4 {
+          font-size: 16px;
+          color: #333;
+          margin-bottom: 10px;
+        }
+  
+        p {
+          font-size: 14px;
+          color: #666;
+          margin-bottom: 15px;
+        }
+  
+        .add-to-cart {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 10px 20px;
+          background-color: #ff6f61;
+          color: white;
+          font-size: 16px;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: background-color 0.3s;
+  
+          &:hover {
+            background-color: #e65a4e;
+          }
+  
+          svg {
+            margin-right: 5px;
+          }
+        }
+      }
+    }
+  
+    // Pagination styling để đảm bảo nằm ở dưới cùng
+    .pagination {
+      margin-top: auto;
+      display: flex;
+      justify-content: center;
+  
+      ul {
+        list-style: none;
+        display: flex;
+  
+        li {
+          margin: 0 5px;
+  
+          a {
+            padding: 10px 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+  
+            &:hover {
+              background-color: #ff6f61;
+              color: white;
+            }
+  
+            &.active {
+              background-color: #ff6f61;
+              color: white;
+            }
+          }
+        }
+      }
+    }
+  }
+  
