@@ -4,24 +4,9 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useUser } from "../../context/UserContext";
-import { AxiosError } from "axios"; // catch error
-// import jwt_decode from "jwt-decode"; // Import jwt-decode để giải mã token
+import { AxiosError } from "axios";
 import "./Login.scss";
 
-// Interface cho thông tin người dùng trong token
-// interface DecodedToken {
-//   ID: string;
-//   role: string;
-// }
-// interface User {
-
-//   email: string;
-//   fullName: string;
-//   address: string;
-//   phone: string;
-//   role: string;
-
-// }
 interface LoginFormValues {
   email: string;
   password: string;
@@ -49,7 +34,7 @@ function Login() {
           phone: null,
           address: null,
           role: null,
-          id: null
+          id: null,
         });
 
         message.success("Đăng nhập bằng Google thành công!");
@@ -67,30 +52,27 @@ function Login() {
   const onFinish = async (values: LoginFormValues) => {
     try {
       const response = await api.post("/auth/login", values);
-      // console.log(response.data.token); test thoi
+
       if (response.status === 200) {
         // Lưu token vào localStorage
         const token = response.data.token;
         const user = response.data.user;
-        localStorage.setItem('token', token);
-
-        // Giải mã token để lấy thông tin người dùng
-        // const decodedToken: DecodedToken = jwt_decode(token); // Giải mã JWT bị cấn
+        localStorage.setItem("token", token);
 
         // Cập nhật thông tin người dùng trong context
         setUser({
           fullName: user.fullName,
           email: user.email,
-          phone: user.phone || "Chưa có thông tin", // Kiểm tra nếu không có số điện thoại
+          phone: user.phone || "Chưa có thông tin",
           address: user.address,
-          role: user.role,   // check ROLE CHỖ NÀY CHO TUI
+          role: user.role,
           id: user.id,
         });
 
         message.success("Đăng nhập thành công!");
         // Phân quyền dựa trên vai trò của người dùng
         if (user.role === "ROLE_ADMIN") {
-          navigate("/admin");  // Chuyển hướng đến trang admin nếu là admin
+          navigate("/admin");
         } else {
           navigate("/");
         }
@@ -98,12 +80,18 @@ function Login() {
         message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
       }
     } catch (error) {
-      if (error instanceof AxiosError && error.response?.status === 400) {
-        message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
+      // Kiểm tra lỗi từ phía server
+      if (error instanceof AxiosError) {
+        const statusCode = error.response?.status;
+        if (statusCode === 400) {
+          message.error("Email hoặc mật khẩu không đúng. Vui lòng thử lại.");
+        } else if (statusCode === 500) {
+          message.error("Lỗi server. Vui lòng thử lại sau.");
+        } else {
+          message.error("Có lỗi xảy ra. Vui lòng thử lại sau.");
+        }
       } else {
-        message.error(
-          "Có lỗi xảy ra trong quá trình đăng nhập. Vui lòng thử lại sau."
-        );
+        message.error("Có lỗi xảy ra trong quá trình đăng nhập.");
       }
       console.log("Login Error:", error);
     }
@@ -119,7 +107,16 @@ function Login() {
 
           <Form.Item
             name="email"
-            rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng nhập email!",
+              },
+              {
+                type: "email",
+                message: "Địa chỉ email không hợp lệ!",
+              },
+            ]}
           >
             <Input placeholder="Địa chỉ email" />
           </Form.Item>

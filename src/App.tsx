@@ -8,7 +8,7 @@ import Profile from "./pages/profile";
 import UpdateProfile from "./pages/updateProfile";
 import VerifyOtp from "./pages/register/VerifyOtp";
 import BlogPage from "./pages/blog";
-import LienHe from "./pages/lien_he";
+import LienHe from "./pages/contact";
 import AdminPage from "./pages/adminPage";
 import ProtectedRoute from "./components/routes/ProtectedRoute";  // Import ProtectedRoute
 import AddCategory from "./pages/adminPage/AddCategory";
