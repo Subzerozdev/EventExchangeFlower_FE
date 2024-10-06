@@ -11,7 +11,7 @@ import BlogPage from "./pages/blog";
 import LienHe from "./pages/contact";
 import AdminPage from "./pages/adminPage";
 import ProtectedRoute from "./components/routes/ProtectedRoute"; // Import ProtectedRoute
-import AddCategory from "./pages/adminPage/AddCategory";
+import AddCategory from "./pages/adminPage/CRUDcategory/AddCategory";
 import AllProduct from "./components/product";
 
 function App() {

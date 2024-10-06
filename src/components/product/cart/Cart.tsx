@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./Cart.scss";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../../../context/CartContext";
 import { FaCartShopping } from "react-icons/fa6";
 
 const Cart: React.FC = () => {

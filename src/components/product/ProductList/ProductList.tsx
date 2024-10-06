@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import "./ProductList.scss";
-import { CartContext } from "../context/CartContext";
+import { CartContext } from "../../../context/CartContext";
 import Pagination from "../Pagination/Pagination";
 import { FaShoppingCart } from "react-icons/fa";
 import FilterPanel from "../FilterPanel/FilterPanel";

@@ -3,7 +3,7 @@ import "./allProduct.scss";
 
 import ProductList from "./ProductList/ProductList";
 
-import { CartProvider } from "./context/CartContext";
+import { CartProvider } from "../../context/CartContext";
 
 const AllProduct: React.FC = () => {
   return (
