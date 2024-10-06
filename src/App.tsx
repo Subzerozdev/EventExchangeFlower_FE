@@ -13,6 +13,7 @@ import AdminPage from "./pages/adminPage";
 import ProtectedRoute from "./components/routes/ProtectedRoute"; // Import ProtectedRoute
 import AddCategory from "./pages/adminPage/CRUDcategory/AddCategory";
 import AllProduct from "./components/product";
+import SellerAccount from "./pages/sellerPage/SellerAccount";
 
 function App() {
   const router = createBrowserRouter([
@@ -58,6 +59,10 @@ function App() {
         {
           path: "productList",
           element: <AllProduct />,
+        },
+        {
+          path: "seller",
+          element: <SellerAccount />,
         },
       ],
     },

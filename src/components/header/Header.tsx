@@ -35,6 +35,9 @@ function Header() {
         </div>
 
         <div className="header__right">
+          <div className="header__buttons">
+            <button onClick={() => navigate("/seller")}>  <UserOutlined /> Đăng kí trở thành Seller</button>
+          </div>
           {user.fullName ? (
             <Link
               onClick={() => navigate("/profile")}
@@ -55,6 +58,7 @@ function Header() {
               <button onClick={() => navigate("/login")}>
                 <UserOutlined /> Đăng nhập
               </button>
+             
               <button onClick={() => navigate("/register")}>
                 <UserAddOutlined /> Đăng ký
               </button>
