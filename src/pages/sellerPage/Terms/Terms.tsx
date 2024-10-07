@@ -1,6 +1,6 @@
 import React from 'react';
 import { Typography, Divider } from 'antd';
-
+import './Terms.scss'
 
 const { Title, Paragraph } = Typography;
 

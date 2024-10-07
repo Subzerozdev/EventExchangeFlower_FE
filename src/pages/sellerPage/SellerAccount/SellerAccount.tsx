@@ -8,10 +8,10 @@ import {
   LogoutOutlined,
   BookOutlined,
 } from "@ant-design/icons";
-import SellerForm from "../SellerForm/SellerForm";
+import SellerForm from "../AddNewAccount/AddNewAccount";
 
-import SellerTerms from "../SellerTerms/SellerTerms";
-import SellerAddNewProduct from "../SellerAddNewProduct/SellerAddNewProduct";
+import SellerTerms from "../Terms/Terms";
+import SellerAddNewProduct from "../AddNewProduct/AddNewProduct";
 
 const { Sider, Content } = Layout;
 

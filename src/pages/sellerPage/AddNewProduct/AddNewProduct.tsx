@@ -1,9 +1,9 @@
-import React from 'react';
-import { Form, Input, Button, Select, DatePicker, Upload } from 'antd';
-import { UploadOutlined } from '@ant-design/icons';
-import { UploadFile, UploadChangeParam } from 'antd/es/upload/interface'; // Import correct types from Ant Design
-import './SellerAddNewProduct.scss';
-import moment from 'moment';
+import React from "react";
+import { Form, Input, Button, Select, DatePicker, Upload } from "antd";
+import { UploadOutlined } from "@ant-design/icons";
+import { UploadFile, UploadChangeParam } from "antd/es/upload/interface"; // Import correct types from Ant Design
+import "./AddNewProduct.scss";
+import moment from "moment";
 
 const { Option } = Select;
 const { RangePicker } = DatePicker;
@@ -24,7 +24,7 @@ const SellerAddNewProduct: React.FC = () => {
 
   // Define the onFinish function with proper types
   const onFinish = (values: ProductFormValues) => {
-    console.log('Form Values:', values);
+    console.log("Form Values:", values);
   };
 
   // Custom function to handle file upload events
@@ -44,7 +44,7 @@ const SellerAddNewProduct: React.FC = () => {
         <Form.Item
           label="Tên sản phẩm:"
           name="productName"
-          rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm!' }]}
+          rules={[{ required: true, message: "Vui lòng nhập tên sản phẩm!" }]}
         >
           <Input placeholder="...hoa hồng đám cưới" />
         </Form.Item>
@@ -52,7 +52,7 @@ const SellerAddNewProduct: React.FC = () => {
         <Form.Item
           label="Số lượng:"
           name="quantity"
-          rules={[{ required: true, message: 'Vui lòng nhập số lượng!' }]}
+          rules={[{ required: true, message: "Vui lòng nhập số lượng!" }]}
         >
           <Select>
             <Option value={0}>0</Option>
@@ -65,7 +65,7 @@ const SellerAddNewProduct: React.FC = () => {
         <Form.Item
           label="Thời gian sự kiện diễn ra từ ngày:"
           name="eventDate"
-          rules={[{ required: true, message: 'Vui lòng chọn thời gian!' }]}
+          rules={[{ required: true, message: "Vui lòng chọn thời gian!" }]}
         >
           <RangePicker />
         </Form.Item>
@@ -73,7 +73,7 @@ const SellerAddNewProduct: React.FC = () => {
         <Form.Item
           label="Tên Shop hoa của bạn:"
           name="shopName"
-          rules={[{ required: true, message: 'Vui lòng nhập tên shop!' }]}
+          rules={[{ required: true, message: "Vui lòng nhập tên shop!" }]}
         >
           <Input placeholder="Hoa lối cũ..." />
         </Form.Item>
@@ -81,7 +81,7 @@ const SellerAddNewProduct: React.FC = () => {
         <Form.Item
           label="Sự kiện sử dụng:"
           name="eventType"
-          rules={[{ required: true, message: 'Vui lòng chọn sự kiện!' }]}
+          rules={[{ required: true, message: "Vui lòng chọn sự kiện!" }]}
         >
           <Select>
             <Option value="wedding">Đám cưới</Option>
@@ -93,7 +93,7 @@ const SellerAddNewProduct: React.FC = () => {
         <Form.Item
           label="Địa chỉ cụ thể của shop:"
           name="shopAddress"
-          rules={[{ required: true, message: 'Vui lòng nhập địa chỉ!' }]}
+          rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" }]}
         >
           <Input placeholder="Thành Phố Hồ Chí Minh, Thủ Đức,..." />
         </Form.Item>
@@ -110,7 +110,9 @@ const SellerAddNewProduct: React.FC = () => {
             maxCount={1}
             beforeUpload={() => false} // Disable automatic upload
           >
-            <Button icon={<UploadOutlined />}>Tải hình ảnh lên tại đây (jpg/png)</Button>
+            <Button icon={<UploadOutlined />}>
+              Tải hình ảnh lên tại đây (jpg/png)
+            </Button>
           </Upload>
         </Form.Item>
 
