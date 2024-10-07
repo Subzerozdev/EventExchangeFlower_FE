@@ -1,7 +1,7 @@
 import { Descriptions, Button, Menu } from "antd";
 import { useUser } from "../../context/UserContext";
 import { useState } from "react";
-import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, ShopOutlined } from "@ant-design/icons";
 import type { MenuProps } from 'antd';
 import "./Profile.scss";
 import ManageProducts from "./Seller/ManagePosts/ManagePosts";
@@ -28,6 +28,7 @@ function Profile() {
     }
   };
 
+  // Xây dựng các mục menu và ẩn mục "Tạo tài khoản bán hàng" nếu user đã là "seller"
   const items: MenuProps['items'] = [
     {
       label: "Thông tin tài khoản",
@@ -37,18 +38,20 @@ function Profile() {
     {
       label: "Người bán hàng",
       key: "sub1",
-      icon: <AppstoreOutlined />,
+      icon: <ShopOutlined />,
       children: [
+        ...(user.role !== "ROLE_SELLER" ? [
+          {
+            label: "Tạo tài khoản bán hàng",
+            key: "form",
+          }
+        ] : []),  // Chỉ hiển thị mục này nếu người dùng chưa là seller
         {
-          label: "Tạo tài khoản bán hàng",
-          key: "form",
-        },
-        {
-          label: "Quản lý sản phẩm",
+          label: "Quản lý sản phẩm cửa hàng của bạn",
           key: "manage-products",
         },
         {
-          label: "Chỉnh sửa cửa hàng",
+          label: "Xem và chỉnh sửa thông cửa hàng",
           key: "manage-shop",
         },
       ],

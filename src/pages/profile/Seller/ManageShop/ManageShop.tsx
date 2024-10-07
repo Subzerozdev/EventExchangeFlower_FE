@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Form, Input, Button, message } from "antd";
 import api from "../../../../config/api"; // Đường dẫn API
 import { AxiosError } from "axios"; // Xử lý lỗi từ Axios
@@ -6,10 +6,14 @@ import { AxiosError } from "axios"; // Xử lý lỗi từ Axios
 interface ShopFormValues {
     shopName: string;
     shopAddress: string;
+    description?: string;
+    qrCode?: string;
+    shopImage?: string;
 }
 
 function ManageShop() {
     const [form] = Form.useForm();
+    const [shopInfo, setShopInfo] = useState<ShopFormValues | null>(null);
 
     useEffect(() => {
         fetchShopInfo();
@@ -19,6 +23,7 @@ function ManageShop() {
     const fetchShopInfo = async () => {
         try {
             const response = await api.get<ShopFormValues>("/api/seller/shop");
+            setShopInfo(response.data); // Lưu thông tin vào state shopInfo
             form.setFieldsValue(response.data); // Đổ dữ liệu vào form
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -48,17 +53,29 @@ function ManageShop() {
     };
 
     return (
-        <Form form={form} layout="vertical" onFinish={onFinish}>
-            <Form.Item label="Tên Shop" name="shopName" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Form.Item label="Địa chỉ Shop" name="shopAddress" rules={[{ required: true }]}>
-                <Input />
-            </Form.Item>
-            <Button type="primary" htmlType="submit">
-                Cập nhật Shop
-            </Button>
-        </Form>
+        <>
+            {shopInfo && <div>Shop: {shopInfo.shopName}</div>} {/* Hiển thị thông tin shop nếu cần */}
+            <Form form={form} layout="vertical" onFinish={onFinish}>
+                <Form.Item label="Tên Shop" name="shopName" rules={[{ required: true }]}>
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Địa chỉ Shop" name="shopAddress" rules={[{ required: true }]}>
+                    <Input />
+                </Form.Item>
+                <Form.Item label="Mô tả" name="description">
+                    <Input.TextArea rows={4} placeholder="Mô tả shop của bạn (không bắt buộc)" />
+                </Form.Item>
+                <Form.Item label="Mã QR (tùy chọn)" name="qrCode">
+                    <Input placeholder="Nhập mã QR của shop nếu có" />
+                </Form.Item>
+                <Form.Item label="Hình ảnh Shop (tùy chọn)" name="shopImage">
+                    <Input placeholder="URL hình ảnh của shop" />
+                </Form.Item>
+                <Button type="primary" htmlType="submit">
+                    Cập nhật Shop
+                </Button>
+            </Form>
+        </>
     );
 }
 

@@ -59,8 +59,8 @@ function Sidebar({ openSidebarToggle, OpenSidebar }: SidebarProps) {
           </button>
         </li>
         <li className="sidebar-list-item">
-          <button onClick={() => navigate("/inventory")} className="btn-link">
-            <BsListCheck className="icon" /> Inventory
+          <button onClick={() => navigate("/admin/types")} className="btn-link">
+            <BsListCheck className="icon" /> Add Types
           </button>
         </li>
         <li className="sidebar-list-item">

@@ -20,6 +20,7 @@ import ManagePosts from "./pages/profile/Seller/ManagePosts/ManagePosts";
 import ManageShop from "./pages/profile/Seller/ManageShop/ManageShop";
 import TermsModal from "./pages/profile/Seller/TermsModal/TermsModal";
 import { useState } from "react";
+import AddType from "./pages/adminPage/CRUDtype/AddType";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -115,6 +116,10 @@ function App() {
         {
           path: "categories",
           element: <AddCategory />,
+        },
+        {
+          path: "types",
+          element: <AddType />,
         },
       ],
     },
