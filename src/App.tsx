@@ -13,9 +13,23 @@ import AdminPage from "./pages/adminPage";
 import ProtectedRoute from "./components/routes/ProtectedRoute"; // Import ProtectedRoute
 import AddCategory from "./pages/adminPage/CRUDcategory/AddCategory";
 import AllProduct from "./components/product";
-import SellerAccount from "./pages/sellerPage/SellerAccount/SellerAccount";
+
+// Import các trang của Seller
+import SellerForm from "./pages/profile/Seller/SellerForm/SellerForm";
+import ManagePosts from "./pages/profile/Seller/ManagePosts/ManagePosts";
+import ManageShop from "./pages/profile/Seller/ManageShop/ManageShop";
+import TermsModal from "./pages/profile/Seller/TermsModal/TermsModal";
+import { useState } from "react";
 
 function App() {
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  // Hàm xử lý khi người dùng đồng ý với điều khoản
+  const handleAgree = () => {
+    // Cập nhật trạng thái hoặc thực hiện logic liên quan khi người dùng đồng ý
+    console.log("Người dùng đã đồng ý với điều khoản");
+  };
+
   const router = createBrowserRouter([
     {
       path: "/",
@@ -60,24 +74,47 @@ function App() {
           path: "productList",
           element: <AllProduct />,
         },
+        // Thêm các route dành cho Seller
         {
           path: "seller",
-          element: <SellerAccount />,
+          children: [
+            {
+              path: "form",
+              element: <SellerForm />,
+            },
+            {
+              path: "manage-posts",
+              element: <ManagePosts />,
+            },
+            {
+              path: "manage-shop",
+              element: <ManageShop />,
+            },
+            {
+              path: "term",
+              element: (
+                <TermsModal
+                  isModalVisible={isModalVisible}
+                  setIsModalVisible={setIsModalVisible}
+                  onAgree={handleAgree}  // Truyền hàm onAgree vào TermsModal
+                />
+              ),
+            },
+          ],
         },
       ],
     },
-    // Sử dụng ProtectedRoute để bảo vệ trang admin
     {
       path: "admin",
-      element: <ProtectedRoute roleRequired="ROLE_ADMIN" />, // Đảm bảo tên đúng là ProtectedRoute
+      element: <ProtectedRoute roleRequired="ROLE_ADMIN" />,
       children: [
         {
           path: "",
-          element: <AdminPage />, // Hiển thị trang Admin nếu đủ quyền
+          element: <AdminPage />,
         },
         {
           path: "categories",
-          element: <AddCategory />, // Trang thêm category
+          element: <AddCategory />,
         },
       ],
     },

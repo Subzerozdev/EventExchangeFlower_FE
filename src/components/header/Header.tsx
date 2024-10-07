@@ -35,9 +35,9 @@ function Header() {
         </div>
 
         <div className="header__right">
-          <div className="header__buttons">
+          {/* <div className="header__buttons">
             <button onClick={() => navigate("/seller")}>  <UserOutlined /> Đăng kí trở thành Seller</button>
-          </div>
+          </div> */}
           {user.fullName ? (
             <Link
               onClick={() => navigate("/profile")}
