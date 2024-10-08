@@ -21,6 +21,7 @@ import ManageShop from "./pages/profile/Seller/ManageShop/ManageShop";
 import TermsModal from "./pages/profile/Seller/TermsModal/TermsModal";
 import { useState } from "react";
 import AddType from "./pages/adminPage/CRUDtype/AddType";
+import ProductDetail from "./components/product/detail/ProductDetail";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -74,6 +75,10 @@ function App() {
         {
           path: "productList",
           element: <AllProduct />,
+        },
+        {
+          path: "productDetail/:productId",
+          element: <ProductDetail />,
         },
         // Thêm các route dành cho Seller
         {

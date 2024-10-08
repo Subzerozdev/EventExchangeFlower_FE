@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
+import { Checkbox, Button } from 'antd';  // Sử dụng các thành phần từ Ant Design
 import './FilterPanel.scss';
 
-// Định nghĩa interface cho filters
 interface Filters {
   priceRange: string[];
   productType: string[];
@@ -10,7 +10,7 @@ interface Filters {
 }
 
 interface FilterPanelProps {
-  onFilter: (filters: Filters) => void; // callback to pass filters to the parent component
+  onFilter: (filters: Filters) => void; 
 }
 
 const FilterPanel: React.FC<FilterPanelProps> = ({ onFilter }) => {
@@ -19,28 +19,20 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFilter }) => {
   const [brand, setBrand] = useState<string[]>([]);
   const [color, setColor] = useState<string[]>([]);
 
-  const handlePriceChange = (range: string) => {
-    setPriceRange((prev) =>
-      prev.includes(range) ? prev.filter((r) => r !== range) : [...prev, range]
-    );
+  const handlePriceChange = (checkedValues: string[]) => {
+    setPriceRange(checkedValues);
   };
 
-  const handleProductTypeChange = (type: string) => {
-    setProductType((prev) =>
-      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type]
-    );
+  const handleProductTypeChange = (checkedValues: string[]) => {
+    setProductType(checkedValues);
   };
 
-  const handleBrandChange = (brandName: string) => {
-    setBrand((prev) =>
-      prev.includes(brandName) ? prev.filter((b) => b !== brandName) : [...prev, brandName]
-    );
+  const handleBrandChange = (checkedValues: string[]) => {
+    setBrand(checkedValues);
   };
 
-  const handleColorChange = (colorName: string) => {
-    setColor((prev) =>
-      prev.includes(colorName) ? prev.filter((c) => c !== colorName) : [...prev, colorName]
-    );
+  const handleColorChange = (checkedValues: string[]) => {
+    setColor(checkedValues);
   };
 
   const handleSearch = () => {
@@ -50,42 +42,56 @@ const FilterPanel: React.FC<FilterPanelProps> = ({ onFilter }) => {
       brand,
       color,
     };
-    onFilter(filters); // Gọi hàm onFilter và truyền filters với kiểu đã xác định
+    onFilter(filters);
   };
 
   return (
     <div className="filter-panel">
       <h3>Chọn mức giá</h3>
-      <ul>
-        <li><input type="checkbox" onChange={() => handlePriceChange('500-1000')} /> Từ 5 trăm - 1 triệu</li>
-        <li><input type="checkbox" onChange={() => handlePriceChange('1000-3000')} /> Từ 1 triệu - 3 triệu</li>
-        <li><input type="checkbox" onChange={() => handlePriceChange('3000-5000')} /> Từ 3 triệu - 5 triệu</li>
-        <li><input type="checkbox" onChange={() => handlePriceChange('5000-7000')} /> Từ 5 triệu - 7 triệu</li>
-        <li><input type="checkbox" onChange={() => handlePriceChange('7000-10000')} /> Từ 7 triệu - 10 triệu</li>
-      </ul>
+      <Checkbox.Group
+        options={[
+          { label: 'Từ 5 trăm - 1 triệu', value: '500-1000' },
+          { label: 'Từ 1 triệu - 3 triệu', value: '1000-3000' },
+          { label: 'Từ 3 triệu - 5 triệu', value: '3000-5000' },
+          { label: 'Từ 5 triệu - 7 triệu', value: '5000-7000' },
+          { label: 'Từ 7 triệu - 10 triệu', value: '7000-10000' },
+        ]}
+        onChange={handlePriceChange}
+      />
 
       <h3>Loại sản phẩm</h3>
-      <ul>
-        <li><input type="checkbox" onChange={() => handleProductTypeChange('type1')} /> Loại 1</li>
-        <li><input type="checkbox" onChange={() => handleProductTypeChange('type2')} /> Loại 2</li>
-      </ul>
+      <Checkbox.Group
+        options={[
+          { label: 'Loại 1', value: 'type1' },
+          { label: 'Loại 2', value: 'type2' },
+        ]}
+        onChange={handleProductTypeChange}
+      />
 
       <h3>Thương hiệu</h3>
-      <ul>
-        <li><input type="checkbox" onChange={() => handleBrandChange('brand1')} /> Thương hiệu 1</li>
-        <li><input type="checkbox" onChange={() => handleBrandChange('brand2')} /> Thương hiệu 2</li>
-      </ul>
+      <Checkbox.Group
+        options={[
+          { label: 'Thương hiệu 1', value: 'brand1' },
+          { label: 'Thương hiệu 2', value: 'brand2' },
+        ]}
+        onChange={handleBrandChange}
+      />
 
       <h3>Màu sắc</h3>
-      <ul>
-        <li><input type="checkbox" onChange={() => handleColorChange('yellow')} /> Vàng</li>
-        <li><input type="checkbox" onChange={() => handleColorChange('purple')} /> Tím</li>
-        <li><input type="checkbox" onChange={() => handleColorChange('red')} /> Đỏ</li>
-        <li><input type="checkbox" onChange={() => handleColorChange('blue')} /> Xanh</li>
-        <li><input type="checkbox" onChange={() => handleColorChange('pink')} /> Hồng</li>
-      </ul>
-      <h3>Tìm kiếm</h3>
-      <button onClick={handleSearch}>Tìm</button>
+      <Checkbox.Group
+        options={[
+          { label: 'Vàng', value: 'yellow' },
+          { label: 'Tím', value: 'purple' },
+          { label: 'Đỏ', value: 'red' },
+          { label: 'Xanh', value: 'blue' },
+          { label: 'Hồng', value: 'pink' },
+        ]}
+        onChange={handleColorChange}
+      />
+
+      <Button type="primary" onClick={handleSearch} style={{ marginTop: '20px' }}>
+        Tìm kiếm
+      </Button>
     </div>
   );
 };
