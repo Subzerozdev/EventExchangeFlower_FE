@@ -1,21 +1,30 @@
-import { Form, Input, Button, message } from "antd";
+import { Form, Input, Button, DatePicker, message } from "antd";
 import { useEffect } from "react";
 import api from "../../../../../config/api";
-import { AxiosError } from "axios"; // Import AxiosError để xử lý lỗi
+import { AxiosError } from "axios";
+import moment, { Moment } from "moment"; // Import Moment
 
-// Định nghĩa interface Post
 interface Post {
-    id?: number; // ID là optional, vì khi tạo mới sẽ chưa có id
-    title: string;
+    id?: number;
+    name: string;
     description: string;
     price: number;
+    startDate: string;  // BE trả về kiểu date (chuỗi ISO string)
+    endDate: string;    // BE trả về kiểu date (chuỗi ISO string)
     thumbnail?: string;
 }
 
-// Định nghĩa props cho PostForm
+interface FormValues {
+    name: string;
+    description: string;
+    price: number;
+    startDate: Moment; // Sử dụng Moment để tương thích với DatePicker
+    endDate: Moment;   // Sử dụng Moment để tương thích với DatePicker
+}
+
 interface PostFormProps {
-    post: Post | null; // Nếu post không null thì đang trong chế độ chỉnh sửa
-    onSuccess: () => void; // Hàm gọi sau khi thành công
+    post: Post | null;
+    onSuccess: () => void;
 }
 
 function PostForm({ post, onSuccess }: PostFormProps) {
@@ -23,23 +32,35 @@ function PostForm({ post, onSuccess }: PostFormProps) {
 
     useEffect(() => {
         if (post) {
-            form.setFieldsValue(post); // Đổ dữ liệu bài đăng vào form khi chỉnh sửa
+            form.setFieldsValue({
+                ...post,
+                // Chuyển đổi từ chuỗi ISO string sang Moment khi đổ dữ liệu vào DatePicker
+                startDate: moment(post.startDate),
+                endDate: moment(post.endDate),
+            });
         }
     }, [post, form]);
 
-    const onFinish = async (values: Post) => {
+    const onFinish = async (values: FormValues) => {
         try {
+            const postData = {
+                ...values,
+                // Chuyển đổi từ Moment sang chuỗi ISO string trước khi gửi lên BE
+                startDate: values.startDate.toISOString(),
+                endDate: values.endDate.toISOString(),
+            };
+
             if (post) {
-                // Chỉnh sửa bài đăng
-                await api.put(`/api/seller/post/${post.id}`, values);
+                // Cập nhật bài đăng
+                await api.put(`/api/posts/${post.id}`, postData);
                 message.success("Cập nhật bài đăng thành công!");
             } else {
-                // Tạo bài đăng mới
-                await api.post("/api/seller/post", values);
+                // Tạo mới bài đăng
+                await api.post("/api/posts", postData);
                 message.success("Tạo bài đăng mới thành công!");
             }
-            onSuccess(); // Gọi hàm onSuccess để đóng modal và cập nhật danh sách
-        } catch (error: unknown) {
+            onSuccess();
+        } catch (error) {
             const axiosError = error as AxiosError;
             if (axiosError.response && axiosError.response.data) {
                 message.error(`Lỗi xảy ra: ${axiosError.response.data}`);
@@ -53,7 +74,7 @@ function PostForm({ post, onSuccess }: PostFormProps) {
         <Form form={form} layout="vertical" onFinish={onFinish}>
             <Form.Item
                 label="Tiêu đề"
-                name="title"
+                name="name"
                 rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}
             >
                 <Input />
@@ -69,6 +90,22 @@ function PostForm({ post, onSuccess }: PostFormProps) {
                 rules={[{ required: true, message: "Vui lòng nhập giá" }]}
             >
                 <Input type="number" />
+            </Form.Item>
+
+            <Form.Item
+                label="Ngày bắt đầu"
+                name="startDate"
+                rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu" }]}
+            >
+                <DatePicker format="YYYY-MM-DD" />
+            </Form.Item>
+
+            <Form.Item
+                label="Ngày kết thúc"
+                name="endDate"
+                rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
+            >
+                <DatePicker format="YYYY-MM-DD" />
             </Form.Item>
 
             <Form.Item>

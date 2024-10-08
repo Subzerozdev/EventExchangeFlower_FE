@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, ShopOutlined } from "@ant-design/icons";
 import type { MenuProps } from 'antd';
 import "./Profile.scss";
-import ManageProducts from "./Seller/ManagePosts/ManagePosts";
+import ManagePosts from "./Seller/ManagePosts/ManagePosts";
 import ManageShop from "./Seller/ManageShop/ManageShop";
 import SellerForm from "./Seller/SellerForm/SellerForm";
 import TermsModal from "./Seller/TermsModal/TermsModal";
@@ -48,7 +48,7 @@ function Profile() {
         ] : []),  // Chỉ hiển thị mục này nếu người dùng chưa là seller
         {
           label: "Quản lý sản phẩm cửa hàng của bạn",
-          key: "manage-products",
+          key: "manage-posts",
         },
         {
           label: "Xem và chỉnh sửa thông cửa hàng",
@@ -100,8 +100,8 @@ function Profile() {
             </Button>
           </div>
         );
-      case "manage-products":
-        return <ManageProducts />;
+      case "manage-posts":
+        return <ManagePosts />;
       case "manage-shop":
         return <ManageShop />;
       case "orders":
