@@ -9,10 +9,13 @@ import "./ProductList.scss";
 interface Product {
   id: number;
   name: string;
+  description:string;
   price: string;
   image: string;
   quantity: number;
-  date: string;
+  startdate: string;
+  enddate:string;
+  address:string;
 }
 
 interface Filters {
@@ -30,7 +33,10 @@ export const products: Product[] = [
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
     quantity: 1,
-    date: "8/10/2024",
+    startdate: "8/10/2024",
+    enddate:"8/11/2024",
+    address:"86D3",
+    description:"Hoa dep"
   },
   {
     id: 2,
@@ -38,8 +44,11 @@ export const products: Product[] = [
     price: "700.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
   {
     id: 3,
@@ -47,8 +56,11 @@ export const products: Product[] = [
     price: "900.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
   {
     id: 4,
@@ -56,8 +68,11 @@ export const products: Product[] = [
     price: "1.000.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
   {
     id: 5,
@@ -65,8 +80,11 @@ export const products: Product[] = [
     price: "1.700.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
   {
     id: 6,
@@ -74,8 +92,11 @@ export const products: Product[] = [
     price: "3.000.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
   {
     id: 7,
@@ -83,8 +104,11 @@ export const products: Product[] = [
     price: "4.000.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
   {
     id: 8,
@@ -92,8 +116,11 @@ export const products: Product[] = [
     price: "6.000.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
 
   {
@@ -102,8 +129,11 @@ export const products: Product[] = [
     price: "10.000.000đ",
     image:
       "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    date: "8/10/2024",
+      quantity: 1,
+      startdate: "8/10/2024",
+      enddate:"8/11/2024",
+      address:"86D3",
+      description:"Hoa dep"
   },
 ];
 
@@ -207,7 +237,9 @@ const ProductList: React.FC = () => {
                       <div>
                         <p>Price: {product.price} </p> {/* Hiển thị giá */}
                         <p>Số lượng: {product.quantity}</p>
-                        <h4>Ngày đăng hoa: {product.date}</h4>{" "}
+                        <h4>Ngày sự kiện bắt đầu: {product.startdate}</h4>{" "}
+                        <h4>Ngày sự kiện kết thúc : {product.enddate}</h4>{" "}
+                        <p>Thông tin: {product.description}</p>
                         {/* Hiển thị ngày */}
                       </div>
                     }

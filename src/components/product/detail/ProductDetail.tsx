@@ -10,12 +10,14 @@ const { Title, Text } = Typography;
 interface Product {
   id: number;
   name: string;
+  description:string;
   price: string;
   image: string;
   quantity: number;
-  date: string;
+  startdate: string;
+  enddate:string;
+  address:string;
 }
-
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
 
