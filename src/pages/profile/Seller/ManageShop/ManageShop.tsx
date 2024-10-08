@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Button, message } from "antd";
-import api from "../../../../config/api"; // Đường dẫn API
-import { AxiosError } from "axios"; // Xử lý lỗi từ Axios
+import api from "../../../../config/api";
+import { AxiosError } from "axios";
 
 interface ShopFormValues {
     shopName: string;
@@ -22,7 +22,7 @@ function ManageShop() {
     // Hàm lấy thông tin shop
     const fetchShopInfo = async () => {
         try {
-            const response = await api.get<ShopFormValues>("/api/seller/shop");
+            const response = await api.get<ShopFormValues>("/api/seller/shop"); // API lấy thông tin shop
             setShopInfo(response.data); // Lưu thông tin vào state shopInfo
             form.setFieldsValue(response.data); // Đổ dữ liệu vào form
         } catch (error) {
@@ -32,14 +32,14 @@ function ManageShop() {
             } else {
                 message.error("Có lỗi khi tải thông tin shop.");
             }
-            console.error("Error:", axiosError); // Log lỗi nếu cần
+            console.error("Error:", axiosError);
         }
     };
 
     // Hàm cập nhật thông tin shop
     const onFinish = async (values: ShopFormValues) => {
         try {
-            await api.put("/api/seller/shop", values);
+            await api.put("/api/seller/shop", values); // API cập nhật thông tin shop
             message.success("Cập nhật thông tin shop thành công!");
         } catch (error) {
             const axiosError = error as AxiosError;
@@ -80,3 +80,5 @@ function ManageShop() {
 }
 
 export default ManageShop;
+///
+

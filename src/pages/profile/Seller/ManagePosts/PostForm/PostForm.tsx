@@ -51,17 +51,20 @@ function PostForm({ post, onSuccess }: PostFormProps) {
             };
 
             if (post) {
+                console.log("No")
                 // Cập nhật bài đăng
-                await api.put(`/api/posts/${post.id}`, postData);
+                await api.put(`/api/seller/posts/${post.id}`, postData);  // Đảm bảo dùng đúng endpoint khi cập nhật
                 message.success("Cập nhật bài đăng thành công!");
             } else {
+                console.log("He")
                 // Tạo mới bài đăng
-                await api.post("/api/posts", postData);
+                await api.post("/api/seller/posts", postData);
                 message.success("Tạo bài đăng mới thành công!");
             }
             onSuccess();
         } catch (error) {
             const axiosError = error as AxiosError;
+            console.error("Error details:", axiosError); // Log chi tiết lỗi để dễ theo dõi
             if (axiosError.response && axiosError.response.data) {
                 message.error(`Lỗi xảy ra: ${axiosError.response.data}`);
             } else {
