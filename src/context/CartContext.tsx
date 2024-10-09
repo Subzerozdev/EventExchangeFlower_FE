@@ -25,10 +25,12 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setCart(prevCart => {
       const existingProduct = prevCart.find(item => item.id === product.id);
       if (existingProduct) {
+        // Tăng số lượng của sản phẩm nếu đã có trong giỏ hàng
         return prevCart.map(item =>
           item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
         );
       }
+      // Nếu sản phẩm chưa có, thêm sản phẩm vào giỏ hàng
       return [...prevCart, { ...product, quantity: 1 }];
     });
   };

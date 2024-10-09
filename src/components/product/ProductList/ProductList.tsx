@@ -1,8 +1,19 @@
-import React, { useContext, useState } from "react";
-import { Badge, Button, Card, Col, Row, Pagination, Drawer, List } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  Badge,
+  Button,
+  Card,
+  Col,
+  Row,
+  Pagination,
+  Drawer,
+  List,
+  message,
+} from "antd";
 import { CartContext } from "../../../context/CartContext";
 import { DeleteOutlined, ShoppingCartOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom"; // Import useNavigate từ React Router
+import axios from "axios"; // Import axios for API calls
 import "./ProductList.scss";
 import FilterPanel from "../FilterPanel/FilterPanel";
 
@@ -25,132 +36,56 @@ interface Filters {
   color?: string[];
 }
 
-export const products: Product[] = [
-  {
-    id: 1,
-    name: "Bó hoa Hồng pink floyd",
-    price: "500.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 2,
-    name: "Tú cầu mix hoa hồng",
-    price: "700.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 3,
-    name: "Tú cầu mix hoa hồng",
-    price: "900.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 4,
-    name: "Tú cầu mix hoa hồng",
-    price: "1.000.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 5,
-    name: "Tú cầu mix hoa hồng",
-    price: "1.700.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 6,
-    name: "Tú cầu mix hoa hồng",
-    price: "3.000.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 7,
-    name: "Tú cầu mix hoa hồng",
-    price: "4.000.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-  {
-    id: 8,
-    name: "Tú cầu mix hoa hồng",
-    price: "6.000.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-
-  {
-    id: 9,
-    name: "Tú cầu mix hoa hồng",
-    price: "10.000.000đ",
-    image:
-      "https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2F2.jpg?alt=media&token=c2309de2-9a1e-4c07-ba0b-5cefdd30badf",
-    quantity: 1,
-    startdate: "8/10/2024",
-    enddate: "8/11/2024",
-    address: "86D3",
-    description: "Hoa dep",
-  },
-];
-
 const ProductList: React.FC = () => {
   // Lấy thông tin từ giỏ hàng
   const cartContext = useContext(CartContext);
   const navigate = useNavigate(); // Hook điều hướng
 
-  // Set trang page mặc định mới vô là trang đầu tiên
-  const [currentPage, setCurrentPage] = useState(1);
+  // Trạng thái để giữ danh sách sản phẩm từ API
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState<boolean>(true); // Trạng thái loading
+  const [error, setError] = useState<string | null>(null); // Trạng thái lỗi
+  const [currentPage, setCurrentPage] = useState(1); // Set trang page mặc định mới vô là trang đầu tiên
+  const [filters, setFilters] = useState<Filters>({}); // Lấy thông tin từ bên filter
+  const [drawerVisible, setDrawerVisible] = useState(false); // Trạng thái giỏ hàng nổi
 
-  // Lấy thông tin từ bên filter
-  const [filters, setFilters] = useState<Filters>({});
+  /////////////////////////////////////////////////////////////////////////////////////////////
+  // lấy dữ liệu từ phía back end
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        console.log("a");
+        const response = await axios.get(
+          "/api/posts?categoryID=&sort=&pageNumber="
+        ); // Đảm bảo endpoint của bạn đúng
+        if (response.status === 200) {
+          console.log(response.data);
+          setProducts(response.data); // Đảm bảo rằng response data khớp với dữ liệu mong đợi
+          setLoading(false);
+        } else {
+          throw new Error("API trả về lỗi");
+        }
+      } catch (error) {
+        console.error(error);
+        setError("Không thể tải sản phẩm.");
+        setLoading(false);
+        message.error("Lỗi khi lấy sản phẩm từ API");
+      }
+    };
 
-  // Trạng thái giỏ hàng nổi
-  const [drawerVisible, setDrawerVisible] = useState(false);
+    fetchProducts(); // Gọi API không điều kiện
+  }, []); // Chỉ chạy một lần khi component mount
 
+  if (loading) {
+    return <div>Đang tải sản phẩm...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+  /////////////////////////////////////////////////////////////////////////////////////////////
+
+  //xử lý sản phẩm vào giỏ hàng
   if (!cartContext) return null;
   const { addToCart, cart, removeFromCart } = cartContext;
 
@@ -222,7 +157,7 @@ const ProductList: React.FC = () => {
                       type="primary"
                       icon={<ShoppingCartOutlined />}
                       onClick={(e) => {
-                        e.stopPropagation(); // Ngăn chặn sự kiện onClick của Card khi bấm vào nút
+                        e.stopPropagation(); // Ngăn chặn onClick của Card khi bấm vào nút
                         addToCart(product);
                       }}
                     >

@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Button, Typography } from "antd";
-import { products } from "../ProductList/ProductList";
+import { Button, Typography, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
+import { CartContext } from "../../../context/CartContext"; // Giả sử bạn có một CartContext để xử lý giỏ hàng
+import axios from "axios"; // Sử dụng axios để lấy sản phẩm từ API
 import "./ProductDetail.scss";
 
 const { Title, Text } = Typography;
@@ -10,21 +11,44 @@ const { Title, Text } = Typography;
 interface Product {
   id: number;
   name: string;
-  description:string;
+  description: string;
   price: string;
   image: string;
   quantity: number;
   startdate: string;
-  enddate:string;
-  address:string;
+  enddate: string;
+  address: string;
 }
+
 const ProductDetail: React.FC = () => {
   const { productId } = useParams<{ productId: string }>();
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const { addToCart } = useContext(CartContext) || {}; // Sử dụng context của giỏ hàng
 
-  const product = products.find((p: Product) => p.id === parseInt(productId || "", 10));
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`/api/products/${productId}`); // Gọi API để lấy chi tiết sản phẩm
+        setProduct(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error)
+        setError("Không thể lấy thông tin sản phẩm.");
+        setLoading(false);
+      }
+    };
 
-  if (!product) {
-    return <div>Không tìm thấy sản phẩm</div>;
+    fetchProduct();
+  }, [productId]);
+
+  if (loading) {
+    return <div>Đang tải thông tin sản phẩm...</div>;
+  }
+
+  if (error || !product) {
+    return <div>{error || "Không tìm thấy sản phẩm"}</div>;
   }
 
   return (
@@ -46,8 +70,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Bộ điều khiển số lượng */}
           <div className="quantity-control">
-            <Text>Số lượng:</Text>
-            <Text>{product.quantity}</Text>
+            <Text>Số lượng: {product.quantity}</Text>
           </div>
 
           {/* Các nút hành động */}
@@ -60,6 +83,12 @@ const ProductDetail: React.FC = () => {
               size="large"
               icon={<ShoppingCartOutlined />}
               className="add-to-cart-btn"
+              onClick={() => {
+                if (addToCart) {
+                  addToCart(product); // Thêm sản phẩm vào giỏ hàng
+                  message.success("Sản phẩm đã được thêm vào giỏ hàng.");
+                }
+              }}
             >
               Thêm vào giỏ
             </Button>
@@ -69,10 +98,10 @@ const ProductDetail: React.FC = () => {
           <div className="product-description">
             <Title level={4}>THÔNG TIN SẢN PHẨM</Title>
             <ul>
-              <li>1.Giá cả có thể thay đổi: Giá hoa tươi có thể biến động tăng/giảm tùy theo thị trường. Chúng tôi cam kết sẽ cập nhật giá một cách minh bạch và hợp lý nhất sau khi xác nhận đặt hàng với quý khách.</li>
-              <li>2.Màu sắc hoa có thể khác biệt: Do điều kiện ánh sáng và góc chụp, màu sắc hoa trên hình ảnh có thể khác với thực tế. Chúng tôi luôn cố gắng cung cấp hình ảnh chân thực nhất cho sản phẩm.</li>
-              <li>3.Hoa theo mùa: Một số loại hoa có thể thay đổi theo mùa. Tuy nhiên, chúng tôi sẽ nỗ lực giữ loại hoa chủ đạo và đảm bảo số lượng cũng như giá trị tương đương hoặc cao hơn.</li>
-              <li>4.Sản phẩm có thể khác ảnh mẫu: Mẫu hoa thực tế có thể khác so với hình ảnh mẫu, nhưng chúng tôi đảm bảo sẽ giống ít nhất 80% trở lên. Chúng tôi chân thành cảm ơn sự tin tưởng và ủng hộ của quý khách. Hy vọng quý khách sẽ hài lòng với những sản phẩm hoa tươi của chúng tôi.</li>
+              <li>1. Giá cả có thể thay đổi: Giá hoa tươi có thể biến động...</li>
+              <li>2. Màu sắc hoa có thể khác biệt do điều kiện ánh sáng...</li>
+              <li>3. Hoa theo mùa: Một số loại hoa có thể thay đổi theo mùa...</li>
+              <li>4. Sản phẩm có thể khác ảnh mẫu nhưng sẽ giống ít nhất 80%...</li>
             </ul>
           </div>
         </div>
