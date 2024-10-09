@@ -36,7 +36,7 @@ function AddType() {
   // Hàm lấy danh sách types
   const fetchTypes = async () => {
     try {
-      const response = await api.get("/api/admin/types?page=0&limit=10"); // API call để lấy danh sách types
+      const response = await api.get("/types"); // API call để lấy danh sách types
       setTypes(response.data); // Cập nhật state với dữ liệu từ API
     } catch (err) {
       message.error("Không thể tải danh sách types.");

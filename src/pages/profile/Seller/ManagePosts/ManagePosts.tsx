@@ -1,50 +1,79 @@
-import { Table, Button, Form, Input, message, Modal, DatePicker } from "antd";
+import { Table, Button, Form, Input, message, Modal, DatePicker, Select } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../../config/api";
-import { AxiosError } from "axios";
 import moment from "moment";
 
-// Điều chỉnh kiểu startDate và endDate từ string sang Moment
 interface Post {
     id: number;
     name: string;
     description: string;
     price: number;
     address: string;
-    startDate: string;  // BE trả về kiểu date (chuỗi ISO string)
-    endDate: string;    // BE trả về kiểu date (chuỗi ISO string)
+    startDate: string;
+    endDate: string;
+    category: { id: number; name: string }; // Sửa category thành object
+    types: { id: number; name: string }[]; // types là mảng object
+}
+
+interface Category {
+    id: number;
+    name: string;
+}
+
+interface Type {
+    id: number;
+    name: string;
 }
 
 function ManagePosts() {
     const [posts, setPosts] = useState<Post[]>([]);
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [types, setTypes] = useState<Type[]>([]);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
 
     useEffect(() => {
         fetchPosts();
+        fetchCategories();
+        fetchTypes();
     }, []);
 
     const fetchPosts = async () => {
         try {
             const response = await api.get<Post[]>("/api/seller/posts");
-            setPosts(response.data);
-        } catch (error) {
-            const axiosError = error as AxiosError;
-            if (axiosError.response) {
-                message.error(`Lỗi API: ${axiosError.response.data || 'Không xác định'}`);
-            } else {
-                message.error("Có lỗi khi tải bài đăng.");
-            }
+            setPosts(response.data); // Lưu dữ liệu bài đăng
+        } catch {
+            message.error("Có lỗi khi tải bài đăng.");
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const response = await api.get<Category[]>("/categories");
+            setCategories(response.data); // Lưu danh sách category vào state
+        } catch {
+            message.error("Không thể tải danh sách category.");
+        }
+    };
+
+    const fetchTypes = async () => {
+        try {
+            const response = await api.get<Type[]>("/types");
+            setTypes(response.data);
+        } catch {
+            message.error("Không thể tải danh sách type.");
+        }
+    };
     const handleEdit = (post: Post) => {
         setEditingPost(post);
+        // Set giá trị vào form, đảm bảo category và types được điền
         form.setFieldsValue({
             ...post,
             startDate: moment(post.startDate),
             endDate: moment(post.endDate),
+            categoryId: post.category?.id, // Lấy categoryId từ object category
+            typeId: post.types ? post.types.map((type) => type.id) : [], // Lấy mảng typeId từ object types
         });
         setIsModalVisible(true);
     };
@@ -54,13 +83,8 @@ function ManagePosts() {
             await api.delete(`/api/seller/posts/${id}`);
             message.success("Xóa bài đăng thành công!");
             fetchPosts();
-        } catch (error) {
-            const axiosError = error as AxiosError;
-            if (axiosError.response) {
-                message.error(`Lỗi API: ${axiosError.response.data || 'Không xác định'}`);
-            } else {
-                message.error("Có lỗi khi xóa bài đăng.");
-            }
+        } catch {
+            message.error("Có lỗi khi xóa bài đăng.");
         }
     };
 
@@ -77,6 +101,8 @@ function ManagePosts() {
                 ...values,
                 startDate: values.startDate.toISOString(),
                 endDate: values.endDate.toISOString(),
+                categoryId: values.categoryId, // Lấy categoryId từ form
+                typeId: values.typeId, // Lấy typeId từ form (array)
             };
 
             if (editingPost) {
@@ -89,13 +115,8 @@ function ManagePosts() {
 
             setIsModalVisible(false);
             fetchPosts();
-        } catch (error) {
-            const axiosError = error as AxiosError;
-            if (axiosError.response) {
-                message.error(`Lỗi API: ${axiosError.response.data || 'Không xác định'}`);
-            } else {
-                message.error("Có lỗi xảy ra trong quá trình xử lý.");
-            }
+        } catch {
+            message.error("Có lỗi xảy ra trong quá trình xử lý.");
         }
     };
 
@@ -166,6 +187,34 @@ function ManagePosts() {
                         rules={[{ required: true, message: "Vui lòng nhập giá" }]}
                     >
                         <Input type="number" />
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Danh mục"
+                        name="categoryId"
+                        rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
+                    >
+                        <Select placeholder="Chọn danh mục">
+                            {categories.map((category) => (
+                                <Select.Option key={category.id} value={category.id}>
+                                    {category.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
+                    </Form.Item>
+
+                    <Form.Item
+                        label="Loại"
+                        name="typeId"
+                        rules={[{ required: true, message: "Vui lòng chọn loại" }]}
+                    >
+                        <Select mode="multiple" placeholder="Chọn loại">
+                            {types.map((type) => (
+                                <Select.Option key={type.id} value={type.id}>
+                                    {type.name}
+                                </Select.Option>
+                            ))}
+                        </Select>
                     </Form.Item>
 
                     <Form.Item

@@ -33,7 +33,7 @@ function AddCategory() {
   // Hàm lấy danh sách categories
   const fetchCategories = async () => {
     try {
-      const response = await api.get("/api/admin/categories?page=1&limit=10");
+      const response = await api.get("/categories");
       setCategories(response.data);
     } catch (err) {
       message.error("Không thể tải danh sách categories.");
