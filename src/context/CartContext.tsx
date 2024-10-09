@@ -55,4 +55,3 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     </CartContext.Provider>
   );
 };
-  

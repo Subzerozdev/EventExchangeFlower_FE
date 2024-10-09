@@ -23,6 +23,8 @@ import { useState } from "react";
 import AddType from "./pages/adminPage/CRUDtype/AddType";
 import ProductDetail from "./components/product/detail/ProductDetail";
 
+
+
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -79,7 +81,9 @@ function App() {
         {
           path: "productDetail/:productId",
           element: <ProductDetail />,
+         
         },
+        
         // Thêm các route dành cho Seller
         {
           path: "seller",

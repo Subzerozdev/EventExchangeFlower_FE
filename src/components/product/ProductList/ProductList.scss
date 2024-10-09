@@ -65,4 +65,58 @@
       }
     }
   }
+
+  /* SCSS cho giỏ hàng nổi (Mini Cart) */
+  .cart_icon {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    cursor: pointer;
+
+    .ant-badge-count {
+      background-color: #08c; /* Màu nền của huy hiệu */
+    }
+
+    .anticon {
+      font-size: 32px;
+      color: #08c; /* Màu của icon giỏ hàng */
+    }
+  }
+
+  /* SCSS cho Drawer giỏ hàng */
+  .drawer-cart {
+    .ant-drawer-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .ant-list-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .ant-list-item-meta-avatar {
+        margin-right: 16px;
+      }
+
+      .ant-btn {
+        margin-left: 8px;
+      }
+
+      img {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+    }
+
+    .total-container {
+      text-align: right;
+      font-size: 16px;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  }
 }

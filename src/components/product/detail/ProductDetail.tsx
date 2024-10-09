@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
-import { Button, Typography, InputNumber } from "antd";
+import { Button, Typography } from "antd";
 import { products } from "../ProductList/ProductList";
 import { ShoppingCartOutlined } from "@ant-design/icons";
 import "./ProductDetail.scss";
@@ -47,7 +47,7 @@ const ProductDetail: React.FC = () => {
           {/* Bộ điều khiển số lượng */}
           <div className="quantity-control">
             <Text>Số lượng:</Text>
-            <InputNumber min={1} max={10} defaultValue={1} />
+            <Text>{product.quantity}</Text>
           </div>
 
           {/* Các nút hành động */}
