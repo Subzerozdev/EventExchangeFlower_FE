@@ -5,6 +5,7 @@ import {
   HomeOutlined,
 } from "@ant-design/icons";
 import "./index.scss";
+import ScrollToTop from "../../components/scrollToTop/ScrollToTop";
 
 const testimonials = [
   {
@@ -201,6 +202,7 @@ const Home = () => {
           ))}
         </AntCarousel>
       </section>
+      <ScrollToTop />
     </div>
   );
 };

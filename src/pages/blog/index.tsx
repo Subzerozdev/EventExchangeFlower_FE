@@ -1,5 +1,6 @@
 import React from "react";
 import "./Blog.scss";
+import ScrollToTop from "../../components/scrollToTop/ScrollToTop";
 
 const BlogPage: React.FC = () => {
     return (
@@ -285,6 +286,7 @@ const BlogPage: React.FC = () => {
                 />
                 <button>Liên Hệ Ngay</button>
             </div>
+           <ScrollToTop/>
         </div>
     );
 };
