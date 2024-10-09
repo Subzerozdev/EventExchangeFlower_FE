@@ -1,10 +1,11 @@
 import React from "react";
 import "./allProduct.scss";
 import ProductList from "./ProductList/ProductList";
+import { CartProvider } from "../../context/CartContext"; // Sử dụng CartProvider ở CartContext
 
 const AllProduct: React.FC = () => {
   return (
-
+    <CartProvider>
       <div className="app">
         <header>
           <h2>Tất cả sản phẩm</h2>
@@ -15,7 +16,7 @@ const AllProduct: React.FC = () => {
           </div>
         </div>
       </div>
-
+    </CartProvider>
   );
 };
 

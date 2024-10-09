@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useContext } from "react";
 import { Button, Typography, message } from "antd";
 import { ShoppingCartOutlined } from "@ant-design/icons";
-import { CartContext } from "../../../context/CartContext"; // Giả sử bạn có một CartContext để xử lý giỏ hàng
-import axios from "axios"; // Sử dụng axios để lấy sản phẩm từ API
+import { CartContext } from "../../../context/CartContext";
+import { useParams } from "react-router-dom"; // Dùng để lấy productId từ URL
+import { products } from "../ProductList/ProductList"; // Lấy danh sách sản phẩm từ ProductList
 import "./ProductDetail.scss";
 
 const { Title, Text } = Typography;
@@ -21,34 +21,14 @@ interface Product {
 }
 
 const ProductDetail: React.FC = () => {
-  const { productId } = useParams<{ productId: string }>();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  const { productId } = useParams<{ productId: string }>(); // Lấy productId từ URL
   const { addToCart } = useContext(CartContext) || {}; // Sử dụng context của giỏ hàng
+  
+  // Tìm sản phẩm theo ID
+  const product = products.find((p: Product) => p.id === parseInt(productId || "", 10));
 
-  useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        const response = await axios.get(`/api/products/${productId}`); // Gọi API để lấy chi tiết sản phẩm
-        setProduct(response.data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error)
-        setError("Không thể lấy thông tin sản phẩm.");
-        setLoading(false);
-      }
-    };
-
-    fetchProduct();
-  }, [productId]);
-
-  if (loading) {
-    return <div>Đang tải thông tin sản phẩm...</div>;
-  }
-
-  if (error || !product) {
-    return <div>{error || "Không tìm thấy sản phẩm"}</div>;
+  if (!product) {
+    return <div>Không tìm thấy sản phẩm</div>;
   }
 
   return (

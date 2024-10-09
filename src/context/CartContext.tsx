@@ -3,11 +3,14 @@ import React, { createContext, useState, ReactNode } from 'react';
 interface Product {
   id: number;
   name: string;
+  description: string;
   price: string;
   image: string;
   quantity: number;
+  startdate: string;
+  enddate: string;
+  address: string;
 }
-
 interface CartContextProps {
   cart: Product[];
   addToCart: (product: Product) => void;
