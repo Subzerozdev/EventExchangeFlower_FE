@@ -24,8 +24,9 @@ function SellerForm() {
       // Cập nhật vai trò người dùng thành "seller" sau khi đăng ký thành công
       setUser((prevUser) => ({
         ...prevUser,
-        role: "ROLE_SELLER", // Cập nhật role thành seller
+        role: "ROLE_SELLER",
       }));
+      window.location.reload();
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response) {
