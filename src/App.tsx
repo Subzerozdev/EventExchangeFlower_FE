@@ -25,6 +25,8 @@ import ProductDetail from "./components/product/detail/ProductDetail";
 
 
 
+
+
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -79,10 +81,10 @@ function App() {
           element: <AllProduct />,
         },
         {
-          path: "productDetail/:productId",
+          path: "productDetail/:id",
           element: <ProductDetail />,
-         
         },
+       
         
         // Thêm các route dành cho Seller
         {

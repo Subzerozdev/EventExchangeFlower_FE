@@ -1,99 +1,25 @@
-import React, { useState } from 'react';
-import { Checkbox, Button } from 'antd';  // Sử dụng các thành phần từ Ant Design
-import './FilterPanel.scss';
+import React from 'react';
+import { Button, Dropdown, Menu } from 'antd';
+import { FilterOutlined } from '@ant-design/icons';
 
-interface Filters {
-  priceRange: string[];
-  productType: string[];
-  brand: string[];
-  color: string[];
-}
-
-interface FilterPanelProps {
-  onFilter: (filters: Filters) => void; 
-}
-
-const FilterPanel: React.FC<FilterPanelProps> = ({ onFilter }) => {
-  const [priceRange, setPriceRange] = useState<string[]>([]);
-  const [productType, setProductType] = useState<string[]>([]);
-  const [brand, setBrand] = useState<string[]>([]);
-  const [color, setColor] = useState<string[]>([]);
-
-  const handlePriceChange = (checkedValues: string[]) => {
-    setPriceRange(checkedValues);
-  };
-
-  const handleProductTypeChange = (checkedValues: string[]) => {
-    setProductType(checkedValues);
-  };
-
-  const handleBrandChange = (checkedValues: string[]) => {
-    setBrand(checkedValues);
-  };
-
-  const handleColorChange = (checkedValues: string[]) => {
-    setColor(checkedValues);
-  };
-
-  const handleSearch = () => {
-    const filters: Filters = {
-      priceRange,
-      productType,
-      brand,
-      color,
-    };
-    onFilter(filters);
-  };
+const ProductFilter: React.FC = () => {
+  const menu = (
+    <Menu>
+      <Menu.Item key="1">Giá thấp đến cao</Menu.Item>
+      <Menu.Item key="2">Giá cao xuống thấp</Menu.Item>
+      <Menu.Item key="3">Tên A-Z</Menu.Item>
+      <Menu.Item key="4">Tên Z-A</Menu.Item>
+    </Menu>
+  );
 
   return (
-    <div className="filter-panel">
-      <h3>Chọn mức giá</h3>
-      <Checkbox.Group
-        options={[
-          { label: 'Từ 5 trăm - 1 triệu', value: '500-1000' },
-          { label: 'Từ 1 triệu - 3 triệu', value: '1000-3000' },
-          { label: 'Từ 3 triệu - 5 triệu', value: '3000-5000' },
-          { label: 'Từ 5 triệu - 7 triệu', value: '5000-7000' },
-          { label: 'Từ 7 triệu - 10 triệu', value: '7000-10000' },
-        ]}
-        onChange={handlePriceChange}
-      />
-
-      <h3>Loại sản phẩm</h3>
-      <Checkbox.Group
-        options={[
-          { label: 'Loại 1', value: 'type1' },
-          { label: 'Loại 2', value: 'type2' },
-        ]}
-        onChange={handleProductTypeChange}
-      />
-
-      <h3>Thương hiệu</h3>
-      <Checkbox.Group
-        options={[
-          { label: 'Thương hiệu 1', value: 'brand1' },
-          { label: 'Thương hiệu 2', value: 'brand2' },
-        ]}
-        onChange={handleBrandChange}
-      />
-
-      <h3>Màu sắc</h3>
-      <Checkbox.Group
-        options={[
-          { label: 'Vàng', value: 'yellow' },
-          { label: 'Tím', value: 'purple' },
-          { label: 'Đỏ', value: 'red' },
-          { label: 'Xanh', value: 'blue' },
-          { label: 'Hồng', value: 'pink' },
-        ]}
-        onChange={handleColorChange}
-      />
-
-      <Button type="primary" onClick={handleSearch} style={{ marginTop: '20px' }}>
-        Tìm kiếm
-      </Button>
+    <div className="product-filter">
+      <Button icon={<FilterOutlined />}>Bộ lọc</Button>
+      <Dropdown overlay={menu} placement="bottomLeft" arrow>
+        <Button>Xếp theo</Button>
+      </Dropdown>
     </div>
   );
 };
 
-export default FilterPanel;
+export default ProductFilter;

@@ -1,122 +1,72 @@
-.product_list_container {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+.product-list {
   padding: 20px;
-  min-height: 100vh; /* Đảm bảo chiều cao tối thiểu là toàn bộ màn hình */
 
-  .filter_panel {
-    width: 25%;
-    padding: 20px;
-    border-right: 1px solid #e0e0e0;
-  }
+  .ant-card {
+    transition: transform 0.3s;
+    margin-bottom: 20px;
+    position: relative;
 
-  .products_panel {
-    width: 72%;
-    padding-left: 20px;
-    display: flex;
-    flex-direction: column; /* Đảm bảo cấu trúc theo chiều dọc */
-    justify-content: space-between;
-    flex-grow: 1;
-
-    .products_content {
-      flex-grow: 1; /* Đẩy nội dung chiếm không gian linh hoạt */
+    &:hover {
+      transform: scale(1.05);
     }
-
-    .pagination_container {
-      text-align: center;
-      margin-top: 20px;
-    }
-  }
-
-  .ant-card-cover {
-    height: 300px; /* Điều chỉnh chiều cao của khung chứa ảnh */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: #f5f5f5;
 
     img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: cover; /* Giữ tỷ lệ của ảnh và cắt phần dư nếu cần */
-      border-radius: 8px; /* Tạo góc bo cho ảnh nếu cần */
+      width: 100%;         // Hình ảnh sẽ chiếm toàn bộ chiều rộng của thẻ
+      height: 250px;        // Đặt chiều cao cố định để các hình ảnh đồng đều
+      object-fit: cover;    // Giữ nguyên tỷ lệ của hình ảnh, phần dư sẽ bị cắt đi
+      border-radius: 8px 8px 0 0;  // Làm tròn góc trên của hình ảnh
     }
-  }
 
-  @media (max-width: 768px) {
-    .product_list_container {
-      flex-direction: column;
-      padding: 10px;
+    .ant-card-meta-description {
+      font-size: 16px;
+      color: #666;
+      margin-top: 10px;
 
-      .filter_panel {
-        width: 100%;
-        border-right: none;
-        margin-bottom: 20px;
+      p {
+        margin: 0;
       }
+    }
 
-      .products_panel {
+    .ant-card-actions {
+      button {
         width: 100%;
-        padding: 0;
-
-        .ant-col {
-          width: 100%;
+        background-color: #52c41a;
+        color: white;
+        border-radius: 0 0 8px 8px;
+        &:hover {
+          background-color: #73d13d;
         }
       }
     }
-  }
 
-  /* SCSS cho giỏ hàng nổi (Mini Cart) */
-  .cart_icon {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    z-index: 1000;
-    cursor: pointer;
-
-    .ant-badge-count {
-      background-color: #08c; /* Màu nền của huy hiệu */
-    }
-
-    .anticon {
-      font-size: 32px;
-      color: #08c; /* Màu của icon giỏ hàng */
+    .sold-out {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: #ff4d4f;
+      color: white;
+      padding: 4px 8px;
+      font-size: 12px;
+      border-radius: 4px;
     }
   }
-
-  /* SCSS cho Drawer giỏ hàng */
-  .drawer-cart {
-    .ant-drawer-title {
-      font-size: 18px;
-      font-weight: bold;
+  .cart {
+    margin-top: 20px;
+    background-color: #f9f9f9;
+    padding: 15px;
+    border-radius: 8px;
+  
+    h2 {
+      margin-bottom: 10px;
     }
-
-    .ant-list-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      .ant-list-item-meta-avatar {
-        margin-right: 16px;
-      }
-
-      .ant-btn {
-        margin-left: 8px;
-      }
-
-      img {
-        width: 60px;
-        height: 60px;
-        object-fit: cover;
-        border-radius: 8px;
-      }
+  
+    p {
+      margin: 5px 0;
     }
-
-    .total-container {
-      text-align: right;
-      font-size: 16px;
-      margin-top: 20px;
-      font-weight: bold;
+  
+    button {
+      width: 100%;
     }
   }
+  
 }

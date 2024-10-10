@@ -1,22 +1,15 @@
 import React from "react";
-import "./allProduct.scss";
+import ProductFilter from "./FilterPanel/FilterPanel";
 import ProductList from "./ProductList/ProductList";
-import { CartProvider } from "../../context/CartContext"; // Sử dụng CartProvider ở CartContext
+import './allProduct.scss';
 
 const AllProduct: React.FC = () => {
   return (
-    <CartProvider>
-      <div className="app">
-        <header>
-          <h2>Tất cả sản phẩm</h2>
-        </header>
-        <div className="content">
-          <div className="main-content">
-            <ProductList />
-          </div>
-        </div>
-      </div>
-    </CartProvider>
+    <div className="all-product-page">
+      <h1>Tất cả sản phẩm</h1>
+      <ProductFilter />
+      <ProductList />
+    </div>
   );
 };
 
