@@ -1,7 +1,10 @@
-import { Table, Button, Form, Input, message, Modal, DatePicker, Select } from "antd";
+import { Table, Button, Form, Input, message, Modal, DatePicker, Select, Upload } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../../config/api";
 import moment from "moment";
+import { UploadFile } from "antd/lib/upload/interface"; // Import kiểu UploadFile
+import { UploadOutlined } from "@ant-design/icons"; // Icon cho nút upload
+import uploadFile from "../../../../utils/file"; // Import hàm upload file lên Firebase
 
 interface Post {
     id: number;
@@ -29,6 +32,7 @@ function ManagePosts() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [types, setTypes] = useState<Type[]>([]);
+    const [fileList, setFileList] = useState<UploadFile[]>([]); // Khai báo fileList cho upload
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
@@ -65,9 +69,9 @@ function ManagePosts() {
             message.error("Không thể tải danh sách type.");
         }
     };
+
     const handleEdit = (post: Post) => {
         setEditingPost(post);
-        // Set giá trị vào form, đảm bảo category và types được điền
         form.setFieldsValue({
             ...post,
             startDate: moment(post.startDate),
@@ -96,6 +100,14 @@ function ManagePosts() {
 
     const handleOk = async () => {
         try {
+            let thumbnailUrl = ""; // Khởi tạo biến để lưu URL ảnh
+
+            // Nếu có file ảnh được chọn
+            if (fileList.length > 0) {
+                const file = fileList[0].originFileObj as File; // Lấy file từ fileList
+                thumbnailUrl = await uploadFile(file); // Tải file lên Firebase và lấy URL
+            }
+
             const values = await form.validateFields();
             const postData = {
                 ...values,
@@ -103,6 +115,7 @@ function ManagePosts() {
                 endDate: values.endDate.toISOString(),
                 categoryId: values.categoryId, // Lấy categoryId từ form
                 typeId: values.typeId, // Lấy typeId từ form (array)
+                thumbnail: thumbnailUrl, // Gắn URL ảnh vào dữ liệu gửi lên server
             };
 
             if (editingPost) {
@@ -123,6 +136,11 @@ function ManagePosts() {
     const handleCancel = () => {
         setIsModalVisible(false);
         form.resetFields();
+    };
+
+    // Xử lý khi chọn file upload
+    const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
+        setFileList(fileList); // Cập nhật danh sách file khi có thay đổi
     };
 
     const columns = [
@@ -215,6 +233,17 @@ function ManagePosts() {
                                 </Select.Option>
                             ))}
                         </Select>
+                    </Form.Item>
+
+                    <Form.Item label="Hình ảnh bài đăng (tùy chọn)" name="thumbnail">
+                        <Upload
+                            listType="picture"
+                            fileList={fileList}
+                            onChange={handleFileChange}
+                            beforeUpload={() => false} // Ngăn việc tự động upload ngay lập tức
+                        >
+                            <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
+                        </Upload>
                     </Form.Item>
 
                     <Form.Item

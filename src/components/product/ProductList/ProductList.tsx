@@ -12,7 +12,7 @@ import {
   InputNumber,
   Spin,
 } from "antd";
-import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons"; // Thêm icon Delete
+import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons"; 
 import "./ProductList.scss";
 import api from "../../../config/api";
 
