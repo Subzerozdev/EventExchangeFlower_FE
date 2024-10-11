@@ -10,14 +10,14 @@ interface Post {
     id: number;
     name: string;
     description: string;
-    // price: number;
-    // address: string;
-    // startDate: string;
-    // endDate: string;
-    // category: { id: number; name: string };
-    // types: { id: number; name: string }[];
-    // imageUrls: string[];
-    // thumbnail: string;
+    price: number;
+    address: string;
+    startDate: string;
+    endDate: string;
+    category: { id: number; name: string };
+    types: { id: number; name: string }[];
+    imageUrls: string[];
+    thumbnail: string;
 }
 
 interface Category {
