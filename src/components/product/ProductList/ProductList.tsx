@@ -12,8 +12,9 @@ import {
   InputNumber,
   Spin,
 } from "antd";
-import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons"; 
+import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./ProductList.scss";
+import ProductFilter from "../FilterPanel/FilterPanel";
 import api from "../../../config/api";
 
 interface Product {
@@ -25,6 +26,7 @@ interface Product {
   address: string;
   start_date: string;
   end_date: string;
+  category: { id: number; name: string }; // Category
 }
 
 interface CartItem extends Product {
@@ -33,111 +35,179 @@ interface CartItem extends Product {
 
 const ProductList: React.FC = () => {
   const [productList, setProductList] = useState<Product[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(8);
-  const [cart, setCart] = useState<CartItem[]>([]); // Giỏ hàng
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
+  const [categories, setCategories] = useState<string[]>([]); // Thêm state để lưu danh sách loại sản phẩm
+
   const navigate = useNavigate();
 
-  // Tải giỏ hàng từ localStorage khi trang được tải
+  // Load cart from localStorage
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
-      setCart(JSON.parse(storedCart)); // Lấy dữ liệu từ localStorage và cập nhật lại giỏ hàng
+      setCart(JSON.parse(storedCart));
     }
   }, []);
 
-  // Lưu giỏ hàng vào localStorage khi giỏ hàng thay đổi
+  // Save cart to localStorage on cart update
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Gọi API để lấy danh sách sản phẩm từ backend
+  // Đổi dạng formteDate time thành string
+  const formatDateTime = (dateTime: string): string => {
+    const date = new Date(dateTime); // Convert LocalDateTime to Date object
+    return date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
+  // Fetch product list from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await api.get<{ posts: Product[] }>(
           "/posts?categoryID=&sort=&pageNumber="
         );
+        console.log(response.data.posts);
         const products = response.data.posts.map((product) => ({
           ...product,
+          start_date: formatDateTime(product.start_date), // Format start_date to string
+          end_date: formatDateTime(product.end_date), // Format end_date to string
           price:
             typeof product.price === "string"
               ? parseFloat(product.price)
               : product.price,
         }));
-        setProductList(products); // Cập nhật danh sách sản phẩm
-        setLoading(false); // Tắt trạng thái loading
+
+        // Lấy danh sách loại sản phẩm duy nhất từ sản phẩm
+        const uniqueCategories = Array.from(
+          new Set(products.map((product) => product.category.name))
+        );
+        setCategories(uniqueCategories); // Lưu danh sách loại sản phẩm vào state
+        setProductList(products);
+        setFilteredProducts(products);
+        setLoading(false);
       } catch (error) {
-        console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
+        console.error("Error fetching products:", error);
         setLoading(false);
       }
     };
     fetchProducts();
   }, []);
 
-  // Hàm thêm sản phẩm vào giỏ hàng
+  // Add product to cart
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id); // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+      const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
         return prevCart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 } // Nếu có rồi thì tăng số lượng
+            ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        return [...prevCart, { ...product, quantity: 1 }]; // Nếu chưa có, thêm mới sản phẩm vào giỏ hàng
+        return [...prevCart, { ...product, quantity: 1 }];
       }
     });
-    message.success(`${product.name} đã được thêm vào giỏ hàng`); // Thông báo khi thêm vào giỏ
+    message.success(`${product.name} has been added to the cart`);
   };
 
-  // Hàm xóa sản phẩm khỏi giỏ hàng
+  // Remove product from cart
   const removeFromCart = (id: number) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id)); // Xóa sản phẩm khỏi giỏ hàng
-    message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
+    message.success("Product has been removed from the cart");
   };
 
-  // Cập nhật số lượng sản phẩm trong giỏ hàng
+  // Update product quantity in cart
   const updateQuantity = (id: number, quantity: number) => {
     setCart((prevCart) =>
       prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
-  // Tính tổng giá trị giỏ hàng
+  // Calculate total price
   const calculateTotal = () => {
-    return cart.reduce((total, item) => {
-      return total + item.price * item.quantity;
-    }, 0);
+    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  // Hiển thị/Ẩn Drawer giỏ hàng
+  // Ẩn hiện giỏ hàng
   const toggleDrawer = () => {
     setDrawerVisible(!drawerVisible);
+  };
+
+  // Lọc sản phẩm theo loại
+  const filterByCategory = (selectedCategories: string[]) => {
+    if (selectedCategories.length === 0) {
+      setFilteredProducts(productList); // Nếu không chọn gì thì hiển thị tất cả sản phẩm
+    } else {
+      const filtered = productList.filter((product) =>
+        selectedCategories.includes(product.category.name)
+      );
+      setFilteredProducts(filtered);
+    }
+  };
+  // Filter sản phẩm
+  const filterByPrice = (minPrice: number | null, maxPrice: number | null) => {
+    let filtered = productList;
+    if (minPrice !== null && maxPrice !== null) {
+      filtered = filtered.filter(
+        (product) => product.price >= minPrice && product.price <= maxPrice
+      );
+    }
+    setFilteredProducts(filtered);
   };
 
   if (loading) {
     return <Spin size="large" />;
   }
 
+  // Sort products
+  const sortProducts = (type: string) => {
+    const sortedProducts = [...filteredProducts];
+    if (type === "az") {
+      sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (type === "za") {
+      sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (type === "newest") {
+      sortedProducts.sort(
+        (a, b) =>
+          new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+      );
+    } else if (type === "priceAsc") {
+      sortedProducts.sort((a, b) => a.price - b.price);
+    } else if (type === "priceDesc") {
+      sortedProducts.sort((a, b) => b.price - a.price);
+    }
+    setFilteredProducts(sortedProducts);
+  };
+
   return (
     <div className="product-list">
+      <ProductFilter
+        onFilterChange={filterByPrice}
+        onSortChange={sortProducts}
+        onCategoryChange={filterByCategory} // Thêm hàm lọc loại sản phẩm
+        categories={categories} // Truyền danh sách loại sản phẩm vào ProductFilter
+      />
+
       <div style={{ position: "fixed", bottom: 20, right: 8 }}>
         <Badge count={cart.length}>
-          {" "}
-          {/* Hiển thị số lượng sản phẩm trong giỏ */}
           <ShoppingCartOutlined
             style={{ fontSize: "32px", cursor: "pointer" }}
-            onClick={toggleDrawer} // Khi click vào biểu tượng giỏ hàng sẽ mở Drawer
+            onClick={toggleDrawer}
           />
         </Badge>
       </div>
 
       <Row gutter={[16, 16]}>
-        {productList
+        {filteredProducts
           .slice((currentPage - 1) * pageSize, currentPage * pageSize)
           .map((product) => (
             <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
@@ -154,27 +224,32 @@ const ProductList: React.FC = () => {
                     }}
                   />
                 }
-                onClick={() => navigate(`/productDetail/${product.id}`)} // Điều hướng đến trang chi tiết sản phẩm
+                onClick={() => navigate(`/productDetail/${product.id}`)}
               >
                 <Card.Meta
                   title={product.name}
                   description={
                     <div>
-                      <p>{product.description}</p>
-                      <p>Giá: {product.price.toLocaleString("vi-VN")}₫</p>
+                      <h3>Giá: {product.price.toLocaleString("vi-VN")}₫</h3>
+                      <p>Loại hoa: {product.category.name}</p>
+                      <p>Ngày bắt đầu: {product.start_date}</p>{" "}
+                      <p>Ngày kết thúc: {product.end_date}</p>{" "}
                       <p>Địa chỉ: {product.address}</p>
+                      <Button
+                        type="primary"
+                        icon={<ShoppingCartOutlined />}
+                        style={{ marginTop: "10px" }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Ngăn chặn onClick của Card khi bấm vào nút
+                          addToCart(product);
+                        }}
+                      >
+                        Thêm vào giỏ hàng
+                      </Button>
                     </div>
                   }
                 />
               </Card>
-              <Button
-                type="primary"
-                icon={<ShoppingCartOutlined />}
-                onClick={() => addToCart(product)} // Thêm sản phẩm vào giỏ hàng
-                style={{ marginTop: "10px" }}
-              >
-                Thêm vào giỏ
-              </Button>
             </Col>
           ))}
       </Row>
@@ -182,19 +257,19 @@ const ProductList: React.FC = () => {
       <Pagination
         current={currentPage}
         pageSize={pageSize}
-        total={productList.length}
+        total={filteredProducts.length}
         onChange={(page) => setCurrentPage(page)}
-        style={{ textAlign: "center", marginTop: "20px" }}
+        style={{ textAlign: "center", marginTop: "20px", marginLeft: "700px" }}
       />
 
       <Drawer
-        title="Giỏ hàng của bạn"
+        title="Your Cart"
         placement="right"
-        onClose={toggleDrawer} // Đóng Drawer giỏ hàng
-        visible={drawerVisible} // Trạng thái hiển thị của Drawer
+        onClose={toggleDrawer}
+        visible={drawerVisible}
       >
         {cart.length === 0 ? (
-          <p>Giỏ hàng của bạn đang trống</p> // Nếu giỏ hàng trống, hiển thị thông báo
+          <p>Giỏ hàng của bạn trống</p>
         ) : (
           <>
             {cart.map((item) => (
@@ -219,9 +294,10 @@ const ProductList: React.FC = () => {
                 <div style={{ flexGrow: 1 }}>
                   <p>{item.name}</p>
                   <InputNumber
+                    readOnly
                     min={1}
                     value={item.quantity}
-                    onChange={(value) => updateQuantity(item.id, value!)} // Cập nhật số lượng sản phẩm trong giỏ
+                    onChange={(value) => updateQuantity(item.id, value!)}
                   />
                 </div>
                 <div style={{ marginLeft: "10px" }}>
@@ -231,16 +307,18 @@ const ProductList: React.FC = () => {
                   icon={<DeleteOutlined />}
                   type="link"
                   danger
-                  onClick={() => removeFromCart(item.id)} // Xóa sản phẩm khỏi giỏ hàng
+                  onClick={() => removeFromCart(item.id)}
                 >
                   Xóa
                 </Button>
               </div>
             ))}
+
+            {/*Thanh toán trong giỏ hàng*/}
             <div style={{ marginTop: "10px" }}>
-              <h3>Tổng số tiền: {calculateTotal().toLocaleString("vi-VN")}₫</h3>
+              <h3>Total: {calculateTotal().toLocaleString("vi-VN")}₫</h3>
               <Button type="primary" style={{ marginTop: "10px" }}>
-                Thanh Toán
+                Thanh toán
               </Button>
             </div>
           </>

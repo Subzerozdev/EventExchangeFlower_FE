@@ -11,10 +11,10 @@
     }
 
     img {
-      width: 100%;         // Hình ảnh sẽ chiếm toàn bộ chiều rộng của thẻ
-      height: 250px;        // Đặt chiều cao cố định để các hình ảnh đồng đều
-      object-fit: cover;    // Giữ nguyên tỷ lệ của hình ảnh, phần dư sẽ bị cắt đi
-      border-radius: 8px 8px 0 0;  // Làm tròn góc trên của hình ảnh
+      width: 100%; // Hình ảnh sẽ chiếm toàn bộ chiều rộng của thẻ
+      height: 250px; // Đặt chiều cao cố định để các hình ảnh đồng đều
+      object-fit: cover; // Giữ nguyên tỷ lệ của hình ảnh, phần dư sẽ bị cắt đi
+      border-radius: 8px 8px 0 0; // Làm tròn góc trên của hình ảnh
     }
 
     .ant-card-meta-description {
@@ -55,18 +55,17 @@
     background-color: #f9f9f9;
     padding: 15px;
     border-radius: 8px;
-  
+
     h2 {
       margin-bottom: 10px;
     }
-  
+
     p {
       margin: 5px 0;
     }
-  
+
     button {
       width: 100%;
     }
   }
-  
 }

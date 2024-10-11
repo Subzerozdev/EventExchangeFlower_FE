@@ -1,7 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Card, Spin, Button, InputNumber, Row, Col, message, Badge, Drawer } from "antd";
-import { ShoppingCartOutlined, ShoppingOutlined, DeleteOutlined } from '@ant-design/icons';  // Thêm icon Delete
+import {
+  Card,
+  Spin,
+  Button,
+  InputNumber,
+  Row,
+  Col,
+  message,
+  Badge,
+  Drawer,
+} from "antd";
+import {
+  ShoppingCartOutlined,
+  ShoppingOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons"; // Thêm icon Delete
 import api from "../../../config/api";
 import "./ProductDetail.scss";
 
@@ -14,6 +28,7 @@ interface Product {
   address: string;
   start_date: string;
   end_date: string;
+  category: { id: number; name: string }; // Update category to include both id and name
 }
 
 interface CartItem extends Product {
@@ -41,12 +56,31 @@ const ProductDetail: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
+  // Hàm chuyển đổi LocalDateTime sang chuỗi
+  const formatDateTime = (dateTime: string): string => {
+    const date = new Date(dateTime); // Convert LocalDateTime to Date object
+    return date.toLocaleDateString("vi-VN", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  };
+
   // Gọi API để lấy dữ liệu sản phẩm
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await api.get<Product>(`/posts/${id}`);
-        setProduct(response.data);
+        const productData = response.data;
+
+        // Format start_date and end_date
+        const formattedProduct = {
+          ...productData,
+          start_date: formatDateTime(productData.start_date),
+          end_date: formatDateTime(productData.end_date),
+        };
+
+        setProduct(formattedProduct); // Update product with formatted dates
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
@@ -115,7 +149,12 @@ const ProductDetail: React.FC = () => {
                   <img
                     alt={product.name}
                     src={product.thumbnail}
-                    style={{ width: "100%", height: "510px", objectFit: "cover", borderRadius: "10px" }} // Rounded image corners
+                    style={{
+                      width: "100%",
+                      height: "510px",
+                      objectFit: "cover",
+                      borderRadius: "10px",
+                    }} // Rounded image corners
                   />
                 }
               />
@@ -123,7 +162,13 @@ const ProductDetail: React.FC = () => {
             <Col span={12}>
               <h1>{product.name}</h1>
               <p>Mã: {product.id}</p>
-              <p style={{ color: "#FF6F61", fontSize: "20px", fontWeight: "bold" }}>
+              <p
+                style={{
+                  color: "#FF6F61",
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                }}
+              >
                 Giá: {product.price.toLocaleString("vi-VN")}₫
               </p>
               <p>Số lượng:</p>
@@ -138,7 +183,11 @@ const ProductDetail: React.FC = () => {
                   type="primary"
                   size="large"
                   icon={<ShoppingOutlined />}
-                  style={{ backgroundColor: "#6BA34E", borderColor: "#6BA34E", borderRadius: "5px" }}
+                  style={{
+                    backgroundColor: "#6BA34E",
+                    borderColor: "#6BA34E",
+                    borderRadius: "5px",
+                  }}
                 >
                   Mua ngay
                 </Button>
@@ -153,20 +202,32 @@ const ProductDetail: React.FC = () => {
               </div>
               <div className="product-description">
                 <h3>Thông tin sản phẩm</h3>
-                <p>{product.description}</p>
+                <p>Loại sản phẩm: {product.category.name}</p>{" "}
+                {/* Hiển thị tên loại sản phẩm */}
+                <p>Miêu tả: {product.description}</p>
                 <p>Địa chỉ: {product.address}</p>
                 <p>
                   Thời gian: {product.start_date} - {product.end_date}
-                </p>
+                </p>{" "}
+                {/* Hiển thị thời gian bắt đầu và kết thúc */}
               </div>
 
               <div className="product-description2">
                 <h4>THÔNG TIN CHUNG CÁC SẢN PHẨM</h4>
                 <ul>
-                  <li>1. Giá cả có thể thay đổi: Giá hoa tươi có thể biến động...</li>
-                  <li>2. Màu sắc hoa có thể khác biệt do điều kiện ánh sáng...</li>
-                  <li>3. Hoa theo mùa: Một số loại hoa có thể thay đổi theo mùa...</li>
-                  <li>4. Sản phẩm có thể khác ảnh mẫu nhưng sẽ giống ít nhất 80%...</li>
+                  <li>
+                    1. Giá cả có thể thay đổi: Giá hoa tươi có thể biến động...
+                  </li>
+                  <li>
+                    2. Màu sắc hoa có thể khác biệt do điều kiện ánh sáng...
+                  </li>
+                  <li>
+                    3. Hoa theo mùa: Một số loại hoa có thể thay đổi theo mùa...
+                  </li>
+                  <li>
+                    4. Sản phẩm có thể khác ảnh mẫu nhưng sẽ giống ít nhất
+                    80%...
+                  </li>
                 </ul>
               </div>
             </Col>
@@ -174,7 +235,9 @@ const ProductDetail: React.FC = () => {
 
           {/* Icon giỏ hàng ở góc dưới bên phải */}
           <div style={{ position: "fixed", bottom: 20, right: 8 }}>
-            <Badge count={cart.length}> {/* Hiển thị số lượng sản phẩm trong giỏ */}
+            <Badge count={cart.length}>
+              {" "}
+              {/* Hiển thị số lượng sản phẩm trong giỏ */}
               <ShoppingCartOutlined
                 style={{ fontSize: "32px", cursor: "pointer" }}
                 onClick={toggleDrawer} // Khi click vào biểu tượng giỏ hàng sẽ mở Drawer
@@ -186,11 +249,11 @@ const ProductDetail: React.FC = () => {
           <Drawer
             title="Giỏ hàng của bạn"
             placement="right"
-            onClose={toggleDrawer} // Đóng Drawer giỏ hàng
-            visible={drawerVisible} // Trạng thái hiển thị của Drawer
+            onClose={toggleDrawer}
+            visible={drawerVisible}
           >
             {cart.length === 0 ? (
-              <p>Giỏ hàng của bạn đang trống</p> // Nếu giỏ hàng trống, hiển thị thông báo
+              <p>Giỏ hàng của bạn đang trống</p>
             ) : (
               <>
                 {cart.map((item) => (

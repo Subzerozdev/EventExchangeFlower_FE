@@ -1,0 +1,38 @@
+.product-filter {
+  // Button "Áp dụng"
+  .ant-btn {
+    width: 100%;
+    background-color: #c052b3;
+    border-color: #7d4343;
+    color: white;
+    margin-top: 20px;
+
+    &:hover {
+      background-color: #466c39;
+      border-color: #466c39;
+    }
+  }
+  .sort-options {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    span {
+      margin-right: 10px;
+      font-weight: bold;
+    }
+
+    button {
+      margin-right: 10px;
+      border: none;
+      background-color: #c052b3;
+      padding: 5px 10px;
+      cursor: pointer;
+
+      &.active {
+        background-color: #c052b3;
+        color: white;
+      }
+    }
+  }
+}
