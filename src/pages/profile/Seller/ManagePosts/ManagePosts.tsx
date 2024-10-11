@@ -2,20 +2,22 @@ import { Table, Button, Form, Input, message, Modal, DatePicker, Select, Upload 
 import { useEffect, useState } from "react";
 import api from "../../../../config/api";
 import moment from "moment";
-import { UploadFile } from "antd/lib/upload/interface"; // Import kiểu UploadFile
-import { UploadOutlined } from "@ant-design/icons"; // Icon cho nút upload
-import uploadFile from "../../../../utils/file"; // Import hàm upload file lên Firebase
+import { UploadFile } from "antd/lib/upload/interface";
+import { UploadOutlined } from "@ant-design/icons";
+import uploadFile from "../../../../utils/file"; // Hàm upload lên Firebase
 
 interface Post {
     id: number;
     name: string;
     description: string;
-    price: number;
-    address: string;
-    startDate: string;
-    endDate: string;
-    category: { id: number; name: string }; // Sửa category thành object
-    types: { id: number; name: string }[]; // types là mảng object
+    // price: number;
+    // address: string;
+    // startDate: string;
+    // endDate: string;
+    // category: { id: number; name: string };
+    // types: { id: number; name: string }[];
+    // imageUrls: string[];
+    // thumbnail: string;
 }
 
 interface Category {
@@ -32,7 +34,8 @@ function ManagePosts() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [types, setTypes] = useState<Type[]>([]);
-    const [fileList, setFileList] = useState<UploadFile[]>([]); // Khai báo fileList cho upload
+    const [fileList, setFileList] = useState<UploadFile[]>([]); // Khai báo fileList cho imageUrls
+    const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]); // Khai báo fileList cho thumbnail
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
@@ -46,7 +49,7 @@ function ManagePosts() {
     const fetchPosts = async () => {
         try {
             const response = await api.get<Post[]>("/api/seller/posts");
-            setPosts(response.data); // Lưu dữ liệu bài đăng
+            setPosts(response.data);
         } catch {
             message.error("Có lỗi khi tải bài đăng.");
         }
@@ -55,7 +58,7 @@ function ManagePosts() {
     const fetchCategories = async () => {
         try {
             const response = await api.get<Category[]>("/categories");
-            setCategories(response.data); // Lưu danh sách category vào state
+            setCategories(response.data);
         } catch {
             message.error("Không thể tải danh sách category.");
         }
@@ -76,8 +79,8 @@ function ManagePosts() {
             ...post,
             startDate: moment(post.startDate),
             endDate: moment(post.endDate),
-            categoryId: post.category?.id, // Lấy categoryId từ object category
-            typeId: post.types ? post.types.map((type) => type.id) : [], // Lấy mảng typeId từ object types
+            category_id: post.category?.id,
+            type_id: post.types ? post.types.map((type) => type.id) : [],
         });
         setIsModalVisible(true);
     };
@@ -100,12 +103,20 @@ function ManagePosts() {
 
     const handleOk = async () => {
         try {
-            let thumbnailUrl = ""; // Khởi tạo biến để lưu URL ảnh
+            let thumbnailUrl = ""; // URL của ảnh thumbnail
+            const imageUrls: string[] = []; // Mảng chứa URL của các ảnh
 
-            // Nếu có file ảnh được chọn
-            if (fileList.length > 0) {
-                const file = fileList[0].originFileObj as File; // Lấy file từ fileList
-                thumbnailUrl = await uploadFile(file); // Tải file lên Firebase và lấy URL
+            // Nếu có file thumbnail được chọn
+            if (thumbnailList.length > 0) {
+                const thumbnailFile = thumbnailList[0].originFileObj as File;
+                thumbnailUrl = await uploadFile(thumbnailFile); // Upload và lấy URL thumbnail
+            }
+
+            // Upload từng ảnh trong fileList cho imageUrls
+            for (let i = 0; i < fileList.length; i++) {
+                const file = fileList[i].originFileObj as File;
+                const imageUrl = await uploadFile(file);
+                imageUrls.push(imageUrl); // Lưu URL ảnh vào mảng
             }
 
             const values = await form.validateFields();
@@ -113,9 +124,10 @@ function ManagePosts() {
                 ...values,
                 startDate: values.startDate.toISOString(),
                 endDate: values.endDate.toISOString(),
-                categoryId: values.categoryId, // Lấy categoryId từ form
-                typeId: values.typeId, // Lấy typeId từ form (array)
-                thumbnail: thumbnailUrl, // Gắn URL ảnh vào dữ liệu gửi lên server
+                category_id: values.category_id,
+                type_id: values.type_id,
+                thumbnail: thumbnailUrl, // Gắn URL thumbnail
+                imageUrls, // Gắn mảng URL ảnh
             };
 
             if (editingPost) {
@@ -138,9 +150,14 @@ function ManagePosts() {
         form.resetFields();
     };
 
-    // Xử lý khi chọn file upload
+    // Xử lý khi chọn file upload cho thumbnail
+    const handleThumbnailChange = ({ fileList }: { fileList: UploadFile[] }) => {
+        setThumbnailList(fileList);
+    };
+
+    // Xử lý khi chọn file upload cho imageUrls
     const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
-        setFileList(fileList); // Cập nhật danh sách file khi có thay đổi
+        setFileList(fileList);
     };
 
     const columns = [
@@ -209,7 +226,7 @@ function ManagePosts() {
 
                     <Form.Item
                         label="Danh mục"
-                        name="categoryId"
+                        name="category_id"
                         rules={[{ required: true, message: "Vui lòng chọn danh mục" }]}
                     >
                         <Select placeholder="Chọn danh mục">
@@ -223,7 +240,7 @@ function ManagePosts() {
 
                     <Form.Item
                         label="Loại"
-                        name="typeId"
+                        name="type_id"
                         rules={[{ required: true, message: "Vui lòng chọn loại" }]}
                     >
                         <Select mode="multiple" placeholder="Chọn loại">
@@ -235,12 +252,25 @@ function ManagePosts() {
                         </Select>
                     </Form.Item>
 
-                    <Form.Item label="Hình ảnh bài đăng (tùy chọn)" name="thumbnail">
+                    {/* Thêm mục upload thumbnail */}
+                    <Form.Item label="Hình ảnh thumbnail" name="thumbnail">
+                        <Upload
+                            listType="picture"
+                            fileList={thumbnailList}
+                            onChange={handleThumbnailChange}
+                            beforeUpload={() => false}
+                        >
+                            <Button icon={<UploadOutlined />}>Chọn hình ảnh thumbnail</Button>
+                        </Upload>
+                    </Form.Item>
+
+                    {/* Thêm mục upload các ảnh khác */}
+                    <Form.Item label="Hình ảnh bài đăng (tùy chọn)" name="imageUrls">
                         <Upload
                             listType="picture"
                             fileList={fileList}
                             onChange={handleFileChange}
-                            beforeUpload={() => false} // Ngăn việc tự động upload ngay lập tức
+                            beforeUpload={() => false}
                         >
                             <Button icon={<UploadOutlined />}>Chọn hình ảnh</Button>
                         </Upload>
