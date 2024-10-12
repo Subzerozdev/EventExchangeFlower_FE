@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Card,
   Spin,
@@ -42,7 +42,7 @@ const ProductDetail: React.FC = () => {
   const [quantity, setQuantity] = useState<number>(1); // Thêm số lượng
   const [cart, setCart] = useState<CartItem[]>([]); // Giỏ hàng
   const [drawerVisible, setDrawerVisible] = useState(false); // Trạng thái hiển thị của giỏ hàng
-
+  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
   // Tải giỏ hàng từ localStorage khi trang được tải
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -105,6 +105,12 @@ const ProductDetail: React.FC = () => {
       }
     });
     message.success(`${product.name} đã được thêm vào giỏ hàng`); // Thông báo khi thêm vào giỏ
+  };
+
+  // Hàm điều hướng đến trang thanh toán
+  const navigateToCheckout = () => {
+    navigate("/checkout"); // Điều hướng đến trang thanh toán
+    message.success('Thanh Toán');
   };
 
   // Hàm xóa sản phẩm khỏi giỏ hàng
@@ -188,6 +194,11 @@ const ProductDetail: React.FC = () => {
                     borderColor: "#6BA34E",
                     borderRadius: "5px",
                   }}
+                  onClick={() => {
+                    addToCart(product);
+                    navigateToCheckout();
+                     // Chuyển đến trang thanh toán
+                  }}
                 >
                   Mua ngay
                 </Button>
@@ -247,7 +258,7 @@ const ProductDetail: React.FC = () => {
 
           {/* Drawer giỏ hàng */}
           <Drawer
-            title="Giỏ hàng của bạn"
+            title="Giỏ hàng"
             placement="right"
             onClose={toggleDrawer}
             visible={drawerVisible}
@@ -302,7 +313,10 @@ const ProductDetail: React.FC = () => {
                   <h3>
                     Tổng số tiền: {calculateTotal().toLocaleString("vi-VN")}₫
                   </h3>
-                  <Button type="primary" style={{ marginTop: "10px" }}>
+                  <Button type="primary" style={{ marginTop: "10px" }} onClick={() => {
+                    addToCart(product);
+                    navigateToCheckout(); // Chuyển đến trang thanh toán
+                  }}>
                     Thanh Toán
                   </Button>
                 </div>

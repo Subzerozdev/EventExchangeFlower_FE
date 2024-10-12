@@ -22,6 +22,7 @@ import TermsModal from "./pages/profile/Seller/TermsModal/TermsModal";
 import { useState } from "react";
 import AddType from "./pages/adminPage/CRUDtype/AddType";
 import ProductDetail from "./components/product/detail/ProductDetail";
+import Checkout from "./components/checkOut/checkOut";
 
 
 
@@ -84,7 +85,10 @@ function App() {
           path: "productDetail/:id",
           element: <ProductDetail />,
         },
-       
+        {
+          path: "checkOut",
+          element: <Checkout />,
+        },
         
         // Thêm các route dành cho Seller
         {
