@@ -117,7 +117,11 @@ function AddCategory() {
         </Form.Item>
 
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button
+            type="primary"
+            htmlType="submit"
+            className={editCategoryId === null ? 'add-category-btn' : 'edit-category-btn'}
+          >
             {editCategoryId === null ? "Thêm Category" : "Cập nhật Category"}
           </Button>
         </Form.Item>

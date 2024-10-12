@@ -1,13 +1,14 @@
-import { Table, Button, message } from "antd";
+import { Table, Button, message, Image } from "antd"; // Thêm Image từ Ant Design
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
-
+import './ReviewPost.scss';
 interface Post {
     id: number;
     name: string;
     price: number;
     address: string;
-    status: string; // Trạng thái sử dụng kiểu string
+    status: string; // Trạng thái là string
+    thumbnail: string; // Thêm thuộc tính thumbnail để hiển thị hình ảnh
 }
 
 function ReviewPosts() {
@@ -20,7 +21,6 @@ function ReviewPosts() {
     // Hàm để lấy tất cả các bài đăng với API mới
     const fetchPosts = async () => {
         try {
-            // Gọi API để lấy tất cả bài đăng
             const response = await api.get<{ posts: Post[] }>(
                 "/posts?categoryID=&sort=&pageNumber="
             );
@@ -39,7 +39,7 @@ function ReviewPosts() {
             message.success("Bài đăng đã được duyệt!");
             fetchPosts(); // Cập nhật danh sách sau khi duyệt
         } catch (error) {
-            console.error(error); // In ra lỗi
+            console.error(error);
             message.error("Có lỗi xảy ra khi duyệt bài đăng.");
         }
     };
@@ -51,7 +51,7 @@ function ReviewPosts() {
             message.success("Bài đăng đã bị từ chối!");
             fetchPosts(); // Cập nhật danh sách sau khi từ chối
         } catch (error) {
-            console.error(error); // In ra lỗi
+            console.error(error);
             message.error("Có lỗi xảy ra khi từ chối bài đăng.");
         }
     };
@@ -72,6 +72,12 @@ function ReviewPosts() {
 
     // Cấu trúc của bảng hiển thị bài đăng
     const columns = [
+        {
+            title: "Hình ảnh",
+            dataIndex: "thumbnail",
+            key: "thumbnail",
+            render: (thumbnail: string) => <Image width={100} src={thumbnail} alt="thumbnail" />, // Hiển thị thumbnail
+        },
         {
             title: "Tên bài đăng",
             dataIndex: "name",

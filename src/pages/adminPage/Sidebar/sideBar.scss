@@ -1,0 +1,76 @@
+#sidebar {
+  grid-area: sidebar;
+  background-color: #263043;
+  height: 100%;
+  transition: all 0.3s ease-in-out; /* Hiệu ứng khi mở/đóng sidebar */
+  overflow-y: auto;
+  position: fixed;
+  left: 0;
+
+  /* Thêm hình ảnh nền */
+  background-image: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Admin%2Fwp4699957.jpg?alt=media&token=d2e03c1d-8e0d-494e-8244-3c79ad00de81");
+  background-size: cover; /* Đảm bảo hình ảnh phủ toàn bộ sidebar */
+  background-position: center; /* Đặt hình ảnh ở giữa */
+  background-repeat: no-repeat; /* Không lặp lại hình ảnh */
+}
+
+.sidebar-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 30px;
+  color: #ffffff;
+  font-size: 34px;
+}
+
+.sidebar-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar-list-item {
+  padding: 20px 30px;
+  font-size: 20px; /* Tăng kích thước font cho các mục trong sidebar */
+  display: flex;
+  align-items: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar-list-item:hover {
+  background-color: rgba(255, 255, 255, 0.1); /* Hiệu ứng hover */
+  cursor: pointer;
+}
+
+.sidebar-list-item .icon {
+  font-size: 24px; /* Tăng cỡ icon */
+  margin-right: 15px; /* Tăng khoảng cách giữa icon và text */
+}
+
+.btn-link {
+  background: none;
+  border: none;
+  font-weight: 500px;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  font-size: 40px;
+}
+
+.btn-link:hover {
+  color: #ff0b0b; /* Đổi màu chữ khi hover */
+}
+
+.sidebar-responsive {
+  position: absolute;
+  width: 250px;
+  transition: all 0.3s ease-in-out;
+  z-index: 12;
+}
+
+.close_icon {
+  color: red;
+  cursor: pointer;
+  font-size: 20px;
+}

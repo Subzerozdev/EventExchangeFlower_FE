@@ -1,35 +1,37 @@
 .add-type {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 30px;
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
   h1 {
     text-align: center;
-    font-size: 24px;
+    font-size: 26px;
     color: #333;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
   }
 
   .ant-form-item {
-    margin-bottom: 16px;
+    margin-bottom: 20px;
   }
 
   .ant-input {
-    border-radius: 4px;
-    height: 40px;
+    border-radius: 6px;
+    height: 42px;
+    font-size: 16px;
   }
 
   .ant-btn-primary {
     width: 100%;
     background-color: #1890ff;
     border-color: #1890ff;
-    height: 40px;
-    font-size: 16px;
+    height: 45px;
+    font-size: 18px;
     font-weight: bold;
+    border-radius: 6px;
   }
 
   .ant-btn-primary:hover {
@@ -41,23 +43,20 @@
   ul {
     list-style: none;
     padding: 0;
+    margin-top: 20px;
   }
 
   ul li {
     display: flex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 15px;
     border-bottom: 1px solid #ddd;
     margin-bottom: 10px;
-  }
-
-  ul li span {
     font-size: 18px;
-    font-weight: bold;
   }
 
   .ant-btn-link {
-    font-size: 14px;
+    font-size: 16px;
     color: #1890ff;
     padding: 0;
     margin-right: 10px;
@@ -68,7 +67,7 @@
   }
 
   .ant-btn-danger {
-    font-size: 14px;
+    font-size: 16px;
     color: #ff4d4f;
   }
 

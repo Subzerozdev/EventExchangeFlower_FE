@@ -1,80 +1,102 @@
-/* Đặt kích thước và căn giữa form */
 .add-category {
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 20px;
-  background-color: #f9f9f9;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 30px;
+  background-color: #ffffff;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
+  h1 {
+    text-align: center;
+    font-size: 32px; /* Tăng kích thước tiêu đề */
+    color: #333;
+    margin-bottom: 30px;
+  }
 
-.add-category h1 {
-  text-align: center;
-  font-size: 24px;
-  color: #333;
-  margin-bottom: 20px;
-}
+  .ant-form-item {
+    margin-bottom: 20px;
+  }
 
-.ant-form-item {
-  margin-bottom: 16px;
-}
+  .ant-input {
+    border-radius: 6px;
+    height: 50px; /* Tăng chiều cao input */
+    font-size: 20px; /* Tăng kích thước font cho input */
+  }
 
-.ant-input {
-  border-radius: 4px;
-  height: 40px;
-}
+  .add-category-btn {
+    width: 100%;
+    background-color: #1890ff;
+    border-color: #1890ff;
+    height: 55px; /* Tăng chiều cao cho button */
+    font-size: 24px; /* Tăng kích thước font cho button */
+    font-weight: bold;
+    border-radius: 6px;
+  }
 
-.ant-btn-primary {
-  width: 100%;
-  background-color: #1890ff;
-  border-color: #1890ff;
-  height: 40px;
-  font-size: 16px;
-  font-weight: bold;
-}
+  .edit-category-btn {
+    width: 100%;
+    background-color: #ffc107;
+    border-color: #ffc107;
+    height: 55px; /* Tăng chiều cao cho button */
+    font-size: 24px; /* Tăng kích thước font cho button */
+    font-weight: bold;
+    border-radius: 6px;
+  }
 
-.ant-btn-primary:hover {
-  background-color: #40a9ff;
-  border-color: #40a9ff;
-}
+  .add-category-btn:hover {
+    background-color: #40a9ff;
+    border-color: #40a9ff;
+  }
 
-/* Style cho danh sách category */
-ul {
-  list-style: none;
-  padding: 0;
-}
+  .edit-category-btn:hover {
+    background-color: #ffca2c;
+    border-color: #ffca2c;
+  }
 
-ul li {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px;
-  border-bottom: 1px solid #ddd;
-  margin-bottom: 10px;
-}
+  ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
 
-ul li span {
-  font-size: 18px;
-  font-weight: bold;
-}
+  ul li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px; /* Tăng khoảng cách giữa các mục */
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 15px; /* Tăng khoảng cách giữa các dòng */
+    font-size: 24px; /* Tăng kích thước chữ cho các mục trong danh sách */
+  }
 
-.ant-btn-link {
-  font-size: 14px;
-  color: #1890ff;
-  padding: 0;
-  margin-right: 10px;
-}
+  ul li span {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+  }
 
-.ant-btn-link:hover {
-  color: #40a9ff;
-}
+  .ant-btn-link {
+    font-size: 20px; /* Tăng kích thước cho nút Sửa và Xóa */
+    color: #1890ff;
+    padding: 0;
+    margin-right: 10px;
+    flex-shrink: 0;
+  }
 
-.ant-btn-danger {
-  font-size: 14px;
-  color: #ff4d4f;
-}
+  .ant-btn-link:hover {
+    color: #40a9ff;
+  }
 
-.ant-btn-danger:hover {
-  color: #ff7875;
-}
+  .ant-btn-danger {
+    font-size: 20px; /* Tăng kích thước chữ cho nút Xóa */
+    color: #ff4d4f;
+    flex-shrink: 0;
+  }
+
+  .ant-btn-danger:hover {
+    color: #ff7875;
+  }
 }

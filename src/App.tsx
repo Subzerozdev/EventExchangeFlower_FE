@@ -9,7 +9,7 @@ import UpdateProfile from "./pages/updateProfile";
 import VerifyOtp from "./pages/register/VerifyOtp";
 import BlogPage from "./pages/blog";
 import LienHe from "./pages/contact";
-import AdminPage from "./pages/adminPage";
+import AdminPage from "./pages/adminPage/AdminPage";
 import ProtectedRoute from "./components/routes/ProtectedRoute"; // Import ProtectedRoute
 import AddCategory from "./pages/adminPage/CRUDcategory/AddCategory";
 import AllProduct from "./components/product";
@@ -127,22 +127,25 @@ function App() {
       children: [
         {
           path: "",
-          element: <AdminPage />,
-        },
-        {
-          path: "categories",
-          element: <AddCategory />,
-        },
-        {
-          path: "review-posts",
-          element: <ReviewPosts/>,
-        },
-        {
-          path: "types",
-          element: <AddType />,
+          element: <AdminPage />,  // Sử dụng AdminPage làm layout chính
+          children: [
+            {
+              path: "categories",
+              element: <AddCategory />,
+            },
+            {
+              path: "review-posts",
+              element: <ReviewPosts />,
+            },
+            {
+              path: "types",
+              element: <AddType />,
+            },
+          ],
         },
       ],
-    },
+    }
+
   ]);
 
   return (
