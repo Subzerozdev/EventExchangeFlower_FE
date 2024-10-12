@@ -1,0 +1,52 @@
+.manage-posts-container {
+  padding: 20px;
+
+  .add-post-btn {
+    margin-bottom: 20px;
+    background-color: #1890ff;
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  .ant-table {
+    margin-top: 20px;
+  }
+
+  .ant-modal {
+    .ant-modal-header {
+      background-color: #f0f2f5;
+      padding: 16px;
+      border-bottom: 1px solid #d9d9d9;
+    }
+
+    .ant-modal-title {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .ant-form-item {
+      margin-bottom: 16px;
+
+      label {
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      input,
+      textarea {
+        border-radius: 8px;
+        padding: 8px;
+      }
+
+      .ant-select-selector {
+        border-radius: 8px;
+      }
+    }
+
+    .ant-upload-list-picture-card-container {
+      width: 120px;
+      height: 120px;
+    }
+  }
+}

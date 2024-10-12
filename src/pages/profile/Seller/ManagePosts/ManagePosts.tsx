@@ -1,11 +1,11 @@
-import { Table, Button, Form, Input, message, Modal, DatePicker, Select, Upload } from "antd";
+import { Table, Button, Form, Input, message, Modal, DatePicker, Select, Upload, Image } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../../config/api";
 import moment from "moment";
 import { UploadFile } from "antd/lib/upload/interface";
 import { UploadOutlined } from "@ant-design/icons";
 import uploadFile from "../../../../utils/file"; // Hàm upload lên Firebase
-
+import "./ManagePost.scss"
 interface Post {
     id: number;
     name: string;
@@ -34,8 +34,8 @@ function ManagePosts() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [types, setTypes] = useState<Type[]>([]);
-    const [fileList, setFileList] = useState<UploadFile[]>([]); // Khai báo fileList cho imageUrls
-    const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]); // Khai báo fileList cho thumbnail
+    const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [thumbnailList, setThumbnailList] = useState<UploadFile[]>([]);
     const [editingPost, setEditingPost] = useState<Post | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
@@ -103,20 +103,18 @@ function ManagePosts() {
 
     const handleOk = async () => {
         try {
-            let thumbnailUrl = ""; // URL của ảnh thumbnail
-            const imageUrls: string[] = []; // Mảng chứa URL của các ảnh
+            let thumbnailUrl = "";
+            const imageUrls: string[] = [];
 
-            // Nếu có file thumbnail được chọn
             if (thumbnailList.length > 0) {
                 const thumbnailFile = thumbnailList[0].originFileObj as File;
-                thumbnailUrl = await uploadFile(thumbnailFile); // Upload và lấy URL thumbnail
+                thumbnailUrl = await uploadFile(thumbnailFile);
             }
 
-            // Upload từng ảnh trong fileList cho imageUrls
             for (let i = 0; i < fileList.length; i++) {
                 const file = fileList[i].originFileObj as File;
                 const imageUrl = await uploadFile(file);
-                imageUrls.push(imageUrl); // Lưu URL ảnh vào mảng
+                imageUrls.push(imageUrl);
             }
 
             const values = await form.validateFields();
@@ -126,8 +124,8 @@ function ManagePosts() {
                 endDate: values.endDate.toISOString(),
                 category_id: values.category_id,
                 type_id: values.type_id,
-                thumbnail: thumbnailUrl, // Gắn URL thumbnail
-                imageUrls, // Gắn mảng URL ảnh
+                thumbnail: thumbnailUrl,
+                imageUrls,
             };
 
             if (editingPost) {
@@ -150,17 +148,21 @@ function ManagePosts() {
         form.resetFields();
     };
 
-    // Xử lý khi chọn file upload cho thumbnail
     const handleThumbnailChange = ({ fileList }: { fileList: UploadFile[] }) => {
         setThumbnailList(fileList);
     };
 
-    // Xử lý khi chọn file upload cho imageUrls
     const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
         setFileList(fileList);
     };
 
     const columns = [
+        {
+            title: "Hình ảnh",
+            dataIndex: "thumbnail",
+            key: "thumbnail",
+            render: (thumbnail: string) => <Image width={100} src={thumbnail} alt="thumbnail" />,
+        },
         {
             title: "Tên bài đăng",
             dataIndex: "name",
@@ -191,8 +193,8 @@ function ManagePosts() {
     ];
 
     return (
-        <>
-            <Button type="primary" onClick={handleAddNewPost} style={{ marginBottom: 20 }}>
+        <div className="manage-posts-container">
+            <Button type="primary" className="add-post-btn" onClick={handleAddNewPost}>
                 Thêm bài đăng mới
             </Button>
             <Table dataSource={posts} columns={columns} rowKey="id" />
@@ -301,7 +303,7 @@ function ManagePosts() {
                     </Form.Item>
                 </Form>
             </Modal>
-        </>
+        </div>
     );
 }
 

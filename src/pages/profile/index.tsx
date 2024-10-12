@@ -8,16 +8,18 @@ import ManagePosts from "./Seller/ManagePosts/ManagePosts";
 import ManageShop from "./Seller/ManageShop/ManageShop";
 import SellerForm from "./Seller/SellerForm/SellerForm";
 import TermsModal from "./Seller/TermsModal/TermsModal";
+import { useNavigate } from "react-router-dom";
 
 function Profile() {
   const { user, logout } = useUser(); // Lấy hàm logout từ context
+  const navigate = useNavigate();
   const [selectedMenu, setSelectedMenu] = useState("account-info");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showSellerForm, setShowSellerForm] = useState(false); // Để kiểm soát hiển thị SellerForm
 
   const handleLogout = () => {
     logout();
-    window.location.href = "/login"; // Chuyển hướng ra ngoài
+    navigate("/login"); // Chuyển hướng ra ngoài
   };
 
   const onClick: MenuProps['onClick'] = (e) => {
@@ -95,7 +97,7 @@ function Profile() {
               <Descriptions.Item label="Số điện thoại">{user.phone || "Chưa có thông tin"}</Descriptions.Item>
               <Descriptions.Item label="Địa chỉ">{user.address || "Chưa có thông tin"}</Descriptions.Item>
             </Descriptions>
-            <Button type="primary" onClick={() => alert("Chỉnh sửa hồ sơ")} style={{ marginTop: 20 }}>
+            <Button type="primary" onClick={() => navigate("/updateProfile")} style={{ marginTop: 20 }}>
               Chỉnh sửa hồ sơ
             </Button>
           </div>
