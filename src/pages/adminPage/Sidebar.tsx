@@ -39,6 +39,11 @@ function Sidebar({ openSidebarToggle, OpenSidebar }: SidebarProps) {
           </button>
         </li>
         <li className="sidebar-list-item">
+          <button onClick={() => navigate("/admin/review-posts")} className="btn-link">
+            <BsListCheck className="icon" /> Duyệt bài đăng
+          </button>
+        </li>
+        <li className="sidebar-list-item">
           <button onClick={() => navigate("/categories")} className="btn-link">
             <BsFillArchiveFill className="icon" /> Product
           </button>

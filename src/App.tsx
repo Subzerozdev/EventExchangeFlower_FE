@@ -23,6 +23,7 @@ import { useState } from "react";
 import AddType from "./pages/adminPage/CRUDtype/AddType";
 import ProductDetail from "./components/product/detail/ProductDetail";
 import Checkout from "./components/checkOut/checkOut";
+import ReviewPosts from "./pages/adminPage/ReviewPost/ReviewPost";
 
 
 
@@ -89,7 +90,7 @@ function App() {
           path: "checkOut",
           element: <Checkout />,
         },
-        
+
         // Thêm các route dành cho Seller
         {
           path: "seller",
@@ -131,6 +132,10 @@ function App() {
         {
           path: "categories",
           element: <AddCategory />,
+        },
+        {
+          path: "review-posts",
+          element: <ReviewPosts/>,
         },
         {
           path: "types",
