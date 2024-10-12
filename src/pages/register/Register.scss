@@ -4,10 +4,28 @@
   align-items: center;
   min-height: 100vh;
   padding: 20px;
-  background: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Hoa%2FFlower%20project%20(4).png?alt=media&token=316266b5-3c0e-42c3-8800-9e840d606037")
+  background: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Hoa%2FCarousel%2F5.png?alt=media&token=9c18b4bc-dd2d-4735-8dca-d4127d0030f4")
     no-repeat center center;
   margin-top: -0.6%;
   background-size: cover;
+  position: relative; //aleanr
+
+  .ant-alert {
+    position: absolute; // Giúp căn chỉnh vị trí của alert
+    top: 12%; // Đẩy thông báo lên trên cùng
+    left: 50%; // Căn giữa ngang
+    transform: translateX(-50%); // Đảm bảo alert căn giữa chính xác
+    width: 30%; // Chiều rộng của thông báo
+    max-width: 600px; // Giới hạn chiều rộng tối đa
+    z-index: 100; // Đảm bảo nó nổi trên tất cả
+    background-color: #f8d7da; // Màu nền cho thông báo lỗi
+    border-color: #f5c6cb; // Màu viền của alert
+    color: #721c24; // Màu chữ của alert
+    text-align: center; // Căn giữa nội dung
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); // Tạo đổ bóng cho alert
+  }
 
   .register_form {
     background-color: rgba(255, 255, 255, 0.9);
@@ -126,13 +144,6 @@
       &:hover {
         color: red;
       }
-    }
-
-    /* Style cho phần thông báo lỗi */
-    .ant-alert {
-      margin-bottom: 20px;
-
-      font-size: 14px;
     }
   }
 }
