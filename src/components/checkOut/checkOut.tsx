@@ -128,10 +128,11 @@ const Checkout: React.FC = () => {
                 description: "Đơn hàng của bạn đã được xử lý.",
               });
               localStorage.removeItem("cart");
-              setCart([]);
+              setCart([]); //Xóa sản phẩm trong giỏ hàng
               navigate(`/payment-success/${orderData.orderId}`);
             } else {
               // Nếu thanh toán qua VNPAY thất bại
+              localStorage.setItem('paymentFailure', 'true');
               notification.error({
                 message: "Thanh toán không thành công",
                 description: "Thanh toán qua VNPAY thất bại. Vui lòng thử lại.",
