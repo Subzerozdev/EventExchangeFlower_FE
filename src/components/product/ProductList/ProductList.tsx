@@ -11,7 +11,6 @@ import {
   Badge,
   InputNumber,
   Spin,
-
 } from "antd";
 import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./ProductList.scss";
@@ -43,6 +42,9 @@ const ProductList: React.FC = () => {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [categories, setCategories] = useState<string[]>([]); // Thêm state để lưu danh sách loại sản phẩm
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // Lưu loại sản phẩm đã chọn
+  const [minPrice, setMinPrice] = useState<number>(0); // Giá tối thiểu lọc
+  const [maxPrice, setMaxPrice] = useState<number>(Infinity); // Giá tối đa lọc
 
   const navigate = useNavigate();
 
@@ -143,59 +145,67 @@ const ProductList: React.FC = () => {
     setDrawerVisible(!drawerVisible);
   };
 
- // Lọc sản phẩm theo loại
-const filterByCategory = (selectedCategories: string[]) => {
-  setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi bộ lọc
-  if (selectedCategories.length === 0) {
-    setFilteredProducts(productList); // Nếu không chọn gì thì hiển thị tất cả sản phẩm
-  } else {
-    const filtered = productList.filter((product) =>
-      selectedCategories.includes(product.category.name)
-    );
-    setFilteredProducts(filtered);
-  }
-};
+  // Lọc sản phẩm theo loại và giá
+  const filterProducts = (
+    selectedCategories: string[],
+    minPrice: number,
+    maxPrice: number
+  ) => {
+    setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi bộ lọc
+    let filtered = productList;
 
-// Lọc sản phẩm theo giá
-const filterByPrice = (minPrice: number | null, maxPrice: number | null) => {
-  setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi bộ lọc
-  let filtered = productList;
-  if (minPrice !== null && maxPrice !== null) {
-    filtered = filtered.filter(
-      (product) => product.price >= minPrice && product.price <= maxPrice
-    );
-  }
-  setFilteredProducts(filtered);
-};
+    // Lọc theo loại sản phẩm
+    if (selectedCategories.length > 0) {
+      filtered = filtered.filter((product) =>
+        selectedCategories.includes(product.category.name)
+      );
+    }
 
-// Sắp xếp sản phẩm
-const sortProducts = (type: string) => {
-  setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi sắp xếp
-  const sortedProducts = [...filteredProducts];
-  if (type === "az") {
-    sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
-  } else if (type === "za") {
-    sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
-  } else if (type === "newest") {
-    sortedProducts.sort(
-      (a, b) =>
-        new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-    );
-  } else if (type === "priceAsc") {
-    sortedProducts.sort((a, b) => a.price - b.price);
-  } else if (type === "priceDesc") {
-    sortedProducts.sort((a, b) => b.price - a.price);
-  }
-  setFilteredProducts(sortedProducts);
-};
+    // Lọc theo khoảng giá
+    if (minPrice !== null && maxPrice !== null) {
+      filtered = filtered.filter(
+        (product) => product.price >= minPrice && product.price <= maxPrice
+      );
+    }
+
+    setFilteredProducts(filtered); // Cập nhật danh sách sản phẩm sau khi lọc
+  };
+
+  // Sắp xếp sản phẩm
+  const sortProducts = (type: string) => {
+    setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi sắp xếp
+    const sortedProducts = [...filteredProducts];
+    if (type === "az") {
+      sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (type === "za") {
+      sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+    } else if (type === "newest") {
+      sortedProducts.sort(
+        (a, b) =>
+          new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+      );
+    } else if (type === "priceAsc") {
+      sortedProducts.sort((a, b) => a.price - b.price);
+    } else if (type === "priceDesc") {
+      sortedProducts.sort((a, b) => b.price - a.price);
+    }
+    setFilteredProducts(sortedProducts);
+  };
 
   return (
     <div className="product-list">
       <ProductFilter
-        onFilterChange={filterByPrice}
+        onFilterChange={(minPrice, maxPrice) => {
+          setMinPrice(minPrice);
+          setMaxPrice(maxPrice);
+          filterProducts(selectedCategories, minPrice, maxPrice); // Kết hợp bộ lọc giá và loại
+        }}
         onSortChange={sortProducts}
-        onCategoryChange={filterByCategory} // Thêm hàm lọc loại sản phẩm
-        categories={categories} // Truyền danh sách loại sản phẩm vào ProductFilter
+        onCategoryChange={(categories) => {
+          setSelectedCategories(categories); // Lưu loại sản phẩm đã chọn
+          filterProducts(categories, minPrice, maxPrice); // Áp dụng lọc kết hợp
+        }}
+        categories={categories}
       />
 
       <div style={{ position: "fixed", bottom: 20, right: 8 }}>
@@ -208,64 +218,67 @@ const sortProducts = (type: string) => {
       </div>
 
       {loading ? (
-  <Spin size="large" style={{ textAlign: 'center', display: 'block', margin: '20px auto' }} />
-) : (
-  <Row gutter={[16, 16]}>
-    {filteredProducts
-      .slice((currentPage - 1) * pageSize, currentPage * pageSize)
-      .map((product) => (
-        <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
-          <Card
-            hoverable
-            cover={
-              <img
-                alt={product.name}
-                src={product.thumbnail}
-                style={{
-                  width: "100%",
-                  height: "300px",
-                  objectFit: "cover",
-                }}
-              />
-            }
-            onClick={() => navigate(`/productDetail/${product.id}`)}
-          >
-            <Card.Meta
-              title={product.name}
-              description={
-                <div>
-                  <h3>Giá: {product.price.toLocaleString("vi-VN")}₫</h3>
-                  <p>Loại hoa: {product.category.name}</p>
-                  <p>Ngày bắt đầu: {product.start_date}</p>{" "}
-                  <p>Ngày kết thúc: {product.end_date}</p>{" "}
-                  <p>Địa chỉ: {product.address}</p>
-                  <Button
-                    type="primary"
-                    icon={<ShoppingCartOutlined />}
-                    style={{ marginTop: "10px", marginRight: "20px" }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // Ngăn chặn onClick của Card khi bấm vào nút
-                      addToCart(product);
-                    }}
-                  >
-                    Thêm vào giỏ hàng
-                  </Button>
-                </div>
-              }
-            />
-          </Card>
-        </Col>
-      ))}
-  </Row>
-)}
+        <Spin
+          size="large"
+          style={{ textAlign: "center", display: "block", margin: "20px auto" }}
+        />
+      ) : (
+        <Row gutter={[16, 16]}>
+          {filteredProducts
+            .slice((currentPage - 1) * pageSize, currentPage * pageSize)
+            .map((product) => (
+              <Col xs={24} sm={12} md={8} lg={6} key={product.id}>
+                <Card
+                  hoverable
+                  cover={
+                    <img
+                      alt={product.name}
+                      src={product.thumbnail}
+                      style={{
+                        width: "100%",
+                        height: "300px",
+                        objectFit: "cover",
+                      }}
+                    />
+                  }
+                  onClick={() => navigate(`/productDetail/${product.id}`)}
+                >
+                  <Card.Meta
+                    title={product.name}
+                    description={
+                      <div>
+                        <h3>Giá: {product.price.toLocaleString("vi-VN")}₫</h3>
+                        <p>Loại hoa: {product.category.name}</p>
+                        <p>Ngày bắt đầu: {product.start_date}</p>{" "}
+                        <p>Ngày kết thúc: {product.end_date}</p>{" "}
+                        <p>Địa chỉ: {product.address}</p>
+                        <Button
+                          type="primary"
+                          icon={<ShoppingCartOutlined />}
+                          style={{ marginTop: "10px", marginRight: "20px" }}
+                          onClick={(e) => {
+                            e.stopPropagation(); // Ngăn chặn onClick của Card khi bấm vào nút
+                            addToCart(product);
+                          }}
+                        >
+                          Thêm vào giỏ hàng
+                        </Button>
+                      </div>
+                    }
+                  />
+                </Card>
+              </Col>
+            ))}
+        </Row>
+      )}
 
       <Pagination
-  current={currentPage} // Trang hiện tại
-  pageSize={pageSize} // Số sản phẩm mỗi trang
-  total={filteredProducts.length} // Tổng số sản phẩm sau khi lọc
-  onChange={(page) => setCurrentPage(page)} // Cập nhật trang khi người dùng thay đổi
-  style={{ textAlign: "center", marginTop: "20px", marginLeft: "644px" }}
-/>
+        current={currentPage} // Trang hiện tại
+        pageSize={pageSize} // Số sản phẩm mỗi trang
+        total={filteredProducts.length} // Tổng số sản phẩm sau khi lọc
+        onChange={(page) => setCurrentPage(page)} // Cập nhật trang khi người dùng thay đổi
+        style={{ textAlign: "center", marginTop: "20px", marginLeft: "644px" }}
+      />
 
       <Drawer
         title="Giỏ hàng"
@@ -299,7 +312,6 @@ const sortProducts = (type: string) => {
                 <div style={{ flexGrow: 1 }}>
                   <p>{item.name}</p>
                   <InputNumber
-                 
                     min={1}
                     value={item.quantity}
                     onChange={(value) => updateQuantity(item.id, value!)}

@@ -5,7 +5,7 @@ import "./Checkout.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-// Định nghĩa interface cho sản phẩm trong giỏ hàng
+// Interface cho sản phẩm trong giỏ hàng
 interface Product {
   id: number; // Mã sản phẩm
   name: string; // Tên sản phẩm
@@ -14,14 +14,14 @@ interface Product {
   thumbnail: string; // Ảnh đại diện sản phẩm
 }
 
-// Định nghĩa interface cho các giá trị trong form
+// Interface cho các giá trị trong form
 interface FormValues {
-  email?: string; // Email người dùng (tùy chọn)
+  email: string; // Email người dùng (tùy chọn)
   fullname: string; // Họ và tên người dùng
   phone: string; // Số điện thoại người dùng
-  address?: string; // Địa chỉ người dùng
-  note?: string; // Ghi chú cho đơn hàng
-  payment: string; // Phương thức thanh toán
+  address: string; // Địa chỉ người dùng
+  note: string; // Ghi chú cho đơn hàng
+  payment_method: string; // Phương thức thanh toán
 }
 
 const Checkout: React.FC = () => {
@@ -30,154 +30,189 @@ const Checkout: React.FC = () => {
   const [loading, setLoading] = useState(false); // Trạng thái tải khi đặt hàng
   const [form] = Form.useForm(); // Quản lý form
   const [paymentMethod, setPaymentMethod] = useState<string>("COD"); // Phương thức thanh toán
+  const [cart, setCart] = useState<Product[]>([]); // Quản lý giỏ hàng
 
-  // Kiểm tra nếu không có thông tin người dùng thì điều hướng về trang đăng nhập
+  // Lấy giỏ hàng từ localStorage
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      setCart(JSON.parse(storedCart));
+    }
+  }, []);
+
+  // Kiểm tra đăng nhập, điều hướng về trang đăng nhập nếu cần
   useEffect(() => {
     if (!user || !user.email) {
       notification.warning({
         message: "Cần đăng nhập",
         description: "Vui lòng đăng nhập hoặc đăng ký để tiếp tục.",
       });
-      navigate("/login"); // Chuyển đến trang đăng nhập
+      navigate("/login");
     }
   }, [user, navigate]);
 
-  // Hàm xử lý khi người dùng hoàn thành form đặt hàng
-  const onFinish = async (values: FormValues) => {
-    setLoading(true); // Bắt đầu trạng thái tải
-
-    try {
-      // Giả lập logic kiểm tra phương thức thanh toán
-      if (paymentMethod === "VNPAY") {
-        // Nếu chọn thanh toán qua VNPAY, điều hướng đến trang VNPAY
-        navigate("/payment/vnpay", { state: { cart, totalPrice, values } });
-      } else if (paymentMethod === "COD") {
-        // Nếu chọn thanh toán COD, điều hướng đến trang COD
-        navigate("/payment/cod", { state: { cart, totalPrice, values } });
-      }
-
-      notification.success({
-        message: "Tiến hành thanh toán",
-        description: "Bạn sẽ được chuyển tới trang thanh toán.",
-      });
-    } catch (error) {
-      // Nếu có lỗi xảy ra trong quá trình đặt hàng
-      console.error("Error:", error);
-      notification.error({
-        message: "Đặt hàng thất bại",
-        description: "Có lỗi xảy ra khi đặt hàng.",
-      });
-    } finally {
-      setLoading(false); // Kết thúc trạng thái tải
-    } 
-  };
-
-  const [cart, setCart] = useState<Product[]>([]); // Quản lý giỏ hàng
-
-  // Lấy dữ liệu giỏ hàng từ localStorage khi trang được load
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCart(JSON.parse(storedCart)); // Cập nhật giỏ hàng từ localStorage
-    }
-  }, []);
-
-  // Hàm tính tổng giá trị của giỏ hàng
+  // Tính tổng giá trị giỏ hàng
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  // Hàm xóa sản phẩm khỏi giỏ hàng
+  // Xóa sản phẩm khỏi giỏ hàng
   const handleDelete = (id: number) => {
-    const updatedCart = cart.filter((item) => item.id !== id); // Lọc bỏ sản phẩm có ID tương ứng
-    setCart(updatedCart); // Cập nhật lại giỏ hàng
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Lưu giỏ hàng mới vào localStorage
-    notification.success({
-      message: "Sản phẩm đã được xóa", // Thông báo khi xóa thành công
-    });
+    const updatedCart = cart.filter((item) => item.id !== id);
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    notification.success({ message: "Sản phẩm đã được xóa" });
   };
 
-  // Hàm cập nhật số lượng sản phẩm trong giỏ hàng
+  // Cập nhật số lượng sản phẩm trong giỏ hàng
   const handleQuantityChange = (value: number, id: number) => {
     const updatedCart = cart.map((item) =>
       item.id === id ? { ...item, quantity: value } : item
-    ); // Cập nhật số lượng cho sản phẩm tương ứng
-    setCart(updatedCart); // Cập nhật lại giỏ hàng
-    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Lưu thay đổi vào localStorage
+    );
+    setCart(updatedCart);
+    localStorage.setItem("cart", JSON.stringify(updatedCart));
+  };
+
+  // Xử lý khi hoàn thành form đặt hàng
+  const onFinish = async (values: FormValues) => {
+    setLoading(true);
+    try {
+      const payload = {
+        userInfo: {
+          fullname: values.fullname,
+          phone: values.phone,
+          email: values.email || user.email,
+          address: values.address,
+          note: values.note,
+          id: user.id, // Lấy ID người dùng từ context
+        },
+        cartItems: cart, // Giỏ hàng hiện tại
+        totalMoney: totalPrice, // Tổng giá trị giỏ hàng
+        paymentMethod: paymentMethod, // Phương thức thanh toán
+        status: "Pending", // Trạng thái đơn hàng ban đầu là 'Pending'
+        order_date: new Date().toISOString(), // Thêm ngày đặt hàng
+      };
+
+      // Gọi API để lưu thông tin đơn hàng
+      const response = await fetch("/api/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        const orderData = await response.json();
+
+        if (paymentMethod === "VNPAY") {
+          // Giả sử bạn gọi API VNPAY ở đây và nó trả về kết quả thanh toán
+          const vnpayResponse = await fetch("/api/vnpay/payment", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderId: orderData.orderId,
+              totalMoney: totalPrice,
+            }),
+          });
+
+          if (vnpayResponse.ok) {
+            const vnpayResult = await vnpayResponse.json();
+
+            if (vnpayResult.status === "success") {
+              notification.success({
+                message: "Thanh toán thành công",
+                description: "Đơn hàng của bạn đã được xử lý.",
+              });
+              localStorage.removeItem("cart");
+              setCart([]);
+              navigate(`/payment-success/${orderData.orderId}`);
+            } else {
+              // Nếu thanh toán qua VNPAY thất bại
+              notification.error({
+                message: "Thanh toán không thành công",
+                description: "Thanh toán qua VNPAY thất bại. Vui lòng thử lại.",
+              });
+              navigate("/paymentFailure");
+            }
+          } else {
+            throw new Error("Lỗi khi xử lý thanh toán qua VNPAY");
+          }
+        } else {
+          // Thanh toán qua COD
+          notification.success({
+            message: "Đặt hàng thành công",
+            description: "Đơn hàng của bạn đã được gửi đi.",
+          });
+          localStorage.removeItem("cart");
+          setCart([]);
+          navigate(`/payment-success/${orderData.orderId}`);
+        }
+      } else {
+        throw new Error("Thất bại khi đặt hàng");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      notification.error({
+        message: "Đặt hàng thất bại",
+        description: "Có lỗi xảy ra khi đặt hàng.",
+      });
+      navigate("/paymentFailure");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="checkout-container">
       <div className="checkout-form">
-        {/* Form thông tin đặt hàng */}
         <Form layout="vertical" form={form} onFinish={onFinish}>
           <h2>Thông tin nhận hàng</h2>
-          {/* Trường nhập Email */}
+
           <Form.Item name="email" label="Email ">
-            {user.email ? (
-              <>
-                <span>{user.email}</span>
-              </>
-            ) : (
-              <Input placeholder="Email " />
-            )}
+            <span>{user.email}</span>
           </Form.Item>
 
-          {/* Trường nhập Họ và Tên */}
           <Form.Item name="fullname" label="Họ và tên ">
-            {user.fullName ? (
-              <>
-                <span>{user.fullName}</span>
-                <Button type="link" onClick={() => navigate("/updateProfile")}>
-                  Chỉnh sửa
-                </Button>
-              </>
-            ) : (
-              <Input placeholder="Họ và tên" />
-            )}
+            <span>{user.fullName}</span>
+            <Button type="link" onClick={() => navigate("/updateProfile")}>
+              Chỉnh sửa
+            </Button>
           </Form.Item>
 
-          {/* Trường nhập Số điện thoại */}
           <Form.Item name="phone" label="Số điện thoại ">
             <PhoneOutlined style={{ paddingRight: 10, fontSize: 15 }} />
-            {user.phone ? (
-              <>
-                <span>{user.phone}</span>
-                <Button type="link" onClick={() => navigate("/updateProfile")}>
-                  Chỉnh sửa
-                </Button>
-              </>
-            ) : (
-              <Input
-                addonBefore={<PhoneOutlined />}
-                placeholder="Số điện thoại (tùy chọn)"
-              />
-            )}
+            <span>{user.phone}</span>
+            <Button type="link" onClick={() => navigate("/updateProfile")}>
+              Chỉnh sửa
+            </Button>
           </Form.Item>
 
-          {/* Trường nhập Địa chỉ */}
           <Form.Item name="address" label="Địa chỉ (tùy chọn)">
-            {user.address ? (
-              <>
-                <span>{user.address}</span>
-                <Button type="link" onClick={() => navigate("/updateProfile")}>
-                  Chỉnh sửa
-                </Button>
-              </>
-            ) : (
-              <Input placeholder="Địa chỉ" />
-            )}
+            <span>{user.address}</span>
+            <Button type="link" onClick={() => navigate("/updateProfile")}>
+              Chỉnh sửa
+            </Button>
           </Form.Item>
 
-          {/* Trường nhập Ghi chú cho đơn hàng */}
           <Form.Item name="note" label="Ghi chú (tùy chọn)">
             <Input.TextArea placeholder="Ghi chú cho đơn hàng" />
           </Form.Item>
 
           <h2>Thanh toán</h2>
-          {/* Lựa chọn phương thức thanh toán */}
-          <Form.Item name="payment" label="Phương thức thanh toán">
+          <Form.Item
+            name="payment"
+            label="Phương thức thanh toán"
+            rules={[
+              {
+                required: true,
+                message: "Vui lòng chọn phương thức thanh toán!",
+              },
+            ]}
+          >
             <Radio.Group
               onChange={(e) => setPaymentMethod(e.target.value)}
               value={paymentMethod}
@@ -187,10 +222,22 @@ const Checkout: React.FC = () => {
             </Radio.Group>
           </Form.Item>
 
+          {/* Hiển thị thông báo khi chọn COD */}
+          {paymentMethod === "COD" && (
+            <div
+              style={{
+                marginTop: "10px",
+                background: "#f0f0f0",
+                padding: "10px",
+              }}
+            >
+              <p style={{ margin: 0 }}>Bạn sẽ thanh toán khi nhận được hàng</p>
+            </div>
+          )}
+
           <Button type="primary" htmlType="submit" loading={loading}>
             Đặt hàng
           </Button>
-          
         </Form>
       </div>
 
@@ -202,15 +249,11 @@ const Checkout: React.FC = () => {
             <div>
               <p>{item.name}</p>
               <p>{item.price.toLocaleString()}₫</p>
-              {/* Sửa số lượng sản phẩm */}
               <InputNumber
                 min={1}
                 value={item.quantity}
-                onChange={(value) =>
-                  handleQuantityChange(value || 1, item.id)
-                }
+                onChange={(value) => handleQuantityChange(value || 1, item.id)}
               />
-              {/* Nút xóa sản phẩm */}
               <Button
                 type="link"
                 icon={<DeleteOutlined />}
@@ -221,10 +264,8 @@ const Checkout: React.FC = () => {
             </div>
           </div>
         ))}
-        <div className="checkout-summary" >
-        
+        <div className="checkout-summary">
           <p>Tổng cộng: {totalPrice.toLocaleString()}₫</p>
-
         </div>
       </div>
     </div>

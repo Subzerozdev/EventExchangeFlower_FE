@@ -151,7 +151,7 @@ const ProductDetail: React.FC = () => {
                   <img
                     alt={product.name}
                     src={product.thumbnail}
-                    className="product-thumbnail" // Sử dụng class SCSS để định dạng thumbnail
+                    className="product-thumbnail" 
                   />
                 }
               />

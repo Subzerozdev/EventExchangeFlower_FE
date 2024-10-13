@@ -24,6 +24,8 @@ import AddType from "./pages/adminPage/CRUDtype/AddType";
 import ProductDetail from "./components/product/detail/ProductDetail";
 import Checkout from "./components/checkOut/checkOut";
 import ReviewPosts from "./pages/adminPage/ReviewPost/ReviewPost";
+import PaymentSuccess from "./components/checkOut/payment/success/PaymentSuccess";
+import PaymentFailure from "./components/checkOut/payment/failure/PaymentFaillure";
 
 
 
@@ -89,6 +91,14 @@ function App() {
         {
           path: "checkOut",
           element: <Checkout />,
+        },
+        {
+          path: "paymentSuccess",
+          element: <PaymentSuccess />,
+        },
+        {
+          path: "paymentFailure",
+          element: <PaymentFailure />,
         },
 
         // Thêm các route dành cho Seller
