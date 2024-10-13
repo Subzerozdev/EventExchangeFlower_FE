@@ -10,14 +10,20 @@ import {
   message,
   Badge,
   Drawer,
+  Image,
 } from "antd";
 import {
   ShoppingCartOutlined,
   ShoppingOutlined,
   DeleteOutlined,
-} from "@ant-design/icons"; // Thêm icon Delete
+} from "@ant-design/icons";
 import api from "../../../config/api";
 import "./ProductDetail.scss";
+
+interface ImageData {
+  id: number;
+  imageUrl: string;
+}
 
 interface Product {
   id: number;
@@ -28,7 +34,8 @@ interface Product {
   address: string;
   start_date: string;
   end_date: string;
-  category: { id: number; name: string }; // Update category to include both id and name
+  category: { id: number; name: string };
+  imageUrls: ImageData[];
 }
 
 interface CartItem extends Product {
@@ -39,26 +46,24 @@ const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState<number>(1); // Thêm số lượng
-  const [cart, setCart] = useState<CartItem[]>([]); // Giỏ hàng
-  const [drawerVisible, setDrawerVisible] = useState(false); // Trạng thái hiển thị của giỏ hàng
-  const navigate = useNavigate(); // Sử dụng useNavigate để điều hướng
-  // Tải giỏ hàng từ localStorage khi trang được tải
+  const [quantity, setQuantity] = useState<number>(1);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
-      setCart(JSON.parse(storedCart)); // Lấy dữ liệu từ localStorage và cập nhật lại giỏ hàng
+      setCart(JSON.parse(storedCart));
     }
   }, []);
 
-  // Lưu giỏ hàng vào localStorage khi giỏ hàng thay đổi
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Hàm chuyển đổi LocalDateTime sang chuỗi
   const formatDateTime = (dateTime: string): string => {
-    const date = new Date(dateTime); // Convert LocalDateTime to Date object
+    const date = new Date(dateTime);
     return date.toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "2-digit",
@@ -66,21 +71,19 @@ const ProductDetail: React.FC = () => {
     });
   };
 
-  // Gọi API để lấy dữ liệu sản phẩm
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await api.get<Product>(`/posts/${id}`);
         const productData = response.data;
 
-        // Format start_date and end_date
         const formattedProduct = {
           ...productData,
           start_date: formatDateTime(productData.start_date),
           end_date: formatDateTime(productData.end_date),
         };
 
-        setProduct(formattedProduct); // Update product with formatted dates
+        setProduct(formattedProduct);
         setLoading(false);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu sản phẩm:", error);
@@ -90,55 +93,48 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [id]);
 
-  // Hàm thêm sản phẩm vào giỏ hàng
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id); // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+      const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
         return prevCart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + quantity } // Nếu có rồi thì tăng số lượng
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
       } else {
-        return [...prevCart, { ...product, quantity }]; // Nếu chưa có, thêm mới sản phẩm vào giỏ hàng
+        return [...prevCart, { ...product, quantity }];
       }
     });
-    message.success(`${product.name} đã được thêm vào giỏ hàng`); // Thông báo khi thêm vào giỏ
+    message.success(`${product.name} đã được thêm vào giỏ hàng`);
   };
 
-  // Hàm điều hướng đến trang thanh toán
   const navigateToCheckout = () => {
-    navigate("/checkout"); // Điều hướng đến trang thanh toán
+    navigate("/checkout");
     message.success('Thanh Toán');
   };
 
-  // Hàm xóa sản phẩm khỏi giỏ hàng
   const removeFromCart = (id: number) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== id)); // Xóa sản phẩm khỏi giỏ hàng
+    setCart((prevCart) => prevCart.filter((item) => item.id !== id));
     message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
-  // Cập nhật số lượng sản phẩm trong giỏ hàng
   const updateQuantity = (id: number, quantity: number) => {
     setCart((prevCart) =>
       prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
-  // Tính tổng giá trị giỏ hàng
   const calculateTotal = () => {
     return cart.reduce((total, item) => {
       return total + item.price * item.quantity;
     }, 0);
   };
 
-  // Hiển thị/Ẩn Drawer giỏ hàng
   const toggleDrawer = () => {
     setDrawerVisible(!drawerVisible);
   };
 
-  // Nếu dữ liệu sản phẩm chưa tải xong thì hiển thị loading
   if (loading) {
     return <Spin size="large" />;
   }
@@ -155,15 +151,24 @@ const ProductDetail: React.FC = () => {
                   <img
                     alt={product.name}
                     src={product.thumbnail}
-                    style={{
-                      width: "100%",
-                      height: "510px",
-                      objectFit: "cover",
-                      borderRadius: "10px",
-                    }} // Rounded image corners
+                    className="product-thumbnail" // Sử dụng class SCSS để định dạng thumbnail
                   />
                 }
               />
+              <div className="additional-images">
+                <Image.PreviewGroup>
+                  {product.imageUrls && product.imageUrls.map((image, index) => (
+                    <Image
+                      key={index}
+                      src={image.imageUrl}
+                      alt={`Image ${index}`}
+                      width={100}
+                      height={100}
+                      className="additional-image" // Sử dụng class SCSS cho ảnh nhỏ
+                    />
+                  ))}
+                </Image.PreviewGroup>
+              </div>
             </Col>
             <Col span={12}>
               <h1>{product.name}</h1>
@@ -197,7 +202,6 @@ const ProductDetail: React.FC = () => {
                   onClick={() => {
                     addToCart(product);
                     navigateToCheckout();
-                     // Chuyển đến trang thanh toán
                   }}
                 >
                   Mua ngay
@@ -206,57 +210,32 @@ const ProductDetail: React.FC = () => {
                   size="large"
                   icon={<ShoppingCartOutlined />}
                   style={{ marginLeft: "10px", borderRadius: "5px" }}
-                  onClick={() => addToCart(product)} // Thêm sản phẩm vào giỏ hàng
+                  onClick={() => addToCart(product)}
                 >
                   Thêm vào giỏ
                 </Button>
               </div>
               <div className="product-description">
                 <h3>Thông tin sản phẩm</h3>
-                <p>Loại sản phẩm: {product.category.name}</p>{" "}
-                {/* Hiển thị tên loại sản phẩm */}
+                <p>Loại sản phẩm: {product.category.name}</p>
                 <p>Miêu tả: {product.description}</p>
                 <p>Địa chỉ: {product.address}</p>
                 <p>
                   Thời gian: {product.start_date} - {product.end_date}
-                </p>{" "}
-                {/* Hiển thị thời gian bắt đầu và kết thúc */}
-              </div>
-
-              <div className="product-description2">
-                <h4>THÔNG TIN CHUNG CÁC SẢN PHẨM</h4>
-                <ul>
-                  <li>
-                    1. Giá cả có thể thay đổi: Giá hoa tươi có thể biến động...
-                  </li>
-                  <li>
-                    2. Màu sắc hoa có thể khác biệt do điều kiện ánh sáng...
-                  </li>
-                  <li>
-                    3. Hoa theo mùa: Một số loại hoa có thể thay đổi theo mùa...
-                  </li>
-                  <li>
-                    4. Sản phẩm có thể khác ảnh mẫu nhưng sẽ giống ít nhất
-                    80%...
-                  </li>
-                </ul>
+                </p>
               </div>
             </Col>
           </Row>
 
-          {/* Icon giỏ hàng ở góc dưới bên phải */}
           <div style={{ position: "fixed", bottom: 20, right: 8 }}>
             <Badge count={cart.length}>
-              {" "}
-              {/* Hiển thị số lượng sản phẩm trong giỏ */}
               <ShoppingCartOutlined
                 style={{ fontSize: "32px", cursor: "pointer" }}
-                onClick={toggleDrawer} // Khi click vào biểu tượng giỏ hàng sẽ mở Drawer
+                onClick={toggleDrawer}
               />
             </Badge>
           </div>
 
-          {/* Drawer giỏ hàng */}
           <Drawer
             title="Giỏ hàng"
             placement="right"
@@ -291,7 +270,7 @@ const ProductDetail: React.FC = () => {
                       <InputNumber
                         min={1}
                         value={item.quantity}
-                        onChange={(value) => updateQuantity(item.id, value!)} // Cập nhật số lượng sản phẩm trong giỏ
+                        onChange={(value) => updateQuantity(item.id, value!)}
                       />
                     </div>
                     <div style={{ marginLeft: "10px" }}>
@@ -303,7 +282,7 @@ const ProductDetail: React.FC = () => {
                       icon={<DeleteOutlined />}
                       type="link"
                       danger
-                      onClick={() => removeFromCart(item.id)} // Xóa sản phẩm khỏi giỏ hàng
+                      onClick={() => removeFromCart(item.id)}
                     >
                       Xóa
                     </Button>
@@ -313,10 +292,14 @@ const ProductDetail: React.FC = () => {
                   <h3>
                     Tổng số tiền: {calculateTotal().toLocaleString("vi-VN")}₫
                   </h3>
-                  <Button type="primary" style={{ marginTop: "10px" }} onClick={() => {
-                    addToCart(product);
-                    navigateToCheckout(); // Chuyển đến trang thanh toán
-                  }}>
+                  <Button
+                    type="primary"
+                    style={{ marginTop: "10px" }}
+                    onClick={() => {
+                      addToCart(product);
+                      navigateToCheckout();
+                    }}
+                  >
                     Thanh Toán
                   </Button>
                 </div>
