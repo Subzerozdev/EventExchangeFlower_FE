@@ -4,6 +4,7 @@ import { PhoneOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Checkout.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
+import api from "../../config/api";
 
 // Interface cho sản phẩm trong giỏ hàng
 interface Product {
@@ -75,67 +76,61 @@ const Checkout: React.FC = () => {
   };
 
   // Xử lý khi hoàn thành form đặt hàng
+  // Xử lý khi hoàn thành form đặt hàng
+  // Xử lý khi hoàn thành form đặt hàng
+  // Xử lý khi hoàn thành form đặt hàng
+  // Xử lý khi hoàn thành form đặt hàng
   const onFinish = async (values: FormValues) => {
     setLoading(true);
+
+    // Kiểm tra nếu giỏ hàng trống
+    if (cart.length === 0) {
+      notification.error({
+        message: "Giỏ hàng trống",
+        description:
+          "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
+      });
+      setLoading(false);
+      return; // Dừng lại nếu không có sản phẩm trong giỏ hàng
+    }
+
     try {
       const payload = {
-        userInfo: {
-          fullname: values.fullname,
-          phone: values.phone,
-          email: values.email || user.email,
-          address: values.address,
-          note: values.note,
-          id: user.id, // Lấy ID người dùng từ context
-        },
-        cartItems: cart, // Giỏ hàng hiện tại
-        totalMoney: totalPrice, // Tổng giá trị giỏ hàng
+        fullName: user.fullName, // Họ và tên người dùng
+        phoneNumber: user.phone, // Số điện thoại người dùng
+        email: user.email, // Email người dùng
+        address: user.address, // Địa chỉ người dùng
+        note: values.note || "", // Ghi chú đơn hàng
         paymentMethod: paymentMethod, // Phương thức thanh toán
-        status: "Pending", // Trạng thái đơn hàng ban đầu là 'Pending'
-        order_date: new Date().toISOString(), // Thêm ngày đặt hàng
+        totalMoney: totalPrice, // Tổng giá trị đơn hàng
+        orderDetails: cart.map((item) => ({
+          postID: item.id,
+          numberOfProducts: item.quantity,
+        })), // Chi tiết sản phẩm trong giỏ hàng
       };
 
       // Gọi API để lưu thông tin đơn hàng
-      const response = await fetch("/api/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const response = await api.post("/api/orders", payload);
 
-      if (response.ok) {
-        const orderData = await response.json();
-
+      if (response.status === 200) {
+        // Nếu thanh toán qua VNPAY
         if (paymentMethod === "VNPAY") {
-          // Giả sử bạn gọi API VNPAY ở đây và nó trả về kết quả thanh toán
-          const vnpayResponse = await fetch("/api/vnpay/payment", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              orderId: orderData.orderId,
-              totalMoney: totalPrice,
-            }),
-          });
+          // const vnpayResponse = await api.post("/api/vnpay/payment", {
+          //   orderId: orderData.orderId,
+          //   totalMoney: totalPrice,
+          // });
 
-          if (vnpayResponse.ok) {
-            const vnpayResult = await vnpayResponse.json();
+          if (response.status === 200) {
+            const vnpayResult = response.data;
 
-            if (vnpayResult.status === "success") {
-              notification.success({
-                message: "Thanh toán thành công",
-                description: "Đơn hàng của bạn đã được xử lý.",
-              });
-              localStorage.removeItem("cart");
-              setCart([]); //Xóa sản phẩm trong giỏ hàng
-              navigate(`/payment-success/${orderData.orderId}`);
+            // Kiểm tra nếu nhận được URL thanh toán từ VNPAY
+            if (vnpayResult) {
+              // Điều hướng tới trang thanh toán qua VNPAY
+              window.location.href = vnpayResult;
             } else {
-              // Nếu thanh toán qua VNPAY thất bại
-              localStorage.setItem('paymentFailure', 'true');
               notification.error({
-                message: "Thanh toán không thành công",
-                description: "Thanh toán qua VNPAY thất bại. Vui lòng thử lại.",
+                message: "Lỗi thanh toán",
+                description: "Không nhận được URL thanh toán từ VNPAY.",
               });
               navigate("/paymentFailure");
             }
@@ -143,14 +138,14 @@ const Checkout: React.FC = () => {
             throw new Error("Lỗi khi xử lý thanh toán qua VNPAY");
           }
         } else {
-          // Thanh toán qua COD
+          // Thanh toán bằng COD
           notification.success({
             message: "Đặt hàng thành công",
             description: "Đơn hàng của bạn đã được gửi đi.",
           });
           localStorage.removeItem("cart");
-          setCart([]);
-          navigate(`/payment-success/${orderData.orderId}`);
+          setCart([]); // Clear the cart
+          navigate(`/paymentSuccess`);
         }
       } else {
         throw new Error("Thất bại khi đặt hàng");

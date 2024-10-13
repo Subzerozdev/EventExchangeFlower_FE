@@ -93,6 +93,29 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [id]);
 
+  // Cập nhật lại hàm addToCart để sử dụng callback cho navigate
+  const addToCartAndNavigate = (product: Product) => {
+    setCart((prevCart) => {
+      const existingItem = prevCart.find((item) => item.id === product.id);
+      if (existingItem) {
+        return prevCart.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      } else {
+        return [...prevCart, { ...product, quantity }];
+      }
+    });
+    message.success(`${product.name} đã được thêm vào giỏ hàng`, () => {
+      navigateToCheckout();
+    });
+  };
+
+  const navigateToCheckout = () => {
+    navigate("/checkout");
+  };
+
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
@@ -107,11 +130,6 @@ const ProductDetail: React.FC = () => {
       }
     });
     message.success(`${product.name} đã được thêm vào giỏ hàng`);
-  };
-
-  const navigateToCheckout = () => {
-    navigate("/checkout");
-    message.success('Thanh Toán');
   };
 
   const removeFromCart = (id: number) => {
@@ -200,8 +218,7 @@ const ProductDetail: React.FC = () => {
                     borderRadius: "5px",
                   }}
                   onClick={() => {
-                    addToCart(product);
-                    navigateToCheckout();
+                    addToCartAndNavigate(product);
                   }}
                 >
                   Mua ngay
@@ -295,10 +312,7 @@ const ProductDetail: React.FC = () => {
                   <Button
                     type="primary"
                     style={{ marginTop: "10px" }}
-                    onClick={() => {
-                      addToCart(product);
-                      navigateToCheckout();
-                    }}
+                    onClick={navigateToCheckout}
                   >
                     Thanh Toán
                   </Button>

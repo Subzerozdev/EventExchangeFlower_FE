@@ -1,17 +1,17 @@
-import React from 'react';
+import React from "react";
 // import  { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { Button, Result } from 'antd';
-import './PaymentSuccess.scss';
+import { useNavigate } from "react-router-dom";
+import { Button, Result } from "antd";
+import "./PaymentSuccess.scss";
 
 const PaymentSuccess: React.FC = () => {
-  const { orderId } = useParams(); // Lấy mã đơn hàng từ URL
+  // const { orderId } = useParams(); // Lấy mã đơn hàng từ URL
   const navigate = useNavigate();
   // const [isAuthorized, setIsAuthorized] = useState(false);
 
   // useEffect(() => {
   //   const paymentSuccess = localStorage.getItem('paymentSuccess');
-    
+
   //   if (!paymentSuccess || paymentSuccess !== 'true') {
   //     // Nếu không có trạng thái thanh toán thành công, điều hướng về trang sản phẩm
   //     navigate('/productList');
@@ -24,7 +24,7 @@ const PaymentSuccess: React.FC = () => {
   // }, [navigate]);
 
   const handleContinuteShopping = () => {
-    navigate('/productList');
+    navigate("/productList");
   };
 
   // Chỉ hiển thị nội dung khi người dùng được ủy quyền (đã thanh toán)
@@ -37,9 +37,14 @@ const PaymentSuccess: React.FC = () => {
       <Result
         status="success"
         title="Thanh toán thành công"
-        subTitle={`Mã số đơn hàng của bạn là ${orderId}. Bạn có thể xem chi tiết trong đơn hàng của tôi.`}
+        subTitle={`Đơn hàng của bạn đã được đăt. Cảm ơn bạn đã đặt hàng.`}
         extra={[
-          <Button key="buy" type="primary" className="continue-button" onClick={handleContinuteShopping}>
+          <Button
+            key="buy"
+            type="primary"
+            className="continue-button"
+            onClick={handleContinuteShopping}
+          >
             Tiếp tục mua hàng
           </Button>,
         ]}

@@ -27,10 +27,6 @@ import ReviewPosts from "./pages/adminPage/ReviewPost/ReviewPost";
 import PaymentSuccess from "./components/checkOut/payment/success/PaymentSuccess";
 import PaymentFailure from "./components/checkOut/payment/failure/PaymentFaillure";
 
-
-
-
-
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -93,7 +89,7 @@ function App() {
           element: <Checkout />,
         },
         {
-          path: "paymentSuccess",
+          path: "/paymentSuccess",
           element: <PaymentSuccess />,
         },
         {
@@ -123,7 +119,7 @@ function App() {
                 <TermsModal
                   isModalVisible={isModalVisible}
                   setIsModalVisible={setIsModalVisible}
-                  onAgree={handleAgree}  // Truyền hàm onAgree vào TermsModal
+                  onAgree={handleAgree} // Truyền hàm onAgree vào TermsModal
                 />
               ),
             },
@@ -137,7 +133,7 @@ function App() {
       children: [
         {
           path: "",
-          element: <AdminPage />,  // Sử dụng AdminPage làm layout chính
+          element: <AdminPage />, // Sử dụng AdminPage làm layout chính
           children: [
             {
               path: "categories",
@@ -154,8 +150,7 @@ function App() {
           ],
         },
       ],
-    }
-
+    },
   ]);
 
   return (
