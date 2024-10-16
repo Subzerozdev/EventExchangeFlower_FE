@@ -76,14 +76,10 @@ const Checkout: React.FC = () => {
   };
 
   // Xử lý khi hoàn thành form đặt hàng
-  // Xử lý khi hoàn thành form đặt hàng
-  // Xử lý khi hoàn thành form đặt hàng
-  // Xử lý khi hoàn thành form đặt hàng
-  // Xử lý khi hoàn thành form đặt hàng
+
   const onFinish = async (values: FormValues) => {
     setLoading(true);
 
-    // Kiểm tra nếu giỏ hàng trống
     if (cart.length === 0) {
       notification.error({
         message: "Giỏ hàng trống",
@@ -91,54 +87,64 @@ const Checkout: React.FC = () => {
           "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
       });
       setLoading(false);
-      return; // Dừng lại nếu không có sản phẩm trong giỏ hàng
+      return;
     }
 
     try {
       const payload = {
-        fullName: user.fullName, // Họ và tên người dùng
-        phoneNumber: user.phone, // Số điện thoại người dùng
-        email: user.email, // Email người dùng
-        address: user.address, // Địa chỉ người dùng
-        note: values.note || "", // Ghi chú đơn hàng
-        paymentMethod: paymentMethod, // Phương thức thanh toán
-        totalMoney: totalPrice, // Tổng giá trị đơn hàng
+        fullName: user.fullName,
+        phoneNumber: user.phone,
+        email: user.email,
+        address: user.address,
+        note: values.note || "",
+        paymentMethod: paymentMethod,
+        totalMoney: totalPrice,
         orderDetails: cart.map((item) => ({
           postID: item.id,
           numberOfProducts: item.quantity,
-        })), // Chi tiết sản phẩm trong giỏ hàng
+        })),
       };
 
-      // Gọi API để lưu thông tin đơn hàng
       const response = await api.post("/api/orders", payload);
 
       if (response.status === 200) {
+        // Cập nhật trạng thái sản phẩm sau khi thanh toán thành công
+        const updateStatus = async () => {
+          try {
+            await Promise.all(
+              cart.map(async (item) => {
+                await api.patch(`/posts/${item.id}`, { status: "PENDING" });
+              })
+            );
+          } catch (error) {
+            console.error("Error updating status:", error); 
+          }
+        };
+
         // Nếu thanh toán qua VNPAY
         if (paymentMethod === "VNPAY") {
-          // const vnpayResponse = await api.post("/api/vnpay/payment", {
-          //   orderId: orderData.orderId,
-          //   totalMoney: totalPrice,
-          // });
-
-          if (response.status === 200) {
-            const vnpayResult = response.data;
-
-            // Kiểm tra nếu nhận được URL thanh toán từ VNPAY
-            if (vnpayResult) {
-              // Điều hướng tới trang thanh toán qua VNPAY
-              window.location.href = vnpayResult;
+          const vnpayResult = response.data;
+        
+          if (vnpayResult) {
+            await updateStatus(); // Cập nhật trạng thái trước khi chuyển hướng đến VNPay
+            window.location.href = vnpayResult; // Điều hướng tới trang thanh toán qua VNPay
+          } else {
+            // Trường hợp thanh toán bị hủy hoặc thất bại từ phía VNPay
+            const failureUrl = response.data.failureUrl;
+            if (failureUrl) {
+              window.location.href = failureUrl; // Điều hướng đến trang thất bại
             } else {
               notification.error({
                 message: "Lỗi thanh toán",
-                description: "Không nhận được URL thanh toán từ VNPAY.",
+                description: "Không nhận được URL thanh toán từ VNPay.",
               });
               navigate("/paymentFailure");
-            }
-          } else {
-            throw new Error("Lỗi khi xử lý thanh toán qua VNPAY");
           }
+        }
+        // Thanh toán bằng COD
         } else {
-          // Thanh toán bằng COD
+          
+          await updateStatus(); // Cập nhật trạng thái cho sản phẩm
           notification.success({
             message: "Đặt hàng thành công",
             description: "Đơn hàng của bạn đã được gửi đi.",

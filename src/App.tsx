@@ -29,6 +29,8 @@ import PaymentFailure from "./components/checkOut/payment/failure/PaymentFaillur
 import ForgotPassword from "./pages/register/ForgotPassword/ForgotPassword";
 import ResetPassword from "./pages/register/ForgotPassword/ResetPassword";
 import VerifyOtpForgotPassword from "./pages/register/ForgotPassword/VerifyOtpForgotPassword";
+import LoadingPage from "./components/checkOut/payment/loading/loadingPage";
+import ProductList from "./components/product/ProductList/ProductList";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -100,12 +102,20 @@ function App() {
           element: <AllProduct />,
         },
         {
+          path:"posts/:id",
+          element: <ProductList/> 
+        },
+        {
           path: "productDetail/:id",
           element: <ProductDetail />,
         },
         {
           path: "checkOut",
           element: <Checkout />,
+        },
+        {
+          path: "/loadingPage",
+          element: <LoadingPage />,
         },
         {
           path: "/paymentSuccess",
@@ -115,6 +125,7 @@ function App() {
           path: "paymentFailure",
           element: <PaymentFailure />,
         },
+
 
         // Thêm các route dành cho Seller
         {
