@@ -130,7 +130,9 @@ function Login() {
           >
             <Input.Password placeholder="Mật khẩu" />
           </Form.Item>
-
+          <div className="forgot-password">
+            <a onClick={() => navigate("/forgot-password")}>Quên mật khẩu?</a>
+          </div>
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Đăng nhập

@@ -26,6 +26,9 @@ import Checkout from "./components/checkOut/checkOut";
 import ReviewPosts from "./pages/adminPage/ReviewPost/ReviewPost";
 import PaymentSuccess from "./components/checkOut/payment/success/PaymentSuccess";
 import PaymentFailure from "./components/checkOut/payment/failure/PaymentFaillure";
+import ForgotPassword from "./pages/register/ForgotPassword/ForgotPassword";
+import ResetPassword from "./pages/register/ForgotPassword/ResetPassword";
+import VerifyOtpForgotPassword from "./pages/register/ForgotPassword/VerifyOtpForgotPassword";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -51,6 +54,21 @@ function App() {
           element: <Login />,
         },
         {
+          path: "forgot-password/verify-otp", // Đường dẫn mới cho quên mật khẩu
+          element: <VerifyOtpForgotPassword />,
+        },
+        {
+          path: "forgot-password",
+          element: <ForgotPassword />,
+        }, {
+          path: "forgot-password/reset-password",
+          element: <ResetPassword />,
+        },
+        {
+          path: "VerifyOtp",
+          element: <VerifyOtp />,
+        },
+        {
           path: "register",
           element: <Register />,
           children: [
@@ -58,6 +76,7 @@ function App() {
               path: "VerifyOtp",
               element: <VerifyOtp />,
             },
+
           ],
         },
         {

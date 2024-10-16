@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import api from '../../config/api';
+import api from '../../../config/api';
 import { useNavigate } from 'react-router-dom';
-import './OTPInput.scss';
 
-interface OTPInputProps {
+
+interface OTPInputForgotPasswordProps {
     userID: string;
 }
 
-function OTPInput({ userID }: OTPInputProps) {
+function OTPInputForgotPassword({ userID }: OTPInputForgotPasswordProps) {
     const [otp, setOtp] = useState('');
     const [error, setError] = useState('');
     const [attempt, setAttempt] = useState(0);
@@ -17,7 +17,7 @@ function OTPInput({ userID }: OTPInputProps) {
         try {
             const response = await api.post(`/verification/${otp}/${userID}`);
             if (response.data === "OTP Verify!!") {
-                navigate("/login");
+                navigate("/forgot-password/reset-password", { state: { userID } });
             } else {
                 throw new Error('Invalid OTP');
             }
@@ -27,8 +27,8 @@ function OTPInput({ userID }: OTPInputProps) {
             const newAttempt = attempt + 1;
             setAttempt(newAttempt);
             if (newAttempt >= 4) {
-                setError('Bạn nhập quá số lần thử. Đang chuyển về trang đăng ký.');
-                setTimeout(() => window.location.href = "/register", 3000);
+                setError('Bạn đã nhập quá số lần thử. Đang chuyển về trang quên mật khẩu.');
+                setTimeout(() => window.location.href = "/forgot-password", 3000);
             }
         }
     };
@@ -52,4 +52,4 @@ function OTPInput({ userID }: OTPInputProps) {
     );
 }
 
-export default OTPInput;
+export default OTPInputForgotPassword;

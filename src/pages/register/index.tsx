@@ -72,7 +72,7 @@ function Register() {
         setUserID(response.data); // Lưu email vào state để truyền cho OTPInput
         setIsOtpSent(true); // Kích hoạt OTP sau khi đăng ký thành công
         message.success("Đăng ký thành công! Vui lòng xác nhận OTP.");
-        await api.post(`/vertification/${response.data}`); // Gửi yêu cầu API để gửi OTP qua email
+        await api.post(`/verification/${response.data}`); // Gửi yêu cầu API để gửi OTP qua email
         navigate("/register/verifyOtp", { state: { userID: response.data } });
       } else {
         setAlertMessage(response?.data?.message || "Đăng ký thất bại!");
