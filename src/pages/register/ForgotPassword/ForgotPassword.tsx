@@ -2,6 +2,7 @@ import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../../config/api";
 import { AxiosError } from "axios";
+import "./ForgotPassword.scss";
 
 function ForgotPassword() {
     const navigate = useNavigate();
@@ -9,7 +10,7 @@ function ForgotPassword() {
     const onFinish = async (values: { email: string }) => {
         try {
             const response = await api.post("/auth/password", { email: values.email });
-            await api.post(`/verification/${response.data}`); // Gửi yêu cầu API để gửi OTP qua email
+            await api.post(`/verification/${response.data}`);
             message.success("OTP đã được gửi đến email của bạn!");
             navigate("/forgot-password/verify-otp", { state: { userID: response.data } });
         } catch (error) {
@@ -24,7 +25,7 @@ function ForgotPassword() {
 
     return (
         <div className="forgot-password">
-            <h2>Quên mật khẩu</h2>
+            <h2>Vui lòng nhập vào email cần đặt lại mật khẩu bên dưới</h2>
             <Form onFinish={onFinish}>
                 <Form.Item
                     name="email"

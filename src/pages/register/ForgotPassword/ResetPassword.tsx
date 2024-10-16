@@ -2,7 +2,7 @@ import { Button, Form, Input, message } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../../config/api";
 import { AxiosError } from "axios";
-
+import "./ResetPassword.scss";
 function ResetPassword() {
     const location = useLocation();
     const { userID } = location.state || {};

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import api from '../../../config/api';
 import { useNavigate } from 'react-router-dom';
-
+import "./OTPInputForgotPassword.scss";
 
 interface OTPInputForgotPasswordProps {
     userID: string;

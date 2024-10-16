@@ -1,7 +1,7 @@
-import Footer from '../../../components/footer/footer';// Import Footer
+
 import { useLocation } from 'react-router-dom'; // Import useLocation từ react-router-dom
 import OTPInputForgotPassword from './OTPInputForgotPassword';// Import OTPInput cho quên mật khẩu
-
+import "./VerifyOtpForgotPassword.scss";
 
 function VerifyOtpForgotPassword() {
     const location = useLocation(); // lấy dữ liệu từ navigate
@@ -16,10 +16,10 @@ function VerifyOtpForgotPassword() {
         <div className="verify-otp">
             <div className="otp-overlay"></div> {/* Overlay làm mờ */}
             <div className="otp-container"> {/* Container để focus vào phần OTP */}
-                <h2>Xác nhận OTP Quên Mật Khẩu</h2>
+                <h2>Nhập vào mã OTP để đặt lại mật khẩu</h2>
                 <OTPInputForgotPassword userID={userID} /> {/* Truyền userID vào OTPInput */}
             </div>
-            <Footer /> {/* Hiển thị footer */}
+
         </div>
     );
 }
