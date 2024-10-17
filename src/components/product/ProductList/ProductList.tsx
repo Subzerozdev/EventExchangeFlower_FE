@@ -27,6 +27,7 @@ interface Product {
   start_date: string;
   end_date: string;
   category: { id: number; name: string }; // Category
+  status: string;
 }
 
 interface CartItem extends Product {
@@ -87,7 +88,9 @@ const ProductList: React.FC = () => {
             typeof product.price === "string"
               ? parseFloat(product.price)
               : product.price,
-        }));
+        }))
+          .filter((product) => product.status === "APPROVE");
+
 
         // Lấy danh sách loại sản phẩm duy nhất từ sản phẩm
         const uniqueCategories = Array.from(
