@@ -20,7 +20,7 @@ const LoadingPage: React.FC = () => {
         const response = await api.get(
           `/payment/vnpay/callback?vnp_ResponseCode=${responseCode}&orderID=${orderId}`
         );
-
+        await api.post(`/api/transactions?orderID=${orderId}`);
         if (response.status === 200) {
           // Nếu thanh toán thành công, chuyển hướng đến trang thanh toán thành công
           navigate("/paymentSuccess");
