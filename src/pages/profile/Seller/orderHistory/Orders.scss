@@ -1,0 +1,17 @@
+.order_container {
+    h2 {
+      font-size: 24px;
+      margin-bottom: 16px;
+    }
+  
+    .ant-table-thead > tr > th {
+      background-color: #d48429; // Màu vàng nâu theo yêu cầu
+      color: white;
+      text-align: center;
+    }
+  
+    .ant-table-tbody > tr > td {
+      text-align: center;
+    }
+  }
+  

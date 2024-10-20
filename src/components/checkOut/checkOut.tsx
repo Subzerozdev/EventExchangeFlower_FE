@@ -1,39 +1,40 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Radio, Form, notification, InputNumber } from "antd";
+import { Button, Input, Radio, Form, notification, InputNumber, Modal } from "antd";
 import { PhoneOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Checkout.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 
+const { confirm } = Modal;
+
 // Interface cho sản phẩm trong giỏ hàng
 interface Product {
-  id: number; // Mã sản phẩm
-  name: string; // Tên sản phẩm
-  price: number; // Giá sản phẩm
-  quantity: number; // Số lượng sản phẩm
-  thumbnail: string; // Ảnh đại diện sản phẩm
+  id: number;
+  name: string;
+  price: number;
+  quantity: number;
+  thumbnail: string;
 }
 
 // Interface cho các giá trị trong form
 interface FormValues {
-  email: string; // Email người dùng (tùy chọn)
-  fullname: string; // Họ và tên người dùng
-  phone: string; // Số điện thoại người dùng
-  address: string; // Địa chỉ người dùng
-  note: string; // Ghi chú cho đơn hàng
-  payment_method: string; // Phương thức thanh toán
+  email: string;
+  fullname: string;
+  phone: string;
+  address: string;
+  note: string;
+  payment_method: string;
 }
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useUser(); // Lấy thông tin người dùng từ context
-  const [loading, setLoading] = useState(false); // Trạng thái tải khi đặt hàng
-  const [form] = Form.useForm(); // Quản lý form
-  const [paymentMethod, setPaymentMethod] = useState<string>("COD"); // Phương thức thanh toán
-  const [cart, setCart] = useState<Product[]>([]); // Quản lý giỏ hàng
+  const { user } = useUser();
+  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
+  const [paymentMethod, setPaymentMethod] = useState<string>("COD");
+  const [cart, setCart] = useState<Product[]>([]);
 
-  // Lấy giỏ hàng từ localStorage
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -41,7 +42,6 @@ const Checkout: React.FC = () => {
     }
   }, []);
 
-  // Kiểm tra đăng nhập, điều hướng về trang đăng nhập nếu cần
   useEffect(() => {
     if (!user || !user.email) {
       notification.warning({
@@ -52,13 +52,11 @@ const Checkout: React.FC = () => {
     }
   }, [user, navigate]);
 
-  // Tính tổng giá trị giỏ hàng
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  // Xóa sản phẩm khỏi giỏ hàng
   const handleDelete = (id: number) => {
     const updatedCart = cart.filter((item) => item.id !== id);
     setCart(updatedCart);
@@ -66,7 +64,6 @@ const Checkout: React.FC = () => {
     notification.success({ message: "Sản phẩm đã được xóa" });
   };
 
-  // Cập nhật số lượng sản phẩm trong giỏ hàng
   const handleQuantityChange = (value: number, id: number) => {
     const updatedCart = cart.map((item) =>
       item.id === id ? { ...item, quantity: value } : item
@@ -75,16 +72,13 @@ const Checkout: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
-  // Xử lý khi hoàn thành form đặt hàng
-
   const onFinish = async (values: FormValues) => {
     setLoading(true);
 
     if (cart.length === 0) {
       notification.error({
         message: "Giỏ hàng trống",
-        description:
-          "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
+        description: "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
       });
       setLoading(false);
       return;
@@ -108,49 +102,43 @@ const Checkout: React.FC = () => {
       const response = await api.post("/api/orders", payload);
 
       if (response.status === 200) {
-        // Cập nhật trạng thái sản phẩm sau khi thanh toán thành công
         const updateStatus = async () => {
           try {
             await Promise.all(
               cart.map(async (item) => {
-                await api.patch(`/posts/${item.id}`, { status: "PENDING" });
+                await api.patch(`/posts/${item.id}`, { status: "SOLD OUT" });
               })
             );
           } catch (error) {
-            console.error("Error updating status:", error); 
+            console.error("Error updating status:", error);
           }
         };
 
-        // Nếu thanh toán qua VNPAY
         if (paymentMethod === "VNPAY") {
           const vnpayResult = response.data;
-        
           if (vnpayResult) {
-            await updateStatus(); // Cập nhật trạng thái trước khi chuyển hướng đến VNPay
-            window.location.href = vnpayResult; // Điều hướng tới trang thanh toán qua VNPay
+            await updateStatus();
+            window.location.href = vnpayResult;
           } else {
-            // Trường hợp thanh toán bị hủy hoặc thất bại từ phía VNPay
             const failureUrl = response.data.failureUrl;
             if (failureUrl) {
-              window.location.href = failureUrl; // Điều hướng đến trang thất bại
+              window.location.href = failureUrl;
             } else {
               notification.error({
                 message: "Lỗi thanh toán",
                 description: "Không nhận được URL thanh toán từ VNPay.",
               });
               navigate("/paymentFailure");
+            }
           }
-        }
-        // Thanh toán bằng COD
         } else {
-          
-          await updateStatus(); // Cập nhật trạng thái cho sản phẩm
+          await updateStatus();
           notification.success({
             message: "Đặt hàng thành công",
             description: "Đơn hàng của bạn đã được gửi đi.",
           });
           localStorage.removeItem("cart");
-          setCart([]); // Clear the cart
+          setCart([]);
           navigate(`/paymentSuccess`);
         }
       } else {
@@ -168,10 +156,33 @@ const Checkout: React.FC = () => {
     }
   };
 
+  const handleCODConfirmation = (values: FormValues) => {
+    confirm({
+      title: "Xác nhận thanh toán",
+      content: "Bạn có chắc chắn muốn chọn thanh toán bằng COD không?",
+      onOk() {
+        onFinish(values);
+      },
+      onCancel() {
+        console.log("Hủy thanh toán COD");
+      },
+    });
+  };
+
   return (
     <div className="checkout-container">
       <div className="checkout-form">
-        <Form layout="vertical" form={form} onFinish={onFinish}>
+        <Form
+          layout="vertical"
+          form={form}
+          onFinish={(values) => {
+            if (paymentMethod === "COD") {
+              handleCODConfirmation(values);
+            } else {
+              onFinish(values);
+            }
+          }}
+        >
           <h2>Thông tin nhận hàng</h2>
 
           <Form.Item name="email" label="Email ">
@@ -224,15 +235,8 @@ const Checkout: React.FC = () => {
             </Radio.Group>
           </Form.Item>
 
-          {/* Hiển thị thông báo khi chọn COD */}
           {paymentMethod === "COD" && (
-            <div
-              style={{
-                marginTop: "10px",
-                background: "#f0f0f0",
-                padding: "10px",
-              }}
-            >
+            <div style={{ marginTop: "10px", background: "#f0f0f0", padding: "10px" }}>
               <p style={{ margin: 0 }}>Bạn sẽ thanh toán khi nhận được hàng</p>
             </div>
           )}
