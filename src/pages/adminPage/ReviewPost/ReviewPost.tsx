@@ -65,6 +65,8 @@ function ReviewPosts() {
                 return "Đã duyệt";
             case "DISAPPROVE":
                 return "Từ chối";
+            case "SOLD_OUT":
+                return "Đã bán";
             default:
                 return "Không xác định";
         }
@@ -76,8 +78,13 @@ function ReviewPosts() {
             title: "Hình ảnh",
             dataIndex: "thumbnail",
             key: "thumbnail",
-            render: (thumbnail: string) => <Image width={100} src={thumbnail} alt="thumbnail" />, // Hiển thị thumbnail
+            render: (thumbnail: string) => (
+                <Image.PreviewGroup>
+                    <Image width={120} height={120} src={thumbnail} alt="thumbnail" />
+                </Image.PreviewGroup>
+            ),
         },
+
         {
             title: "Tên bài đăng",
             dataIndex: "name",

@@ -8,27 +8,32 @@
     font-size: 24px;
     font-weight: bold;
     margin-bottom: 20px;
-    color: #333; // Màu chữ cho tiêu đề
-    text-align: center; // Căn giữa tiêu đề
+    color: #333;
+    text-align: center;
   }
 
   .ant-table-wrapper {
-    background-color: white; // Màu nền trắng cho bảng
+    background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
 
     .ant-table {
       .ant-table-thead > tr > th {
-        background-color: #fafafa; // Màu nền của header bảng
+        background-color: #fafafa;
         font-weight: bold;
-        text-align: center; // Căn giữa nội dung cột
+        text-align: center;
         color: #555;
       }
 
       .ant-table-tbody > tr > td {
-        text-align: center; // Căn giữa nội dung cột
+        text-align: center;
         padding: 12px;
+      }
+
+      // Style cho các dòng có trạng thái SOLD_OUT
+      .sold-out-row {
+        background-color: #fff1f0; // Nền màu nhạt cho trạng thái đã bán
       }
     }
   }
@@ -56,14 +61,33 @@
         border-color: #ff7875;
       }
     }
+
+    // Style cho nút "Đã bán"
+    &.ant-btn-dashed {
+      color: #ff4d4f;
+      border-color: #ff4d4f;
+      &:hover {
+        color: #ff7875;
+        border-color: #ff7875;
+      }
+    }
   }
 
-  // Style cho hình ảnh
+  // Style cho hình ảnh để hiển thị đẹp hơn và phù hợp
   .ant-image {
     border-radius: 8px;
-    width: 80px;
-    height: 70px;
-    object-fit: cover;
+    width: 120px; // Tăng kích thước chiều rộng
+    height: 120px; // Tăng kích thước chiều cao
+    object-fit: cover; // Giữ tỉ lệ hình ảnh, không bị méo
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    margin: auto; // Căn giữa hình ảnh trong ô
+  }
+
+  // Style cho trạng thái
+  .status {
+    font-weight: bold;
+    &.sold-out-status {
+      color: #ff4d4f; // Màu đỏ để nhấn mạnh trạng thái "Đã bán"
+    }
   }
 }

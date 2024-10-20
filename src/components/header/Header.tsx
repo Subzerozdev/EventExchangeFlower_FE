@@ -27,7 +27,7 @@ function Header() {
 
         <div className="header__center">
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Icon%2FHeading%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM%20(4).png?alt=media&token=74e908d2-b5bb-4728-90b4-1eb6c99f819a"
+            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM%20(5).png?alt=media&token=9cbb177c-d1a7-46cd-9fee-0e752892a482"
             alt="Heading Banner"
             width={530}
             className="header__banner"
@@ -58,7 +58,7 @@ function Header() {
               <button onClick={() => navigate("/login")}>
                 <UserOutlined /> Đăng nhập
               </button>
-             
+
               <button onClick={() => navigate("/register")}>
                 <UserAddOutlined /> Đăng ký
               </button>

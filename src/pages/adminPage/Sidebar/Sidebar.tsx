@@ -1,4 +1,4 @@
-import React, { memo } from 'react'; // Thêm memo từ React
+import { memo } from 'react'; // Thêm memo từ React
 import { useNavigate } from 'react-router-dom';
 import {
 
@@ -14,7 +14,7 @@ interface SidebarProps {
   OpenSidebar: () => void;
 }
 
-const Sidebar = ({ openSidebarToggle, OpenSidebar }: SidebarProps) => {
+const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
   const navigate = useNavigate();
 
   return (
@@ -24,7 +24,7 @@ const Sidebar = ({ openSidebarToggle, OpenSidebar }: SidebarProps) => {
           <SettingOutlined className="icon_header" />
           ADMIN- HoaThanhLy
         </div>
-        <span className="icon close_icon" onClick={OpenSidebar}>X</span>
+        {/* <span className="icon close_icon" onClick={OpenSidebar}>X</span> */}
       </div>
       <ul className="sidebar-list">
         <li className="sidebar-list-item">
