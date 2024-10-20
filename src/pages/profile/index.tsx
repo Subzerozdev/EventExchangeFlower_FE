@@ -9,7 +9,7 @@ import ManageShop from "./Seller/ManageShop/ManageShop";
 import SellerForm from "./Seller/SellerForm/SellerForm";
 import TermsModal from "./Seller/TermsModal/TermsModal";
 import { useNavigate } from "react-router-dom";
-import Orders from "./Seller/orderHistory/orders";
+import Orders from "./Seller/orderHistory/Orders";
 
 
 function Profile() {
@@ -109,7 +109,7 @@ function Profile() {
       case "manage-shop":
         return <ManageShop />;
       case "orders":
-        return <Orders/>
+        return <Orders />
       case "wishlist":
         return <div><h2>Danh sách yêu thích</h2><p>Danh sách sản phẩm yêu thích sẽ hiển thị ở đây.</p></div>;
       case "password":
