@@ -2,6 +2,7 @@ import { Table, Button, message, Image } from "antd"; // Thêm Image từ Ant De
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
 import './ReviewPost.scss';
+
 interface Post {
     id: number;
     name: string;
@@ -22,10 +23,16 @@ function ReviewPosts() {
     const fetchPosts = async () => {
         try {
             const response = await api.get<{ posts: Post[] }>(
-                "/posts?categoryID=&sort=&pageNumber="
+                "/posts?categoryID=&sort=&pageNumber=&searchValue="
             );
             console.log(response.data.posts); // Kiểm tra dữ liệu nhận được từ API
-            setPosts(response.data.posts); // Cập nhật danh sách bài đăng trong state
+
+            // Lọc bỏ các bài đăng có trạng thái SOLD_OUT và DELETED
+            const filteredPosts = response.data.posts.filter(
+                (post) => post.status !== " " && post.status !== "DELETED"
+            );
+
+            setPosts(filteredPosts); // Cập nhật danh sách bài đăng trong state
         } catch (error) {
             console.error(error);
             message.error("Có lỗi khi tải bài đăng.");
@@ -65,8 +72,6 @@ function ReviewPosts() {
                 return "Đã duyệt";
             case "DISAPPROVE":
                 return "Từ chối";
-            case "SOLD_OUT":
-                return "Đã bán";
             default:
                 return "Không xác định";
         }
@@ -84,7 +89,6 @@ function ReviewPosts() {
                 </Image.PreviewGroup>
             ),
         },
-
         {
             title: "Tên bài đăng",
             dataIndex: "name",

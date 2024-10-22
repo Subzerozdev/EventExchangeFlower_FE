@@ -1,11 +1,12 @@
-import { Table, Button, Form, Input, message, Modal, DatePicker, Select, Upload, Image } from "antd";
+import { Table, Button, Form, Input, message, Modal, DatePicker, Select, Upload, Image, Tag } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../../config/api";
 import moment from "moment";
 import { UploadFile } from "antd/lib/upload/interface";
 import { UploadOutlined } from "@ant-design/icons";
 import uploadFile from "../../../../utils/file"; // Hàm upload lên Firebase
-import "./ManagePost.scss"
+import "./ManagePost.scss";
+
 interface Post {
     id: number;
     name: string;
@@ -18,6 +19,7 @@ interface Post {
     types: { id: number; name: string }[];
     imageUrls: string[];
     thumbnail: string;
+    status: string; // Thêm trường trạng thái bài đăng
 }
 
 interface Category {
@@ -49,7 +51,11 @@ function ManagePosts() {
     const fetchPosts = async () => {
         try {
             const response = await api.get<Post[]>("/api/seller/posts");
-            setPosts(response.data);
+            // Lọc bài đăng không hiển thị status DELETED và SOLD_OUT
+            const filteredPosts = response.data.filter(
+                post => post.status !== "DELETED" && post.status !== "SOLD_OUT"
+            );
+            setPosts(filteredPosts);
         } catch {
             message.error("Có lỗi khi tải bài đăng.");
         }
@@ -87,10 +93,12 @@ function ManagePosts() {
 
     const handleDelete = async (id: number) => {
         try {
+            setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
             await api.delete(`/api/seller/posts/${id}`);
             message.success("Xóa bài đăng thành công!");
             fetchPosts();
-        } catch {
+        } catch (error) {
+            console.error("Có lỗi khi xóa bài đăng:", error);
             message.error("Có lỗi khi xóa bài đăng.");
         }
     };
@@ -179,6 +187,42 @@ function ManagePosts() {
             key: "address",
         },
         {
+            title: "Trạng thái",
+            dataIndex: "status",
+            key: "status",
+            render: (status: string) => {
+                let color = "";
+                let label = "";
+
+                switch (status) {
+                    case "PENDING":
+                        color = "orange";
+                        label = "Chờ duyệt";
+                        break;
+                    case "APPROVE":
+                        color = "green";
+                        label = "Đã duyệt";
+                        break;
+                    case "DISAPPROVE":
+                        color = "red";
+                        label = "Bị từ chối";
+                        break;
+                    case "SOLD_OUT":
+                        color = "blue";
+                        label = "Đã bán hết";
+                        break;
+                    case "DELETED":
+                        color = "grey";
+                        label = "Đã xóa";
+                        break;
+                    default:
+                        label = "Không xác định";
+                }
+
+                return <Tag color={color}>{label}</Tag>;
+            },
+        },
+        {
             title: "Hành động",
             key: "actions",
             render: (_: unknown, record: Post) => (
@@ -191,6 +235,7 @@ function ManagePosts() {
             ),
         },
     ];
+
 
     return (
         <div className="manage-posts-container">
@@ -254,7 +299,6 @@ function ManagePosts() {
                         </Select>
                     </Form.Item>
 
-                    {/* Thêm mục upload thumbnail */}
                     <Form.Item label="Hình ảnh thumbnail" name="thumbnail">
                         <Upload
                             listType="picture"
@@ -266,7 +310,6 @@ function ManagePosts() {
                         </Upload>
                     </Form.Item>
 
-                    {/* Thêm mục upload các ảnh khác */}
                     <Form.Item label="Hình ảnh bài đăng (tùy chọn)" name="imageUrls">
                         <Upload
                             listType="picture"

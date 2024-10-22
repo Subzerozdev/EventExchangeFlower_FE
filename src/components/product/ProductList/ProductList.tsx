@@ -77,7 +77,7 @@ const ProductList: React.FC = () => {
     const fetchProducts = async () => {
       try {
         const response = await api.get<{ posts: Product[] }>(
-          "/posts?categoryID=&sort=&pageNumber="
+          "/posts?categoryID=&sort=&pageNumber=&searchValue="
         );
         console.log(response.data.posts);
         const products = response.data.posts.map((product) => ({

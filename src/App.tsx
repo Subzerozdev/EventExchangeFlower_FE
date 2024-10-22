@@ -31,6 +31,9 @@ import ResetPassword from "./pages/register/ForgotPassword/ResetPassword";
 import VerifyOtpForgotPassword from "./pages/register/ForgotPassword/VerifyOtpForgotPassword";
 import LoadingPage from "./components/checkOut/payment/loading/loadingPage";
 import ProductList from "./components/product/ProductList/ProductList";
+import SoldOrders from "./pages/profile/Seller/SoldOrders/SoldOders";
+import Orders from "./pages/profile/orderHistory/Orders";
+import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetais";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -86,9 +89,14 @@ function App() {
           element: <Profile />,
         },
         {
+          path: "orders",
+          element: <Orders />,
+        },
+        {
           path: "updateProfile",
           element: <UpdateProfile />,
         },
+
         {
           path: "blog",
           element: <BlogPage />,
@@ -102,8 +110,8 @@ function App() {
           element: <AllProduct />,
         },
         {
-          path:"posts/:id",
-          element: <ProductList/> 
+          path: "posts/:id",
+          element: <ProductList />
         },
         {
           path: "productDetail/:id",
@@ -125,33 +133,26 @@ function App() {
           path: "paymentFailure",
           element: <PaymentFailure />,
         },
-        
-        
+
+
 
 
         // Thêm các route dành cho Seller
         {
           path: "seller",
           children: [
-            {
-              path: "form",
-              element: <SellerForm />,
-            },
-            {
-              path: "manage-posts",
-              element: <ManagePosts />,
-            },
-            {
-              path: "manage-shop",
-              element: <ManageShop />,
-            },
+            { path: "form", element: <SellerForm /> },
+            { path: "sold-orders", element: <SoldOrders /> },
+            { path: "sold-orders/:id", element: <OrderDetails /> },
+            { path: "manage-posts", element: <ManagePosts /> },
+            { path: "manage-shop", element: <ManageShop /> },
             {
               path: "term",
               element: (
                 <TermsModal
                   isModalVisible={isModalVisible}
                   setIsModalVisible={setIsModalVisible}
-                  onAgree={handleAgree} // Truyền hàm onAgree vào TermsModal
+                  onAgree={handleAgree}
                 />
               ),
             },

@@ -3,7 +3,7 @@ import { notification, Table } from 'antd';
 import moment from 'moment'; // Sử dụng moment.js để định dạng ngày
 
 import './Orders.scss';
-import api from '../../../../config/api'; // Đường dẫn tới file config API
+import api from '../../../config/api'; // Đường dẫn tới file config API
 
 // Interface cho dữ liệu đơn hàng trả về từ API
 interface ApiOrder {
@@ -74,7 +74,7 @@ const Orders: React.FC = () => {
       setLoading(true);
       try {
         const response = await api.get<ApiOrder[]>('/api/orders'); // Gọi API để lấy thông tin đơn hàng
-        
+
         console.log('Orders fetched from API:', response.data); // Kiểm tra dữ liệu API
 
         // Kiểm tra từng phần tử trong dữ liệu trả về và định dạng ngày
@@ -82,11 +82,11 @@ const Orders: React.FC = () => {
           key: order.id, // key cho bảng Ant Design
           orderNumber: order.id,
           // Kiểm tra và chuyển đổi kiểu dữ liệu ngày
-          orderDate: order.orderDate 
+          orderDate: order.orderDate
             ? moment(order.orderDate).format('DD/MM/YYYY')  // Định dạng ngày với moment nếu tồn tại
             : 'Không xác định', // Xử lý khi orderDate là null hoặc không hợp lệ
           address: order.address || 'Không xác định', // Đảm bảo có giá trị cho địa chỉ
-          totalMoney: order.totalMoney 
+          totalMoney: order.totalMoney
             ? parseInt(order.totalMoney).toLocaleString('vi-VN') + '₫' // Định dạng tổng tiền
             : 'Không xác định', // Xử lý khi totalMoney là null
           paymentMethod: order.paymentMethod || 'Không xác định', // Xử lý khi paymentMethod là null
