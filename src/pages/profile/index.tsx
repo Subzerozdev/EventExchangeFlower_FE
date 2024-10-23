@@ -1,12 +1,7 @@
 import { Descriptions, Button, Menu } from "antd";
 import { useUser } from "../../context/UserContext";
 import { useState } from "react";
-import {
-  AppstoreOutlined,
-  UserOutlined,
-  ShoppingCartOutlined,
-  ShopOutlined,
-} from "@ant-design/icons";
+import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, ShopOutlined } from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import "./Profile.scss";
 import ManagePosts from "./Seller/ManagePosts/ManagePosts";
@@ -24,20 +19,24 @@ function Profile() {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showSellerForm, setShowSellerForm] = useState(false); // Để kiểm soát hiển thị SellerForm
 
+  // Hàm xử lý logout
   const handleLogout = () => {
-    logout();
-    navigate("/login"); // Chuyển hướng ra ngoài
+    logout(); // Gọi hàm logout từ UserContext
+    navigate("/login"); // Chuyển hướng về trang đăng nhập
   };
 
+  // Xử lý khi người dùng click vào các mục menu
   const onClick: MenuProps["onClick"] = (e) => {
     if (e.key === "form") {
-      setIsModalVisible(true); // Mở modal điều khoản khi chọn tạo tài khoản bán hàng
+      setIsModalVisible(true); // Mở modal điều khoản
+    } else if (e.key === "logout") {
+      handleLogout(); // Gọi hàm logout khi chọn "Đăng xuất"
     } else {
-      setSelectedMenu(e.key); // Cập nhật trạng thái khi click menu khác
+      setSelectedMenu(e.key); // Cập nhật trạng thái khi click vào mục menu khác
     }
   };
 
-  // Xây dựng các mục menu và ẩn mục "Tạo tài khoản bán hàng" nếu user đã là "seller"
+  // Xây dựng các mục menu và ẩn "Tạo tài khoản bán hàng" nếu người dùng đã là seller
   const items: MenuProps["items"] = [
     {
       label: "Thông tin tài khoản",
@@ -51,12 +50,12 @@ function Profile() {
       children: [
         ...(user.role !== "ROLE_SELLER"
           ? [
-              {
-                label: "Tạo tài khoản bán hàng",
-                key: "form",
-              },
-            ]
-          : []), // Chỉ hiển thị mục này nếu người dùng chưa là seller
+            {
+              label: "Tạo tài khoản bán hàng",
+              key: "form",
+            },
+          ]
+          : []), // Chỉ hiển thị nếu chưa phải là seller
         {
           label: "Quản lý sản phẩm cửa hàng của bạn",
           key: "manage-posts",
@@ -66,7 +65,7 @@ function Profile() {
           key: "sold-orders",
         },
         {
-          label: "Xem và chỉnh sửa thông cửa hàng",
+          label: "Xem và chỉnh sửa thông tin cửa hàng",
           key: "manage-shop",
         },
       ],
@@ -93,8 +92,7 @@ function Profile() {
     },
     {
       label: "Đăng xuất",
-      key: "logout",
-      onClick: handleLogout, // Xử lý khi nhấn đăng xuất
+      key: "logout", // Gọi hàm logout qua sự kiện onClick
     },
   ];
 
@@ -128,13 +126,13 @@ function Profile() {
           </div>
         );
       case "sold-orders":
-        return <SoldOrders />; // Hiển thị đơn hàng đã bán
+        return <SoldOrders />;
       case "manage-posts":
-        return <ManagePosts />; // Quản lý bài đăng
+        return <ManagePosts />;
       case "manage-shop":
-        return <ManageShop />; // Quản lý cửa hàng
+        return <ManageShop />;
       case "orders":
-        return <Orders />; // Lịch sử đơn hàng của người dùng
+        return <Orders />;
       case "wishlist":
         return (
           <div>
@@ -166,7 +164,7 @@ function Profile() {
       <div className="profile_left">
         <h2>Trang tài khoản</h2>
         <p className="profile_greeting">
-          <strong>Xin chào,</strong> {user.fullName} !
+          <strong>Xin chào,</strong> {user.fullName}!
         </p>
         <Menu
           onClick={onClick}
@@ -177,14 +175,13 @@ function Profile() {
       </div>
 
       <div className="profile_right">
-        {showSellerForm ? <SellerForm /> : renderContent()}{" "}
-        {/* Hiển thị SellerForm khi đồng ý điều khoản */}
+        {showSellerForm ? <SellerForm /> : renderContent()}
       </div>
 
       <TermsModal
         isModalVisible={isModalVisible}
         setIsModalVisible={setIsModalVisible}
-        onAgree={() => setShowSellerForm(true)} // Khi đồng ý điều khoản, hiển thị SellerForm
+        onAgree={() => setShowSellerForm(true)}
       />
     </div>
   );

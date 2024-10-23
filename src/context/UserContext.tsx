@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
+import eventBus from "../utils/eventBus"; // Import Event Bus
 
 interface User {
   fullName: string | null;
@@ -10,16 +11,13 @@ interface User {
 }
 
 // Tạo UserContext
-const UserContext = createContext<
-  | {
-    user: User;
-    setUser: React.Dispatch<React.SetStateAction<User>>;
-    logout: () => void;
-  }
-  | undefined
->(undefined);
+const UserContext = createContext<{
+  user: User;
+  setUser: React.Dispatch<React.SetStateAction<User>>;
+  logout: () => void;
+} | undefined>(undefined);
 
-// Custom hook để sử dụng context
+// Custom hook để sử dụng UserContext
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
@@ -28,34 +26,54 @@ export const useUser = () => {
   return context;
 };
 
-// Provider để quản lý user
-export const UserProvider = ({ children }: { children: React.ReactNode }) => {
+// Provider để quản lý user và trạng thái đăng nhập
+export const UserProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User>(() => {
-    // Kiểm tra nếu có token trong localStorage khi ứng dụng tải lại
     const savedUser = localStorage.getItem("user");
-    return savedUser
+    const token = localStorage.getItem("jwtToken");
+    return savedUser && token
       ? JSON.parse(savedUser)
       : {
-        fullName: null,
-        email: null,
-        phone: null,
-        address: null,
-        role: null,
-        id: null,
-      };
+          fullName: null,
+          email: null,
+          phone: null,
+          address: null,
+          role: null,
+          id: null,
+        };
   });
 
   useEffect(() => {
-    // Lưu trạng thái người dùng vào localStorage mỗi khi user thay đổi
     if (user.role) {
       localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
     }
   }, [user]);
 
   const logout = () => {
-    setUser({ fullName: null, email: null, phone: null, address: null, id: null, role: null });
-    localStorage.removeItem("user"); // Xóa thông tin người dùng khỏi localStorage
+    setUser({
+      fullName: null,
+      email: null,
+      phone: null,
+      address: null,
+      role: null,
+      id: null,
+    });
+    localStorage.removeItem("user");
+    localStorage.removeItem("jwtToken");
   };
+
+  // Đăng ký sự kiện logout qua Event Bus
+  useEffect(() => {
+    const handleLogout = () => logout();
+    eventBus.on("logout", handleLogout);
+    return () => {
+      eventBus.off("logout", handleLogout); // Hủy đăng ký khi unmount
+    };
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser, logout }}>

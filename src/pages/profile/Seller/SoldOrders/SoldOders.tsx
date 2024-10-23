@@ -153,16 +153,16 @@ const SoldOrders = () => {
                         onClick={() => handleUpdateOrderStatus(record.id, "COMPLETED")}
                         disabled={record.status === "COMPLETED"}
                     >
-                        Hoàn thành
+                        Đã giao thành công
                     </Button>
-                    <Button
+                    {/* <Button
                         type="default"
                         danger
                         onClick={() => handleUpdateOrderStatus(record.id, "CANCELLED")}
                         disabled={record.status === "CANCELLED"}
                     >
                         Hủy đơn
-                    </Button>
+                    </Button> */}
                     <Button
                         type="link"
                         onClick={() => handleViewOrderDetails(record.id)}

@@ -35,22 +35,22 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
       <ul className="sidebar-list">
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/categories')} className="btn-link">
-            <AppstoreOutlined className="icon" /> Categories
+            <AppstoreOutlined className="icon" /> Danh mục
           </button>
         </li>
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/review-posts')} className="btn-link">
-            <FileTextOutlined className="icon" /> Review Posts
+            <FileTextOutlined className="icon" /> Quản lý bài đăng
           </button>
         </li>
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/types')} className="btn-link">
-            <TagsOutlined className="icon" /> Types
+            <TagsOutlined className="icon" /> Phân loại
           </button>
         </li>
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/settings')} className="btn-link">
-            <SettingOutlined className="icon" /> Settings
+            <SettingOutlined className="icon" /> Dashboard
           </button>
         </li>
         <li className="sidebar-list-item">
