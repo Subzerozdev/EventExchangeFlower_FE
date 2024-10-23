@@ -1,7 +1,12 @@
 import { Descriptions, Button, Menu } from "antd";
 import { useUser } from "../../context/UserContext";
 import { useState } from "react";
-import { AppstoreOutlined, UserOutlined, ShoppingCartOutlined, ShopOutlined } from "@ant-design/icons";
+import {
+  AppstoreOutlined,
+  UserOutlined,
+  ShoppingCartOutlined,
+  ShopOutlined,
+} from "@ant-design/icons";
 import type { MenuProps } from "antd";
 import "./Profile.scss";
 import ManagePosts from "./Seller/ManagePosts/ManagePosts";
@@ -46,11 +51,11 @@ function Profile() {
       children: [
         ...(user.role !== "ROLE_SELLER"
           ? [
-            {
-              label: "Tạo tài khoản bán hàng",
-              key: "form",
-            },
-          ]
+              {
+                label: "Tạo tài khoản bán hàng",
+                key: "form",
+              },
+            ]
           : []), // Chỉ hiển thị mục này nếu người dùng chưa là seller
         {
           label: "Quản lý sản phẩm cửa hàng của bạn",
@@ -172,7 +177,8 @@ function Profile() {
       </div>
 
       <div className="profile_right">
-        {showSellerForm ? <SellerForm /> : renderContent()} {/* Hiển thị SellerForm khi đồng ý điều khoản */}
+        {showSellerForm ? <SellerForm /> : renderContent()}{" "}
+        {/* Hiển thị SellerForm khi đồng ý điều khoản */}
       </div>
 
       <TermsModal

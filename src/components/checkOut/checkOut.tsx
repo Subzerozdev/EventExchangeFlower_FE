@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Radio, Form, notification, InputNumber, Modal } from "antd";
+import {
+  Button,
+  Input,
+  Radio,
+  Form,
+  notification,
+  InputNumber,
+  Modal,
+} from "antd";
 import { PhoneOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./Checkout.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
+import { useNotification } from "../../context/NotificationContext";
 
 const { confirm } = Modal;
 
-// Interface cho sản phẩm trong giỏ hàng
 interface Product {
   id: number;
   name: string;
@@ -17,7 +25,6 @@ interface Product {
   thumbnail: string;
 }
 
-// Interface cho các giá trị trong form
 interface FormValues {
   email: string;
   fullname: string;
@@ -34,6 +41,7 @@ const Checkout: React.FC = () => {
   const [form] = Form.useForm();
   const [paymentMethod, setPaymentMethod] = useState<string>("COD");
   const [cart, setCart] = useState<Product[]>([]);
+  const { addNotification } = useNotification();
 
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
@@ -78,7 +86,8 @@ const Checkout: React.FC = () => {
     if (cart.length === 0) {
       notification.error({
         message: "Giỏ hàng trống",
-        description: "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
+        description:
+          "Vui lòng thêm sản phẩm vào giỏ hàng trước khi thanh toán.",
       });
       setLoading(false);
       return;
@@ -106,19 +115,19 @@ const Checkout: React.FC = () => {
           try {
             await Promise.all(
               cart.map(async (item) => {
-                await api.patch(`/posts/${item.id}`, { status: "SOLD OUT" });
+                await api.patch(`/posts/${item.id}`, { status: "SOLD_OUT" });
               })
             );
           } catch (error) {
             console.error("Error updating status:", error);
           }
         };
-
         if (paymentMethod === "VNPAY") {
           const vnpayResult = response.data;
           if (vnpayResult) {
             await updateStatus();
             window.location.href = vnpayResult;
+            addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
           } else {
             const failureUrl = response.data.failureUrl;
             if (failureUrl) {
@@ -128,6 +137,7 @@ const Checkout: React.FC = () => {
                 message: "Lỗi thanh toán",
                 description: "Không nhận được URL thanh toán từ VNPay.",
               });
+
               navigate("/paymentFailure");
             }
           }
@@ -139,6 +149,7 @@ const Checkout: React.FC = () => {
           });
           localStorage.removeItem("cart");
           setCart([]);
+          addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
           navigate(`/paymentSuccess`);
         }
       } else {
@@ -150,6 +161,7 @@ const Checkout: React.FC = () => {
         message: "Đặt hàng thất bại",
         description: "Có lỗi xảy ra khi đặt hàng.",
       });
+      addNotification("Bạn thanh toán không thành công vui lòng kiểm tra lại!");
       navigate("/paymentFailure");
     } finally {
       setLoading(false);
@@ -185,35 +197,56 @@ const Checkout: React.FC = () => {
         >
           <h2>Thông tin nhận hàng</h2>
 
-          <Form.Item name="email" label="Email ">
+          <Form.Item
+            style={{ color: "#4CC9FE", fontWeight: "bold" }}
+            name="email"
+            label="Email "
+          >
             <span>{user.email}</span>
           </Form.Item>
 
-          <Form.Item name="fullname" label="Họ và tên ">
+          <Form.Item
+            style={{ color: "#4CC9FE", fontWeight: "bold" }}
+            name="fullname"
+            label="Họ và tên "
+          >
             <span>{user.fullName}</span>
-            <Button type="link" onClick={() => navigate("/updateProfile")}>
-              Chỉnh sửa
-            </Button>
           </Form.Item>
 
-          <Form.Item name="phone" label="Số điện thoại ">
+          <Form.Item
+            style={{ color: "#4CC9FE", fontWeight: "bold" }}
+            name="phone"
+            label="Số điện thoại "
+          >
             <PhoneOutlined style={{ paddingRight: 10, fontSize: 15 }} />
             <span>{user.phone}</span>
-            <Button type="link" onClick={() => navigate("/updateProfile")}>
-              Chỉnh sửa
-            </Button>
           </Form.Item>
 
-          <Form.Item name="address" label="Địa chỉ (tùy chọn)">
+          <Form.Item
+            style={{ color: "#4CC9FE", fontWeight: "bold" }}
+            name="address"
+            label="Địa chỉ (tùy chọn)"
+          >
             <span>{user.address}</span>
-            <Button type="link" onClick={() => navigate("/updateProfile")}>
-              Chỉnh sửa
-            </Button>
           </Form.Item>
 
           <Form.Item name="note" label="Ghi chú (tùy chọn)">
             <Input.TextArea placeholder="Ghi chú cho đơn hàng" />
           </Form.Item>
+
+          <div style={{ textAlign: "right", marginBottom: 20 }}>
+            <Button.Group>
+              <Button type="link" onClick={() => navigate("/updateProfile")}>
+                Chỉnh sửa Họ và tên
+              </Button>
+              <Button type="link" onClick={() => navigate("/updateProfile")}>
+                Chỉnh sửa Số điện thoại
+              </Button>
+              <Button type="link" onClick={() => navigate("/updateProfile")}>
+                Chỉnh sửa Địa chỉ
+              </Button>
+            </Button.Group>
+          </div>
 
           <h2>Thanh toán</h2>
           <Form.Item
@@ -236,12 +269,29 @@ const Checkout: React.FC = () => {
           </Form.Item>
 
           {paymentMethod === "COD" && (
-            <div style={{ marginTop: "10px", background: "#f0f0f0", padding: "10px" }}>
+            <div
+              style={{
+                marginTop: "10px",
+                background: "#f0f0f0",
+                padding: "10px",
+                borderRadius: "8px",
+              }}
+            >
               <p style={{ margin: 0 }}>Bạn sẽ thanh toán khi nhận được hàng</p>
             </div>
           )}
 
-          <Button type="primary" htmlType="submit" loading={loading}>
+          <Button
+            type="primary"
+            htmlType="submit"
+            loading={loading}
+            style={{
+              backgroundColor: "#4CAF50",
+              borderColor: "#4CAF50",
+              width: "100%",
+              borderRadius: "8px",
+            }}
+          >
             Đặt hàng
           </Button>
         </Form>
@@ -251,19 +301,33 @@ const Checkout: React.FC = () => {
         <h2>Đơn hàng ({cart.length} sản phẩm)</h2>
         {cart.map((item) => (
           <div key={item.id} className="cart-item">
-            <img src={item.thumbnail} alt={item.name} />
+            <img
+              src={item.thumbnail}
+              alt={item.name}
+              style={{
+                width: "50px",
+                height: "50px",
+                objectFit: "cover",
+                borderRadius: "4px",
+                marginRight: "10px",
+              }}
+            />
             <div>
-              <p>{item.name}</p>
-              <p>{item.price.toLocaleString()}₫</p>
+              <p style={{ fontWeight: "bold", margin: 0 }}>{item.name}</p>
+              <p style={{ color: "#999", margin: 0 }}>
+                {item.price.toLocaleString()}₫
+              </p>
               <InputNumber
                 min={1}
                 value={item.quantity}
                 onChange={(value) => handleQuantityChange(value || 1, item.id)}
+                style={{ marginRight: "10px" }}
               />
               <Button
                 type="link"
                 icon={<DeleteOutlined />}
                 onClick={() => handleDelete(item.id)}
+                style={{ color: "#f5222d" }}
               >
                 Xóa
               </Button>
@@ -271,7 +335,21 @@ const Checkout: React.FC = () => {
           </div>
         ))}
         <div className="checkout-summary">
-          <p>Tổng cộng: {totalPrice.toLocaleString()}₫</p>
+          <p style={{ fontWeight: "bold", fontSize: "16px" }}>
+            Tổng cộng: {totalPrice.toLocaleString()}₫
+          </p>
+          <Button
+            type="primary"
+            style={{
+              backgroundColor: "#1890ff",
+              borderColor: "#1890ff",
+              width: "100%",
+              borderRadius: "8px",
+            }}
+            onClick={() => navigate("/checkout")}
+          >
+            Tiếp tục thanh toán
+          </Button>
         </div>
       </div>
     </div>

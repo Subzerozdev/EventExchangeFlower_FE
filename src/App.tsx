@@ -34,6 +34,7 @@ import ProductList from "./components/product/ProductList/ProductList";
 import SoldOrders from "./pages/profile/Seller/SoldOrders/SoldOders";
 import Orders from "./pages/profile/orderHistory/Orders";
 import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetais";
+import { NotificationProvider } from "./context/NotificationContext";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -65,7 +66,8 @@ function App() {
         {
           path: "forgot-password",
           element: <ForgotPassword />,
-        }, {
+        },
+        {
           path: "forgot-password/reset-password",
           element: <ResetPassword />,
         },
@@ -81,7 +83,6 @@ function App() {
               path: "VerifyOtp",
               element: <VerifyOtp />,
             },
-
           ],
         },
         {
@@ -111,7 +112,7 @@ function App() {
         },
         {
           path: "posts/:id",
-          element: <ProductList />
+          element: <ProductList />,
         },
         {
           path: "productDetail/:id",
@@ -133,9 +134,6 @@ function App() {
           path: "paymentFailure",
           element: <PaymentFailure />,
         },
-
-
-
 
         // Thêm các route dành cho Seller
         {
@@ -188,7 +186,9 @@ function App() {
 
   return (
     <UserProvider>
-      <RouterProvider router={router} />
+      <NotificationProvider>
+        <RouterProvider router={router} />
+      </NotificationProvider>
     </UserProvider>
   );
 }

@@ -28,6 +28,7 @@ interface Order {
   totalMoney: string;
   paymentMethod: string;
   note: string;
+  status: string;
 }
 
 const columns = [
@@ -55,6 +56,11 @@ const columns = [
     title: 'Phương thức thanh toán',
     dataIndex: 'paymentMethod',
     key: 'paymentMethod',
+  },
+  {
+    title: 'Trạng Thái ',
+    dataIndex: 'status',
+    key: 'status', // Khớp với dữ liệu được định dạng
   },
   {
     title: 'Ghi chú',
@@ -91,6 +97,7 @@ const Orders: React.FC = () => {
             : 'Không xác định', // Xử lý khi totalMoney là null
           paymentMethod: order.paymentMethod || 'Không xác định', // Xử lý khi paymentMethod là null
           note: order.note,
+          status:order.status
         }));
 
         setOrders(fetchedOrders); // Cập nhật danh sách đơn hàng hiển thị

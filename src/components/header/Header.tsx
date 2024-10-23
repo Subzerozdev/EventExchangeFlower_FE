@@ -1,17 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import { UserOutlined, UserAddOutlined } from "@ant-design/icons";
 import { useUser } from "../../context/UserContext";
-
 import "./Header.scss";
 import Link from "antd/es/typography/Link";
+import NotificationBell from "../notifile/NotificationBell";
+
 
 function Header() {
   const navigate = useNavigate();
   const { user } = useUser();
-  // const handleLogout = () => {
-  //   logout();
-  //   navigate('/login');  // Chuyển hướng đến trang đăng nhập sau khi đăng xuất
-  // };
 
   return (
     <header className="header">
@@ -35,24 +32,22 @@ function Header() {
         </div>
 
         <div className="header__right">
-          {/* <div className="header__buttons">
-            <button onClick={() => navigate("/seller")}>  <UserOutlined /> Đăng kí trở thành Seller</button>
-          </div> */}
           {user.fullName ? (
-            <Link
-              onClick={() => navigate("/profile")}
-              style={{ fontSize: "17px" }}
-            >
-              <UserOutlined />
-              <ul>
-                <li>
-                  <span>{"Thông tin Account"}</span>
-                </li>
-                <li>
-                  <span>{user.fullName}</span>
-                </li>
-              </ul>
-            </Link>
+            <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+              {/* Nút chuông thông báo chỉ hiển thị khi người dùng đã đăng nhập */}
+              <NotificationBell />
+              <Link onClick={() => navigate("/profile")} style={{ fontSize: "17px" }}>
+                <UserOutlined />
+                <ul>
+                  <li>
+                    <span>{"Thông tin Account"}</span>
+                  </li>
+                  <li>
+                    <span>{user.fullName}</span>
+                  </li>
+                </ul>
+              </Link>
+            </div>
           ) : (
             <div className="header__buttons">
               <button onClick={() => navigate("/login")}>
@@ -73,13 +68,8 @@ function Header() {
           <li onClick={() => navigate("/productList")}>Tất cả sản phẩm</li>
           <li>Hoa theo sự kiện</li>
           <li>Hoa theo lô</li>
-          {/* <li onClick={() => navigate("/admin")}>AdminPage</li> */}
           <li onClick={() => navigate("/blog")}>Blog</li>
-          <li onClick={() => navigate("/LienHe")}>Liên hệ</li>
-          <li>
-            <input type="text" placeholder="Tìm hoa..." />
-            <button>🔍</button>
-          </li>
+          <li style={{marginTop:0}} onClick={() => navigate("/LienHe")}>Liên hệ</li>
         </ul>
       </nav>
     </header>

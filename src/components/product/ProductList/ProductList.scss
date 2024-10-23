@@ -1,6 +1,39 @@
 .product-list {
   padding: 20px;
 
+  .search-bar {
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+
+    .ant-input-search {
+      width: 100%;
+      max-width: 400px; // Giới hạn chiều rộng tối đa cho thanh tìm kiếm
+      border-radius: 50px; // Làm tròn các góc của thanh tìm kiếm
+      overflow: hidden;
+
+      .ant-input-wrapper {
+        .ant-input {
+          border-radius: 50px 0 0 50px; // Làm tròn góc trái của ô input
+          border: 2px solid #1890ff; // Đặt viền màu xanh
+          padding: 10px 15px; // Khoảng cách padding để thanh tìm kiếm trông cân đối
+        }
+
+        .ant-btn {
+          border-radius: 0 50px 50px 0; // Làm tròn góc phải của nút tìm kiếm
+          background-color: #1890ff; // Màu nền xanh
+          color: white; // Màu chữ trắng
+          border: 2px solid #1890ff; // Viền cùng màu với nền
+          transition: background-color 0.3s ease; // Hiệu ứng khi hover
+
+          &:hover {
+            background-color: #40a9ff; // Màu nền khi hover
+          }
+        }
+      }
+    }
+  }
+
   .ant-card {
     transition: transform 0.3s;
     margin-bottom: 20px;
@@ -11,10 +44,10 @@
     }
 
     img {
-      width: 100%; // Hình ảnh sẽ chiếm toàn bộ chiều rộng của thẻ
-      height: 250px; // Đặt chiều cao cố định để các hình ảnh đồng đều
-      object-fit: cover; // Giữ nguyên tỷ lệ của hình ảnh, phần dư sẽ bị cắt đi
-      border-radius: 8px 8px 0 0; // Làm tròn góc trên của hình ảnh
+      width: 100%;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 8px 8px 0 0;
     }
 
     .ant-card-meta-description {
@@ -50,6 +83,7 @@
       border-radius: 4px;
     }
   }
+
   .cart {
     margin-top: 20px;
     background-color: #f9f9f9;

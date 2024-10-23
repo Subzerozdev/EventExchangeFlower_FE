@@ -11,12 +11,14 @@ import {
   Badge,
   InputNumber,
   Spin,
+  Input,
 } from "antd";
 import { ShoppingCartOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./ProductList.scss";
 import ProductFilter from "../FilterPanel/FilterPanel";
 import api from "../../../config/api";
 
+// Interface định nghĩa cấu trúc của Product
 interface Product {
   id: number;
   name: string;
@@ -30,26 +32,27 @@ interface Product {
   status: string;
 }
 
+// Interface định nghĩa cấu trúc của CartItem (thêm quantity cho mỗi sản phẩm trong giỏ)
 interface CartItem extends Product {
   quantity: number;
 }
 
 const ProductList: React.FC = () => {
-  const [productList, setProductList] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize] = useState(8);
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const [drawerVisible, setDrawerVisible] = useState(false);
-  const [categories, setCategories] = useState<string[]>([]); // Thêm state để lưu danh sách loại sản phẩm
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // Lưu loại sản phẩm đã chọn
+  const [productList, setProductList] = useState<Product[]>([]); // Danh sách sản phẩm ban đầu
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]); // Danh sách sản phẩm đã lọc
+  const [loading, setLoading] = useState(true); // Trạng thái loading
+  const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
+  const [pageSize] = useState(8); // Số lượng sản phẩm trên mỗi trang
+  const [cart, setCart] = useState<CartItem[]>([]); // Danh sách sản phẩm trong giỏ hàng
+  const [drawerVisible, setDrawerVisible] = useState(false); // Trạng thái mở/đóng của giỏ hàng
+  const [categories, setCategories] = useState<string[]>([]); // Danh sách loại sản phẩm
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]); // Loại sản phẩm đã chọn
   const [minPrice, setMinPrice] = useState<number>(0); // Giá tối thiểu lọc
   const [maxPrice, setMaxPrice] = useState<number>(Infinity); // Giá tối đa lọc
 
   const navigate = useNavigate();
 
-  // Load cart from localStorage
+  // Load giỏ hàng từ localStorage khi component được mount
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -57,14 +60,14 @@ const ProductList: React.FC = () => {
     }
   }, []);
 
-  // Save cart to localStorage on cart update
+  // Lưu giỏ hàng vào localStorage mỗi khi giỏ hàng được cập nhật
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
   }, [cart]);
 
-  // Đổi dạng formteDate time thành string
+  // Đổi định dạng thời gian từ chuỗi sang dạng ngày
   const formatDateTime = (dateTime: string): string => {
-    const date = new Date(dateTime); // Convert LocalDateTime to Date object
+    const date = new Date(dateTime);
     return date.toLocaleDateString("vi-VN", {
       year: "numeric",
       month: "2-digit",
@@ -72,34 +75,34 @@ const ProductList: React.FC = () => {
     });
   };
 
-  // Fetch product list from API
+  // Fetch danh sách sản phẩm từ API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await api.get<{ posts: Product[] }>(
           "/posts?categoryID=&sort=&pageNumber=&searchValue="
         );
-        console.log(response.data.posts);
-        const products = response.data.posts.map((product) => ({
-          ...product,
-          start_date: formatDateTime(product.start_date), // Format start_date to string
-          end_date: formatDateTime(product.end_date), // Format end_date to string
-          price:
-            typeof product.price === "string"
-              ? parseFloat(product.price)
-              : product.price,
-        }))
-          .filter((product) => product.status === "APPROVE");
 
+        const products = response.data.posts
+          .map((product) => ({
+            ...product,
+            start_date: formatDateTime(product.start_date), // Format start_date thành chuỗi
+            end_date: formatDateTime(product.end_date), // Format end_date thành chuỗi
+            price:
+              typeof product.price === "string"
+                ? parseFloat(product.price)
+                : product.price, // Chuyển đổi giá thành số
+          }))
+          .filter((product) => product.status === "APPROVE"); // Chỉ lấy sản phẩm có trạng thái "APPROVE"
 
-        // Lấy danh sách loại sản phẩm duy nhất từ sản phẩm
         const uniqueCategories = Array.from(
           new Set(products.map((product) => product.category.name))
         );
+
         setCategories(uniqueCategories); // Lưu danh sách loại sản phẩm vào state
-        setProductList(products);
-        setFilteredProducts(products);
-        setLoading(false);
+        setProductList(products); // Lưu sản phẩm vào state
+        setFilteredProducts(products); // Ban đầu hiển thị tất cả sản phẩm
+        setLoading(false); // Kết thúc trạng thái loading
       } catch (error) {
         console.error("Error fetching products:", error);
         setLoading(false);
@@ -108,7 +111,7 @@ const ProductList: React.FC = () => {
     fetchProducts();
   }, []);
 
-  // Add product to cart
+  // Thêm sản phẩm vào giỏ hàng
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
@@ -122,28 +125,28 @@ const ProductList: React.FC = () => {
         return [...prevCart, { ...product, quantity: 1 }];
       }
     });
-    message.success(`${product.name} has been added to the cart`);
+    message.success(`${product.name} đã được thêm vào giỏ hàng`);
   };
 
-  // Remove product from cart
+  // Xóa sản phẩm khỏi giỏ hàng
   const removeFromCart = (id: number) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== id));
-    message.success("Product has been removed from the cart");
+    message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
-  // Update product quantity in cart
+  // Cập nhật số lượng sản phẩm trong giỏ hàng
   const updateQuantity = (id: number, quantity: number) => {
     setCart((prevCart) =>
       prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
     );
   };
 
-  // Calculate total price
+  // Tính tổng tiền trong giỏ hàng
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
-  // Ẩn hiện giỏ hàng
+  // Đổi trạng thái mở/đóng của giỏ hàng
   const toggleDrawer = () => {
     setDrawerVisible(!drawerVisible);
   };
@@ -154,45 +157,58 @@ const ProductList: React.FC = () => {
     minPrice: number,
     maxPrice: number
   ) => {
-    setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi bộ lọc
+    setCurrentPage(1); // Đặt lại trang về trang 1 khi thay đổi bộ lọc
     let filtered = productList;
 
-    // Lọc theo loại sản phẩm
     if (selectedCategories.length > 0) {
       filtered = filtered.filter((product) =>
         selectedCategories.includes(product.category.name)
       );
     }
 
-    // Lọc theo khoảng giá
-    if (minPrice !== null && maxPrice !== null) {
-      filtered = filtered.filter(
-        (product) => product.price >= minPrice && product.price <= maxPrice
-      );
-    }
+    filtered = filtered.filter(
+      (product) => product.price >= minPrice && product.price <= maxPrice
+    );
 
     setFilteredProducts(filtered); // Cập nhật danh sách sản phẩm sau khi lọc
   };
 
-  // Sắp xếp sản phẩm
+  // Sắp xếp sản phẩm theo tiêu chí
   const sortProducts = (type: string) => {
-    setCurrentPage(1); // Đặt lại trang hiện tại về trang 1 khi thay đổi sắp xếp
+    setCurrentPage(1); // Đặt lại trang về trang 1 khi thay đổi sắp xếp
     const sortedProducts = [...filteredProducts];
-    if (type === "az") {
-      sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
-    } else if (type === "za") {
-      sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
-    } else if (type === "newest") {
-      sortedProducts.sort(
-        (a, b) =>
-          new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
-      );
-    } else if (type === "priceAsc") {
-      sortedProducts.sort((a, b) => a.price - b.price);
-    } else if (type === "priceDesc") {
-      sortedProducts.sort((a, b) => b.price - a.price);
+
+    switch (type) {
+      case "az":
+        sortedProducts.sort((a, b) => a.name.localeCompare(b.name));
+        break;
+      case "za":
+        sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
+        break;
+      case "newest":
+        sortedProducts.sort(
+          (a, b) =>
+            new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+        );
+        break;
+      case "priceAsc":
+        sortedProducts.sort((a, b) => a.price - b.price);
+        break;
+      case "priceDesc":
+        sortedProducts.sort((a, b) => b.price - a.price);
+        break;
     }
     setFilteredProducts(sortedProducts);
+  };
+
+  // Tìm kiếm sản phẩm theo tên và mô tả
+  const handleSearch = (value: string) => {
+    const filtered = productList.filter(
+      (product) =>
+        product.name.toLowerCase().includes(value.toLowerCase()) ||
+        product.category.name.toLowerCase().includes(value.toLowerCase())
+    );
+    setFilteredProducts(filtered);
   };
 
   return (
@@ -209,6 +225,14 @@ const ProductList: React.FC = () => {
           filterProducts(categories, minPrice, maxPrice); // Áp dụng lọc kết hợp
         }}
         categories={categories}
+      />
+
+      <Input.Search
+        className="search-bar" // Thêm class để áp dụng CSS
+        placeholder="Tìm kiếm sản phẩm"
+        onSearch={handleSearch}
+        allowClear
+        enterButton="Tìm kiếm"
       />
 
       <div style={{ position: "fixed", bottom: 20, right: 8 }}>
