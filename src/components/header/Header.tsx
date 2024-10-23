@@ -67,7 +67,7 @@ function Header() {
           <li onClick={() => navigate("/")}>Trang chủ</li>
           <li onClick={() => navigate("/productList")}>Tất cả sản phẩm</li>
           <li>Hoa theo sự kiện</li>
-          <li>Hoa theo lô</li>
+
           <li onClick={() => navigate("/blog")}>Blog</li>
           <li style={{marginTop:0}} onClick={() => navigate("/LienHe")}>Liên hệ</li>
         </ul>

@@ -127,7 +127,8 @@ const Checkout: React.FC = () => {
           if (vnpayResult) {
             await updateStatus();
             window.location.href = vnpayResult;
-            addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
+            localStorage.removeItem("cart");
+            addNotification("Bạn đã thanh toán thành công 1 đơn  hàng!");
           } else {
             const failureUrl = response.data.failureUrl;
             if (failureUrl) {

@@ -15,8 +15,7 @@ interface ApiOrder {
   note: string;
   orderDate: string | null; // Kiểu dữ liệu cho orderDate có thể là null
   totalMoney: string; // Tổng tiền luôn là số
-  status: string;
-  paymentMethod: string | null; // Phương thức thanh toán có thể là null
+  status: string; // Cập nhật kiểu dữ liệu status thành số
 }
 
 // Interface cho đối tượng hiển thị trong bảng
@@ -26,10 +25,25 @@ interface Order {
   orderDate: string;
   address: string;
   totalMoney: string;
-  paymentMethod: string;
   note: string;
   status: string;
 }
+
+// Function để chuyển đổi status thành tiếng Việt
+const translateStatus = (status: string): string => {
+  switch (status) {
+    case "AWAITING_PAYMENT":
+      return 'Đang chờ thanh toán';
+    case "AWAITING_PICKUP":
+      return 'Đang chờ lấy hàng';
+    case "COMPLETED":
+      return 'Hoàn thành';
+    case "CANCELLED":
+      return 'Đã hủy';
+    default:
+      return 'Không xác định';
+  }
+};
 
 const columns = [
   {
@@ -53,12 +67,7 @@ const columns = [
     key: 'totalMoney', // Khớp với dữ liệu được định dạng
   },
   {
-    title: 'Phương thức thanh toán',
-    dataIndex: 'paymentMethod',
-    key: 'paymentMethod',
-  },
-  {
-    title: 'Trạng Thái ',
+    title: 'Trạng Thái',
     dataIndex: 'status',
     key: 'status', // Khớp với dữ liệu được định dạng
   },
@@ -67,6 +76,11 @@ const columns = [
     dataIndex: 'note',
     key: 'note', // Khớp với dữ liệu được định dạng
   },
+  {
+    title:'Xác Nhận',
+    dataIndex: 'note',
+    key: 'note',
+  }
 ];
 
 const Orders: React.FC = () => {
@@ -95,9 +109,9 @@ const Orders: React.FC = () => {
           totalMoney: order.totalMoney
             ? parseInt(order.totalMoney).toLocaleString('vi-VN') + '₫' // Định dạng tổng tiền
             : 'Không xác định', // Xử lý khi totalMoney là null
-          paymentMethod: order.paymentMethod || 'Không xác định', // Xử lý khi paymentMethod là null
+          
           note: order.note,
-          status:order.status
+          status: translateStatus(order.status) // Chuyển đổi status thành tiếng Việt
         }));
 
         setOrders(fetchedOrders); // Cập nhật danh sách đơn hàng hiển thị
