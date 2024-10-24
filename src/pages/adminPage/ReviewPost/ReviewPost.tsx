@@ -1,4 +1,4 @@
-import { Table, Button, message, Image, Carousel } from "antd";
+import { Table, Button, message, Image, Carousel, Modal } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
 import "./ReviewPost.scss";
@@ -18,16 +18,19 @@ interface Post {
 
 function ReviewPosts() {
     const [posts, setPosts] = useState<Post[]>([]);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
 
     useEffect(() => {
         fetchPosts();
     }, []);
 
+    // Fetch posts from API and filter out the rejected or deleted ones
     const fetchPosts = async () => {
         try {
             const response = await api.get<{ posts: Post[] }>("/posts");
             const filteredPosts = response.data.posts.filter(
-                (post) => post.status !== "DELETED"
+                (post) => post.status !== "DELETED" && post.status !== "DISAPPROVE"
             );
             setPosts(filteredPosts);
         } catch (error) {
@@ -36,10 +39,13 @@ function ReviewPosts() {
         }
     };
 
+    // Handle approving a post
     const handleApprove = async (id: number) => {
         try {
             await api.put(`/api/admin/posts/${id}/true`);
             message.success("Bài đăng đã được duyệt!");
+
+            // Update the post status locally
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
                     post.id === id ? { ...post, status: "APPROVE" } : post
@@ -51,17 +57,36 @@ function ReviewPosts() {
         }
     };
 
-    const handleReject = async (id: number) => {
+    // Show confirmation modal for rejecting a post
+    const showRejectConfirm = (id: number) => {
+        setSelectedPostId(id);
+        setIsModalVisible(true);
+    };
+
+    // Handle rejecting a post and remove it from the list
+    const handleReject = async () => {
+        if (selectedPostId === null) return;
         try {
-            await api.put(`/api/admin/posts/${id}/false`);
+            await api.put(`/api/admin/posts/${selectedPostId}/false`);
             message.success("Bài đăng đã bị từ chối!");
-            setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
+
+            // Remove the rejected post from the list
+            setPosts((prevPosts) =>
+                prevPosts.filter((post) => post.id !== selectedPostId)
+            );
+
+            setIsModalVisible(false); // Close the modal after rejecting
         } catch (error) {
             console.error(error);
             message.error("Có lỗi xảy ra khi từ chối bài đăng.");
         }
     };
 
+    const handleCancel = () => {
+        setIsModalVisible(false); // Close the modal when cancelled
+    };
+
+    // Render status text based on status value
     const renderStatus = (status: string) => {
         switch (status) {
             case "PENDING":
@@ -75,6 +100,7 @@ function ReviewPosts() {
         }
     };
 
+    // Define table columns
     const columns = [
         {
             title: "Hình ảnh",
@@ -94,8 +120,9 @@ function ReviewPosts() {
                             <h4>Các ảnh khác</h4>
                             <Carousel
                                 autoplay
-                                dots={true}
-                                style={{ maxWidth: "250px", margin: "0 auto" }}
+                                dots
+                                style={{ maxWidth: "300px", margin: "0 auto" }}
+                                adaptiveHeight
                             >
                                 {record.imageUrls.map((img, index) => (
                                     <div key={index} className="carousel-image">
@@ -104,6 +131,10 @@ function ReviewPosts() {
                                             height={180}
                                             src={img.imageUrl}
                                             alt={`image-${index}`}
+                                            style={{
+                                                objectFit: "cover",
+                                                borderRadius: "8px",
+                                            }}
                                         />
                                     </div>
                                 ))}
@@ -119,8 +150,13 @@ function ReviewPosts() {
             title: "Giá",
             dataIndex: "price",
             key: "price",
-            render: (price: number) => `${price.toLocaleString()} đ`,
+            render: (price: number) => (
+                <div className="price-column">
+                    {price.toLocaleString()} <span className="currency">đ</span>
+                </div>
+            ),
         },
+
         { title: "Địa chỉ", dataIndex: "address", key: "address" },
         { title: "Ngày bắt đầu", dataIndex: "start_date", key: "start_date" },
         { title: "Ngày kết thúc", dataIndex: "end_date", key: "end_date" },
@@ -134,7 +170,7 @@ function ReviewPosts() {
             title: "Hành động",
             key: "actions",
             render: (_: unknown, record: Post) => (
-                <>
+                <div className="action-buttons">
                     <Button
                         type="primary"
                         onClick={() => handleApprove(record.id)}
@@ -144,21 +180,32 @@ function ReviewPosts() {
                     </Button>
                     <Button
                         danger
-                        onClick={() => handleReject(record.id)}
-                        style={{ marginLeft: 10 }}
+                        onClick={() => showRejectConfirm(record.id)}
                         disabled={record.status === "DISAPPROVE"}
                     >
                         Từ chối
                     </Button>
-                </>
+                </div>
             ),
         },
+
     ];
 
     return (
         <div className="review-posts-container">
             <h2>Quản lý duyệt bài đăng</h2>
             <Table dataSource={posts} columns={columns} rowKey="id" />
+
+            <Modal
+                title="Xác nhận từ chối"
+                open={isModalVisible}
+                onOk={handleReject}
+                onCancel={handleCancel}
+                okText="Xác nhận"
+                cancelText="Hủy"
+            >
+                <p>Bạn có chắc chắn muốn từ chối bài đăng này không?</p>
+            </Modal>
         </div>
     );
 }

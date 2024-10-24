@@ -3,75 +3,124 @@
   background-color: #f9f9f9;
   border-radius: 8px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-
-  h2 {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 30px;
-    color: #333;
-    text-align: center;
-  }
+  overflow: hidden;
 
   .ant-table-wrapper {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
+    overflow-x: auto;
+    margin-top: 10px;
 
-    th {
-      font-size: 18px;
-    }
-
+    th,
     td {
       font-size: 16px;
+      text-align: left; /* Căn lề trái cho nội dung trong ô */
+      padding: 12px;
+      vertical-align: middle;
+    }
+
+    th {
+      background-color: #f0f2f5;
+      font-weight: bold;
     }
   }
 
   .image-column {
-    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Căn lề trái cho ảnh */
+    justify-content: flex-start;
+    padding: 10px;
+    margin-left: 15px; /* Đẩy nội dung sang trái thêm */
 
     h4 {
-      margin: 5px 0;
+      margin: 8px 0;
       font-size: 18px;
       color: #333;
+      text-align: left; /* Căn lề trái cho tiêu đề */
+    }
+
+    img {
+      width: 280px;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 12px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+      &:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.2);
+      }
     }
 
     .carousel-container {
-      margin-top: 10px;
-      max-width: 250px;
+      margin-top: 15px;
+      max-width: 320px;
+      margin-left: 15px; /* Đẩy carousel sang trái thêm */
 
       .carousel-image {
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 180px;
+        height: 240px;
       }
     }
   }
 
-  .ant-image {
-    border-radius: 8px;
-    object-fit: cover;
-    margin-bottom: 10px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+  .price-column {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+
+    .currency {
+      font-weight: bold;
+      font-size: 16px;
+    }
   }
 
-  .ant-carousel {
+  .action-buttons {
+    display: flex;
+    justify-content: flex-start; /* Căn lề trái cho các nút hành động */
+    gap: 20px;
     margin-top: 10px;
-    height: 200px;
-    overflow: hidden;
+    margin-left: 15px; /* Đẩy cụm nút sang trái thêm */
 
-    .slick-dots {
-      bottom: -30px;
+    .ant-btn {
+      font-size: 16px;
+      font-weight: bold;
+      border-radius: 8px;
+      transition: background-color 0.3s ease, box-shadow 0.3s ease;
 
-      li button {
-        width: 12px;
-        height: 12px;
-        background-color: #1890ff;
+      &.ant-btn-primary {
+        background: linear-gradient(45deg, #4facfe, #00f2fe);
+        border: none;
+        color: white;
+
+        &:hover {
+          background: linear-gradient(45deg, #1fddff, #74f9ff);
+          box-shadow: 0px 4px 12px rgba(31, 221, 255, 0.3);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
       }
 
-      li.slick-active button {
-        background-color: #40a9ff;
+      &.ant-btn-danger {
+        background-color: #ff4d4f;
+        border-color: #ff4d4f;
+
+        &:hover {
+          background-color: #ff7875;
+          border-color: #ff7875;
+          box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        &:active {
+          transform: scale(0.95);
+        }
       }
     }
   }
