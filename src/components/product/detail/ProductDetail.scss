@@ -48,19 +48,41 @@
 
   .product-description {
     margin-top: 20px;
-
-    h3 {
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
+    background-color: #fff;  // Nền màu trắng để làm nổi bật phần mô tả
+    border-radius: 8px;  // Góc bo tròn để tạo cảm giác mềm mại
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);  // Đổ bóng nhẹ để tạo hiệu ứng nổi
+    padding: 30px;  // Khoảng cách bên trong để các phần nội dung không sát cạnh
+  
+    transition: transform 0.3s ease, color 0.3s ease;  // Hiệu ứng chuyển động khi hover
+  
+    &:hover {
+      color: #ff4d4f;  // Chuyển màu chữ sang đỏ khi di chuột vào phần mô tả
+      transform: translateY(-5px);  // Hiệu ứng nâng lên khi hover
     }
-
+  
+    h3 {
+      font-size: 24px;  // Cỡ chữ của tiêu đề
+      font-weight: bold;  // In đậm tiêu đề
+      margin-bottom: 15px;  // Khoảng cách bên dưới tiêu đề để nội dung không sát nhau
+      color: #333;  // Màu chữ đậm
+      &:hover {
+        color: #ff4d4f;  // Chuyển màu chữ sang đỏ khi di chuột vào phần mô tả
+      
+      }
+    }
+  
     p {
-      font-size: 16px;
-      color: #595959;
-      margin-bottom: 8px;
+      margin-bottom: 10px;  // Khoảng cách giữa các đoạn văn
+      color: #555;  // Màu chữ nhẹ nhàng, dễ đọc
+      font-size: 16px;  // Cỡ chữ phù hợp
+      line-height: 1.6;  // Khoảng cách giữa các dòng giúp dễ đọc hơn
+      &:hover {
+        color: #ff4d4f;  // Chuyển màu chữ sang đỏ khi di chuột vào phần mô tả
+      
+      }
     }
   }
+  
 
   .additional-images {
     display: flex;
