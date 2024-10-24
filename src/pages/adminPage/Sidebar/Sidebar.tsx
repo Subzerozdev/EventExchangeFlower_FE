@@ -5,9 +5,9 @@ import {
   FileTextOutlined,
   SettingOutlined,
   TagsOutlined,
-  LogoutOutlined
+  LogoutOutlined,
 } from '@ant-design/icons';
-import { useUser } from '../../../context/UserContext'; // Sử dụng UserContext để lấy hàm logout
+import { useUser } from '../../../context/UserContext';
 import './sideBar.scss';
 
 interface SidebarProps {
@@ -17,11 +17,11 @@ interface SidebarProps {
 
 const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
   const navigate = useNavigate();
-  const { logout } = useUser(); // Lấy hàm logout từ context
+  const { logout } = useUser();
 
   const handleLogout = () => {
-    logout(); // Gọi hàm logout
-    navigate('/login'); // Điều hướng đến trang đăng nhập
+    logout();
+    navigate('/login');
   };
 
   return (
@@ -63,5 +63,4 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
   );
 };
 
-// Sử dụng React.memo để tránh render lại không cần thiết
 export default memo(Sidebar);

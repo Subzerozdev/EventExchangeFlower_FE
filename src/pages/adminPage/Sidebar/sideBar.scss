@@ -1,76 +1,106 @@
+/* Sidebar container */
 #sidebar {
   grid-area: sidebar;
-  background-color: #263043;
+  background-color: #1f2d3a;
   height: 100%;
-  transition: all 0.3s ease-in-out; /* Hiệu ứng khi mở/đóng sidebar */
+  transition: all 0.4s ease-in-out; /* Mượt hơn khi mở/đóng */
   overflow-y: auto;
   position: fixed;
   left: 0;
 
-  /* Thêm hình ảnh nền */
+  /* Background image */
   background-image: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2FDark.jpg?alt=media&token=ac5002fe-1535-437f-86f2-6d94d213011a");
-  background-size: cover; /* Đảm bảo hình ảnh phủ toàn bộ sidebar */
-  background-position: center; /* Đặt hình ảnh ở giữa */
-  background-repeat: no-repeat; /* Không lặp lại hình ảnh */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
 
+/* Title của sidebar */
 .sidebar-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 30px;
-  color: #ffffff;
-  font-size: 34px;
+  padding: 10px 20px;
+  color: #fff;
+  font-size: 28px; /* Giảm kích thước để gọn hơn */
+  font-weight: 600;
 }
 
+/* Danh sách các mục trong sidebar */
 .sidebar-list {
   list-style-type: none;
   padding: 0;
+  margin: 0;
 }
 
+/* Các mục item trong sidebar */
 .sidebar-list-item {
-  padding: 20px 30px;
-  font-size: 20px; /* Tăng kích thước font cho các mục trong sidebar */
+  padding: 15px 25px;
+  font-size: 18px; /* Giảm kích thước chữ */
   display: flex;
   align-items: center;
   transition: background-color 0.3s ease, color 0.3s ease;
+
+  /* Thêm hiệu ứng mượt mà */
+  border-radius: 8px;
+  margin-bottom: 8px;
 }
 
 .sidebar-list-item:hover {
-  background-color: rgba(255, 255, 255, 0.1); /* Hiệu ứng hover */
+  background-color: rgba(255, 255, 255, 0.2); /* Hiệu ứng hover nhẹ */
+  transform: scale(1.02); /* Phóng to nhẹ */
   cursor: pointer;
+  transition: transform 0.2s ease-in-out;
 }
 
+/* Style cho icon */
 .sidebar-list-item .icon {
-  font-size: 24px; /* Tăng cỡ icon */
-  margin-right: 15px; /* Tăng khoảng cách giữa icon và text */
+  font-size: 22px;
+  margin-right: 10px;
+  color: #ffffff;
+  transition: color 0.3s;
 }
 
+.sidebar-list-item:hover .icon {
+  color: #ff7675; /* Đổi màu icon khi hover */
+}
+
+/* Nút button dạng link */
 .btn-link {
   background: none;
   border: none;
-  font-weight: 500px;
   color: #ffffff;
   display: flex;
   align-items: center;
   text-align: left;
   width: 100%;
-  font-size: 40px;
+  font-size: 18px; /* Giảm kích thước */
+  transition: color 0.3s;
+  padding: 12px 20px;
+  font-weight: 500;
 }
 
 .btn-link:hover {
-  color: #ff0b0b; /* Đổi màu chữ khi hover */
+  color: #ff6b6b; /* Màu nổi bật khi hover */
 }
 
+/* Sidebar mở/đóng */
 .sidebar-responsive {
   position: absolute;
   width: 250px;
-  transition: all 0.3s ease-in-out;
+  transition: all 0.4s ease-in-out;
   z-index: 12;
 }
 
+/* Close icon */
 .close_icon {
   color: red;
   cursor: pointer;
-  font-size: 20px;
+  font-size: 22px;
+}
+
+/* Thêm shadow và làm mượt */
+#sidebar {
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 }

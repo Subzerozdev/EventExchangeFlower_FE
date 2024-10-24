@@ -3,16 +3,14 @@ import { useNavigate } from "react-router-dom";
 import api from "../../../config/api"; // Import api để xử lý HTTP requests
 import { useUser } from "../../../context/UserContext"; // Để kiểm tra quyền admin
 import { useEffect, useState } from "react";
-import { AxiosError } from "axios"; // Import AxiosError để xử lý lỗi từ API
-import './add-type.scss'; // Tạo file style riêng
+import { AxiosError } from "axios";
+import "./add-type.scss"; // SCSS riêng cho Type
 
-// Interface cho Type
 interface Type {
   id: number;
   name: string;
 }
 
-// Interface cho giá trị của form
 interface TypeFormValues {
   name: string;
 }
@@ -20,82 +18,64 @@ interface TypeFormValues {
 function AddType() {
   const navigate = useNavigate();
   const { user } = useUser();
-  const [types, setTypes] = useState<Type[]>([]); // State lưu danh sách types
-  const [editTypeId, setEditTypeId] = useState<number | null>(null); // State lưu trạng thái chỉnh sửa
+  const [types, setTypes] = useState<Type[]>([]);
+  const [editTypeId, setEditTypeId] = useState<number | null>(null);
 
-  // Kiểm tra quyền truy cập admin
   useEffect(() => {
     if (user?.role !== "ROLE_ADMIN") {
       message.error("Bạn không có quyền truy cập!");
       navigate("/");
     } else {
-      fetchTypes(); // Lấy danh sách types khi vào trang
+      fetchTypes();
     }
   }, [user, navigate]);
 
-  // Hàm lấy danh sách types
   const fetchTypes = async () => {
     try {
-      const response = await api.get("/types"); // API call để lấy danh sách types
-      setTypes(response.data); // Cập nhật state với dữ liệu từ API
+      const response = await api.get("/types");
+      setTypes(response.data);
     } catch (err) {
       message.error("Không thể tải danh sách types.");
       console.error("Lỗi khi lấy types: ", err);
     }
   };
 
-  // Tạo mới type
-  const onFinish = async (values: TypeFormValues) => {
+  const handleAddType = async (values: TypeFormValues) => {
     try {
-      const response = await api.post("/api/admin/types", values); // API call để tạo mới type
+      const response = await api.post("/api/admin/types", values);
       if (response.status === 200) {
         message.success("Tạo type thành công!");
-        fetchTypes(); // Tải lại danh sách types sau khi tạo
-      } else {
-        message.error("Tạo type thất bại.");
+        fetchTypes();
       }
     } catch (err) {
       const error = err as AxiosError;
-      if (error.response) {
-        message.error(`Lỗi API: ${'Unknown error'}`);
-      } else {
-        message.error("Có lỗi xảy ra khi tạo type.");
-      }
+      message.error("Có lỗi xảy ra khi tạo type.");
       console.error("Lỗi khi tạo type: ", error);
     }
   };
 
-  // Cập nhật type
-  const updateType = async (id: number, values: TypeFormValues) => {
+  const handleUpdateType = async (values: TypeFormValues) => {
+    if (editTypeId === null) return;
     try {
-      const response = await api.put(`/api/admin/types/${id}`, values); // API call để cập nhật type
+      const response = await api.put(`/api/admin/types/${editTypeId}`, values);
       if (response.status === 200) {
         message.success("Cập nhật type thành công!");
-        setEditTypeId(null); // Đặt lại trạng thái chỉnh sửa
-        fetchTypes(); // Tải lại danh sách types sau khi cập nhật
-      } else {
-        message.error("Cập nhật type thất bại.");
+        setEditTypeId(null);
+        fetchTypes();
       }
     } catch (err) {
       const error = err as AxiosError;
-      if (error.response) {
-        message.error(`Lỗi API: ${'Unknown error'}`);
-      } else {
-        message.error("Có lỗi xảy ra khi cập nhật type.");
-      }
+      message.error("Có lỗi xảy ra khi cập nhật type.");
       console.error("Lỗi khi cập nhật type: ", error);
     }
   };
 
-  // Xóa type
   const deleteType = async (id: number) => {
     try {
-      const response = await api.delete(`/api/admin/types/${id}`); // API call để xóa type
+      const response = await api.delete(`/api/admin/types/${id}`);
       if (response.status === 200) {
         message.success("Xóa type thành công!");
-        fetchTypes(); // Tải lại danh sách types sau khi xóa
-      } else {
-        message.error("Xóa type thất bại.");
+        fetchTypes();
       }
     } catch (err) {
       message.error("Có lỗi khi xóa type.");
@@ -105,13 +85,14 @@ function AddType() {
 
   return (
     <div className="add-type">
-      <h1>Quản lý Types</h1>
+      <h1>Quản lý Phân Loại</h1>
 
-      {/* Form để thêm hoặc chỉnh sửa type */}
       <Form
         name="add-type"
-        onFinish={editTypeId === null ? onFinish : (values) => updateType(editTypeId, values)}
+        onFinish={handleAddType}
         autoComplete="off"
+        layout="inline"
+        className="add-type-form"
       >
         <Form.Item
           name="name"
@@ -119,34 +100,52 @@ function AddType() {
         >
           <Input placeholder="Tên Type" />
         </Form.Item>
-
         <Form.Item>
           <Button type="primary" htmlType="submit">
-            {editTypeId === null ? "Thêm Type" : "Cập nhật Type"}
+            Thêm Type
           </Button>
         </Form.Item>
       </Form>
 
-      {/* Hiển thị danh sách types */}
       <ul>
-        {types.length > 0 ? (
-          types.map((type: Type) => (
-            <li key={type.id}>
-              {type.name}
-              <Button
-                type="link"
-                onClick={() => setEditTypeId(type.id)} // Thiết lập ID để chỉnh sửa
+        {types.map((type) => (
+          <li key={type.id} className="type-item">
+            {editTypeId === type.id ? (
+              <Form
+                name="edit-type"
+                onFinish={handleUpdateType}
+                initialValues={{ name: type.name }}
+                autoComplete="off"
+                layout="inline"
+                className="edit-type-form"
               >
-                Sửa
-              </Button>
-              <Button type="link" onClick={() => deleteType(type.id)} danger>
-                Xóa
-              </Button>
-            </li>
-          ))
-        ) : (
-          <p>Không có type nào được tìm thấy.</p>
-        )}
+                <Form.Item
+                  name="name"
+                  rules={[{ required: true, message: "Vui lòng nhập tên type!" }]}
+                >
+                  <Input placeholder="Tên Type" />
+                </Form.Item>
+                <Form.Item>
+                  <Button type="primary" htmlType="submit" className="edit-type-btn">
+                    Cập nhật
+                  </Button>
+                </Form.Item>
+              </Form>
+            ) : (
+              <>
+                <span className="type-name">{type.name}</span>
+                <div className="type-actions">
+                  <Button type="link" onClick={() => setEditTypeId(type.id)}>
+                    Sửa
+                  </Button>
+                  <Button type="link" danger onClick={() => deleteType(type.id)}>
+                    Xóa
+                  </Button>
+                </div>
+              </>
+            )}
+          </li>
+        ))}
       </ul>
     </div>
   );

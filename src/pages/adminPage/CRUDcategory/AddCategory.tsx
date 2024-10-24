@@ -1,10 +1,10 @@
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import api from "../../../config/api"; // Import api để xử lý HTTP requests
-import { useUser } from "../../../context/UserContext"; // Để kiểm tra quyền admin
+import api from "../../../config/api";
+import { useUser } from "../../../context/UserContext";
 import { useEffect, useState } from "react";
-import { AxiosError } from "axios"; // Import AxiosError để xử lý lỗi từ API
-import './add-category.scss';
+import { AxiosError } from "axios";
+import "./add-category.scss";
 
 interface Category {
   id: number;
@@ -26,73 +26,59 @@ function AddCategory() {
       message.error("Bạn không có quyền truy cập!");
       navigate("/");
     } else {
-      fetchCategories(); // Lấy danh sách categories khi vào trang
+      fetchCategories();
     }
   }, [user, navigate]);
 
-  // Hàm lấy danh sách categories
   const fetchCategories = async () => {
     try {
       const response = await api.get("/categories");
       setCategories(response.data);
     } catch (err) {
       message.error("Không thể tải danh sách categories.");
-      console.error(err); // Ghi log lỗi (nếu cần)
+      console.error(err);
     }
   };
 
-  // Tạo mới category
-  const onFinish = async (values: CategoryFormValues) => {
+  const handleAddCategory = async (values: CategoryFormValues) => {
     try {
       const response = await api.post("/api/admin/categories", values);
       if (response.status === 200) {
         message.success("Tạo category thành công!");
-        fetchCategories(); // Tải lại danh sách categories sau khi tạo
-      } else {
-        message.error("Tạo category thất bại.");
+        fetchCategories();
       }
     } catch (err) {
       const error = err as AxiosError;
-      if (error.response) {
-        message.error(`API Error: ${'Unknown error'}`);
-      } else {
-        message.error("Có lỗi xảy ra khi tạo category.");
-      }
+      message.error("Có lỗi xảy ra khi tạo category.");
       console.error("Error:", error);
     }
   };
 
-  // Cập nhật category
-  const updateCategory = async (id: number, values: CategoryFormValues) => {
+  const handleUpdateCategory = async (values: CategoryFormValues) => {
+    if (editCategoryId === null) return;
     try {
-      const response = await api.put(`/api/admin/categories/${id}`, values);
+      const response = await api.put(
+        `/api/admin/categories/${editCategoryId}`,
+        values
+      );
       if (response.status === 200) {
         message.success("Cập nhật category thành công!");
-        setEditCategoryId(null); // Đặt lại trạng thái chỉnh sửa
-        fetchCategories(); // Tải lại danh sách categories sau khi cập nhật
-      } else {
-        message.error("Cập nhật category thất bại.");
+        setEditCategoryId(null);
+        fetchCategories();
       }
     } catch (err) {
       const error = err as AxiosError;
-      if (error.response) {
-        message.error(`API Error: ${'Unknown error'}`);
-      } else {
-        message.error("Có lỗi xảy ra khi cập nhật category.");
-      }
+      message.error("Có lỗi xảy ra khi cập nhật category.");
       console.error("Error:", error);
     }
   };
 
-  // Xóa category
   const deleteCategory = async (id: number) => {
     try {
       const response = await api.delete(`/api/admin/categories/${id}`);
       if (response.status === 200) {
         message.success("Xóa category thành công!");
-        fetchCategories(); // Tải lại danh sách categories sau khi xóa
-      } else {
-        message.error("Xóa category thất bại.");
+        fetchCategories();
       }
     } catch (err) {
       message.error("Có lỗi khi xóa category.");
@@ -102,11 +88,11 @@ function AddCategory() {
 
   return (
     <div className="add-category">
-      <h1>Quản lý Categories</h1>
+      <h1>Quản lý doanh mục</h1>
 
       <Form
         name="add-category"
-        onFinish={editCategoryId === null ? onFinish : (values) => updateCategory(editCategoryId, values)}
+        onFinish={handleAddCategory}
         autoComplete="off"
       >
         <Form.Item
@@ -117,32 +103,65 @@ function AddCategory() {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className={editCategoryId === null ? 'add-category-btn' : 'edit-category-btn'}
-          >
-            {editCategoryId === null ? "Thêm Category" : "Cập nhật Category"}
+          <Button type="primary" htmlType="submit" className="add-category-btn">
+            Thêm danh mục
           </Button>
         </Form.Item>
       </Form>
 
       <ul>
-        {categories.map((category: Category) => (
-          <li key={category.id}>
-            {category.name}
-            <Button
-              type="link"
-              onClick={() => setEditCategoryId(category.id)} // Thiết lập ID để chỉnh sửa
-            >
-              Sửa
-            </Button>
-            <Button type="link" onClick={() => deleteCategory(category.id)} danger>
-              Xóa
-            </Button>
+        {categories.map((category) => (
+          <li key={category.id} className="category-item">
+            {editCategoryId === category.id ? (
+              <Form
+                name="edit-category"
+                onFinish={handleUpdateCategory}
+                initialValues={{ name: category.name }}
+                autoComplete="off"
+                layout="inline" // Đảm bảo các phần tử trong cùng 1 hàng
+                className="category-edit-form"
+              >
+                <Form.Item
+                  name="name"
+                  rules={[{ required: true, message: "Vui lòng nhập tên category!" }]}
+                >
+                  <Input placeholder="Tên Category" />
+                </Form.Item>
+                <Form.Item>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    className="edit-category-btn"
+                  >
+                    Cập nhật
+                  </Button>
+                </Form.Item>
+              </Form>
+            ) : (
+              <div className="category-row">
+                <span className="category-name">{category.name}</span>
+                <div className="category-actions">
+                  <Button
+                    type="link"
+                    onClick={() => setEditCategoryId(category.id)}
+                  >
+                    Sửa
+                  </Button>
+                  <Button
+                    type="link"
+                    danger
+                    onClick={() => deleteCategory(category.id)}
+                  >
+                    Xóa
+                  </Button>
+                </div>
+              </div>
+            )}
           </li>
         ))}
       </ul>
+
+
     </div>
   );
 }

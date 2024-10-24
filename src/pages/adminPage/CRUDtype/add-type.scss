@@ -1,77 +1,117 @@
 .add-type {
-  max-width: 800px;
+  max-width: 900px;
   margin: 20px auto;
   padding: 30px;
   background-color: #ffffff;
-  border: 1px solid #ddd;
   border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
 
   h1 {
     text-align: center;
-    font-size: 26px;
-    color: #333;
+    font-size: 36px;
     margin-bottom: 30px;
+    font-weight: bold;
+    color: #333;
   }
 
   .ant-form-item {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
   }
 
   .ant-input {
-    border-radius: 6px;
-    height: 42px;
-    font-size: 16px;
+    border-radius: 8px; /* Tăng độ bo góc */
+    height: 50px; /* Tăng chiều cao input */
+    font-size: 18px; /* Tăng kích thước chữ */
+    transition: box-shadow 0.3s ease;
+
+    &:focus {
+      box-shadow: 0 0 8px rgba(24, 144, 255, 0.5);
+      border-color: #1890ff;
+    }
   }
 
-  .ant-btn-primary {
-    width: 100%;
-    background-color: #1890ff;
-    border-color: #1890ff;
-    height: 45px;
-    font-size: 18px;
-    font-weight: bold;
-    border-radius: 6px;
+  .add-type-form {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 20px;
   }
 
-  .ant-btn-primary:hover {
-    background-color: #40a9ff;
-    border-color: #40a9ff;
-  }
-
-  /* Style cho danh sách type */
   ul {
     list-style: none;
     padding: 0;
     margin-top: 20px;
   }
 
-  ul li {
+  .type-item {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 15px;
     border-bottom: 1px solid #ddd;
-    margin-bottom: 10px;
-    font-size: 18px;
+    transition: background-color 0.3s ease;
+
+    &:hover {
+      background-color: #f9f9f9;
+    }
+  }
+
+  .type-name {
+    font-size: 20px; /* Tăng kích thước chữ */
+    font-weight: 500;
+    flex-grow: 1;
+  }
+
+  .type-actions {
+    display: flex;
+    gap: 12px;
   }
 
   .ant-btn-link {
-    font-size: 16px;
+    font-size: 18px; /* Tăng kích thước nút "Sửa" và "Xóa" */
     color: #1890ff;
-    padding: 0;
-    margin-right: 10px;
-  }
 
-  .ant-btn-link:hover {
-    color: #40a9ff;
+    &:hover {
+      color: #40a9ff;
+    }
   }
 
   .ant-btn-danger {
-    font-size: 16px;
+    font-size: 18px;
     color: #ff4d4f;
+
+    &:hover {
+      color: #ff7875;
+    }
   }
 
-  .ant-btn-danger:hover {
-    color: #ff7875;
+  .edit-type-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+
+  .edit-type-btn {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #fff;
+    font-size: 20px; /* Tăng kích thước chữ */
+    height: 55px; /* Tăng chiều cao nút */
+    padding: 0 20px; /* Tăng khoảng cách ngang */
+    font-weight: bold;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      background-color: #ffca28;
+      border-color: #ffca28;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
   }
 }
