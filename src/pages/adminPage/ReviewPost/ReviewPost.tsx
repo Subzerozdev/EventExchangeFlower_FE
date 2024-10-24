@@ -1,4 +1,4 @@
-import { Table, Button, message, Image, Carousel, Modal } from "antd";
+import { Table, Button, message, Image, Modal } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
 import "./ReviewPost.scss";
@@ -20,12 +20,12 @@ function ReviewPosts() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0); // Track current image
 
     useEffect(() => {
         fetchPosts();
     }, []);
 
-    // Fetch posts from API and filter out the rejected or deleted ones
     const fetchPosts = async () => {
         try {
             const response = await api.get<{ posts: Post[] }>("/posts");
@@ -39,13 +39,10 @@ function ReviewPosts() {
         }
     };
 
-    // Handle approving a post
     const handleApprove = async (id: number) => {
         try {
             await api.put(`/api/admin/posts/${id}/true`);
             message.success("Bài đăng đã được duyệt!");
-
-            // Update the post status locally
             setPosts((prevPosts) =>
                 prevPosts.map((post) =>
                     post.id === id ? { ...post, status: "APPROVE" } : post
@@ -57,25 +54,20 @@ function ReviewPosts() {
         }
     };
 
-    // Show confirmation modal for rejecting a post
     const showRejectConfirm = (id: number) => {
         setSelectedPostId(id);
         setIsModalVisible(true);
     };
 
-    // Handle rejecting a post and remove it from the list
     const handleReject = async () => {
         if (selectedPostId === null) return;
         try {
             await api.put(`/api/admin/posts/${selectedPostId}/false`);
             message.success("Bài đăng đã bị từ chối!");
-
-            // Remove the rejected post from the list
             setPosts((prevPosts) =>
                 prevPosts.filter((post) => post.id !== selectedPostId)
             );
-
-            setIsModalVisible(false); // Close the modal after rejecting
+            setIsModalVisible(false);
         } catch (error) {
             console.error(error);
             message.error("Có lỗi xảy ra khi từ chối bài đăng.");
@@ -83,10 +75,9 @@ function ReviewPosts() {
     };
 
     const handleCancel = () => {
-        setIsModalVisible(false); // Close the modal when cancelled
+        setIsModalVisible(false);
     };
 
-    // Render status text based on status value
     const renderStatus = (status: string) => {
         switch (status) {
             case "PENDING":
@@ -100,7 +91,20 @@ function ReviewPosts() {
         }
     };
 
-    // Define table columns
+    // Handle Next Image
+    const handleNextImage = (imageUrls: { imageUrl: string }[]) => {
+        setCurrentImageIndex((prevIndex) =>
+            prevIndex === imageUrls.length - 1 ? 0 : prevIndex + 1
+        );
+    };
+
+    // Handle Previous Image
+    const handlePrevImage = (imageUrls: { imageUrl: string }[]) => {
+        setCurrentImageIndex((prevIndex) =>
+            prevIndex === 0 ? imageUrls.length - 1 : prevIndex - 1
+        );
+    };
+
     const columns = [
         {
             title: "Hình ảnh",
@@ -109,36 +113,36 @@ function ReviewPosts() {
                 <div className="image-column">
                     <h4>Ảnh bìa</h4>
                     <Image
-                        width={180}
-                        height={180}
+                        width={140}
+                        height={140}
                         src={record.thumbnail}
                         alt="thumbnail"
                         style={{ marginBottom: "10px", borderRadius: "8px" }}
                     />
                     {record.imageUrls.length > 0 && (
-                        <div className="carousel-container">
+                        <div className="manual-gallery">
                             <h4>Các ảnh khác</h4>
-                            <Carousel
-                                autoplay
-                                dots
-                                style={{ maxWidth: "300px", margin: "0 auto" }}
-                                adaptiveHeight
-                            >
-                                {record.imageUrls.map((img, index) => (
-                                    <div key={index} className="carousel-image">
-                                        <Image
-                                            width={250}
-                                            height={180}
-                                            src={img.imageUrl}
-                                            alt={`image-${index}`}
-                                            style={{
-                                                objectFit: "cover",
-                                                borderRadius: "8px",
-                                            }}
-                                        />
-                                    </div>
-                                ))}
-                            </Carousel>
+                            <Image
+                                width={140}
+                                height={140}
+                                src={record.imageUrls[currentImageIndex].imageUrl}
+                                alt={`image-${currentImageIndex}`}
+                                style={{ objectFit: "cover", borderRadius: "8px" }}
+                            />
+                            <div className="gallery-controls">
+                                <Button
+                                    size="small"
+                                    onClick={() => handlePrevImage(record.imageUrls)}
+                                >
+                                    Trước
+                                </Button>
+                                <Button
+                                    size="small"
+                                    onClick={() => handleNextImage(record.imageUrls)}
+                                >
+                                    Tiếp
+                                </Button>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -156,7 +160,6 @@ function ReviewPosts() {
                 </div>
             ),
         },
-
         { title: "Địa chỉ", dataIndex: "address", key: "address" },
         { title: "Ngày bắt đầu", dataIndex: "start_date", key: "start_date" },
         { title: "Ngày kết thúc", dataIndex: "end_date", key: "end_date" },
@@ -188,14 +191,19 @@ function ReviewPosts() {
                 </div>
             ),
         },
-
     ];
 
     return (
         <div className="review-posts-container">
             <h2>Quản lý duyệt bài đăng</h2>
-            <Table dataSource={posts} columns={columns} rowKey="id" />
-
+            <Table
+                dataSource={posts}
+                columns={columns}
+                pagination={{ pageSize: 5 }}
+                scroll={{ x: 1000 }}
+                rowKey="id"
+                tableLayout="fixed"
+            />
             <Modal
                 title="Xác nhận từ chối"
                 open={isModalVisible}

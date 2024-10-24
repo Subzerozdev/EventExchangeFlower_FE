@@ -30,7 +30,7 @@ interface LoginFormValues {
 function Login() {
   const navigate = useNavigate();
   const { setUser } = useUser();
-  
+
   // Đăng nhập bằng Google
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
@@ -90,7 +90,7 @@ function Login() {
         message.success("Đăng nhập thành công!");
         // Phân quyền dựa trên vai trò của người dùng
         if (user.role === "ROLE_ADMIN") {
-          navigate("/admin"); // Chuyển hướng đến trang admin nếu là admin
+          navigate("/admin/review-posts"); // Chuyển hướng đến trang admin nếu là admin
         } else {
           navigate("/");
         }
