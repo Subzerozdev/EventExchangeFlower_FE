@@ -35,6 +35,12 @@ import SoldOrders from "./pages/profile/Seller/SoldOrders/SoldOders";
 import Orders from "./pages/profile/orderHistory/Orders";
 import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetais";
 import { NotificationProvider } from "./context/NotificationContext";
+// import SellerProfile from "./pages/sellerPage/SellerPageView";
+
+
+
+
+
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);

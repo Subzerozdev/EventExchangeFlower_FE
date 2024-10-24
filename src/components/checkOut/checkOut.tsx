@@ -122,13 +122,13 @@ const Checkout: React.FC = () => {
             console.error("Error updating status:", error);
           }
         };
-        if (paymentMethod === "VNPAY") {
+        if (paymentMethod === "VNPAY" || paymentMethod === "COD") {
           const vnpayResult = response.data;
           if (vnpayResult) {
             await updateStatus();
             window.location.href = vnpayResult;
             localStorage.removeItem("cart");
-            addNotification("Bạn đã thanh toán thành công 1 đơn  hàng!");
+            addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
           } else {
             const failureUrl = response.data.failureUrl;
             if (failureUrl) {
@@ -142,17 +142,18 @@ const Checkout: React.FC = () => {
               navigate("/paymentFailure");
             }
           }
-        } else {
-          await updateStatus();
-          notification.success({
-            message: "Đặt hàng thành công",
-            description: "Đơn hàng của bạn đã được gửi đi.",
-          });
-          localStorage.removeItem("cart");
-          setCart([]);
-          addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
-          navigate(`/paymentSuccess`);
         }
+        //  else {
+        //   await updateStatus();
+        //   notification.success({
+        //     message: "Đặt hàng thành công",
+        //     description: "Đơn hàng của bạn đã được gửi đi.",
+        //   });
+        //   localStorage.removeItem("cart");
+        //   setCart([]);
+        //   addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
+        //   navigate(`/paymentSuccess`);
+        // }
       } else {
         throw new Error("Thất bại khi đặt hàng");
       }
@@ -339,18 +340,6 @@ const Checkout: React.FC = () => {
           <p style={{ fontWeight: "bold", fontSize: "16px" }}>
             Tổng cộng: {totalPrice.toLocaleString()}₫
           </p>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "#1890ff",
-              borderColor: "#1890ff",
-              width: "100%",
-              borderRadius: "8px",
-            }}
-            onClick={() => navigate("/checkout")}
-          >
-            Tiếp tục thanh toán
-          </Button>
         </div>
       </div>
     </div>

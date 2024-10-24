@@ -80,7 +80,7 @@ const ProductList: React.FC = () => {
     const fetchProducts = async () => {
       try {
         const response = await api.get<{ posts: Product[] }>(
-          "/posts?categoryID=&sort=&pageNumber=&searchValue="
+          "/posts"
         );
 
         const products = response.data.posts

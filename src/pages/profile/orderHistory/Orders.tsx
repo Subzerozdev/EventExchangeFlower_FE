@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { notification, Table } from 'antd';
-import moment from 'moment'; // Sử dụng moment.js để định dạng ngày
+import { notification, Table, Button, Modal } from 'antd'; // Import Modal
+import moment from 'moment';
+import api from '../../../config/api';  // Đường dẫn API
 
-import './Orders.scss';
-import api from '../../../config/api'; // Đường dẫn tới file config API
+const { confirm } = Modal; // Sử dụng Modal.confirm cho hộp thoại xác nhận
 
-// Interface cho dữ liệu đơn hàng trả về từ API
 interface ApiOrder {
   id: string;
   fullName: string;
@@ -13,108 +12,78 @@ interface ApiOrder {
   email: string;
   address: string;
   note: string;
-  orderDate: string | null; // Kiểu dữ liệu cho orderDate có thể là null
-  totalMoney: string; // Tổng tiền luôn là số
-  status: string; // Cập nhật kiểu dữ liệu status thành số
+  orderDate: string | null;
+  totalMoney: string;
+  status: string;
+  check: string;
 }
 
-// Interface cho đối tượng hiển thị trong bảng
 interface Order {
-  key: string; // Để khớp với key cho bảng Ant Design
+  key: string;
   orderNumber: string;
   orderDate: string;
   address: string;
   totalMoney: string;
   note: string;
   status: string;
+  check: string;
+  showCancel: boolean;
+  cancelDisabled: boolean; // Trạng thái của nút Hủy (vô hiệu hóa hay không)
+  cancelTime?: moment.Moment; // Thêm thời gian hủy để quản lý trạng thái hiển thị trong 3 phút
 }
 
-// Function để chuyển đổi status thành tiếng Việt
 const translateStatus = (status: string): string => {
   switch (status) {
-    case "AWAITING_PAYMENT":
+    case 'AWAITING_PAYMENT':
       return 'Đang chờ thanh toán';
-    case "AWAITING_PICKUP":
+    case 'AWAITING_PICKUP':
       return 'Đang chờ lấy hàng';
-    case "COMPLETED":
+    case 'COMPLETED':
       return 'Hoàn thành';
-    case "CANCELLED":
+    case 'CANCELLED':
       return 'Đã hủy';
     default:
       return 'Không xác định';
   }
 };
 
-const columns = [
-  {
-    title: 'Đơn hàng',
-    dataIndex: 'orderNumber',
-    key: 'orderNumber',
-  },
-  {
-    title: 'Ngày Đặt',
-    dataIndex: 'orderDate',
-    key: 'orderDate', // Khớp với dữ liệu được định dạng
-  },
-  {
-    title: 'Địa chỉ',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Tổng tiền đơn hàng',
-    dataIndex: 'totalMoney',
-    key: 'totalMoney', // Khớp với dữ liệu được định dạng
-  },
-  {
-    title: 'Trạng Thái',
-    dataIndex: 'status',
-    key: 'status', // Khớp với dữ liệu được định dạng
-  },
-  {
-    title: 'Ghi chú',
-    dataIndex: 'note',
-    key: 'note', // Khớp với dữ liệu được định dạng
-  },
-  {
-    title:'Xác Nhận',
-    dataIndex: 'note',
-    key: 'note',
-  }
-];
-
 const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1); // Quản lý trang hiện tại
-  const pageSize = 4; // Số sản phẩm trên mỗi trang
+  const [currentPage, setCurrentPage] = useState(1);
+  const pageSize = 4;
 
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const response = await api.get<ApiOrder[]>('/api/orders'); // Gọi API để lấy thông tin đơn hàng
+        const response = await api.get<ApiOrder[]>('/api/orders'); // API gọi danh sách đơn hàng
+        const fetchedOrders = response.data.map((order) => {
+          const orderTime = moment(order.orderDate);
+          const currentTime = moment();
+          const timeDifference = currentTime.diff(orderTime, 'minutes');
+          const showCancel = timeDifference < 30 && order.status !== 'CANCELLED'; // Nút Hủy chỉ hiển thị nếu trong 30 phút và trạng thái không phải đã hủy
+          const cancelDisabled = timeDifference >= 30; // Vô hiệu hóa nếu quá 30 phút
 
-        console.log('Orders fetched from API:', response.data); // Kiểm tra dữ liệu API
+          return {
+            key: order.id,
+            orderNumber: order.id,
+            orderDate: order.orderDate
+              ? moment(order.orderDate).format('DD/MM/YYYY')
+              : 'Không xác định',
+            address: order.address || 'Không xác định',
+            totalMoney: order.totalMoney
+              ? parseInt(order.totalMoney).toLocaleString('vi-VN') + '₫'
+              : 'Không xác định',
+            note: order.note,
+            status: order.status, // Lưu trạng thái ban đầu
+            check: order.check,
+            showCancel: showCancel, // Hiển thị nút Hủy nếu đủ điều kiện
+            cancelDisabled: cancelDisabled, // Trạng thái để vô hiệu hóa nút Hủy nếu quá 30 phút
+          };
+        });
 
-        // Kiểm tra từng phần tử trong dữ liệu trả về và định dạng ngày
-        const fetchedOrders = response.data.map((order) => ({
-          key: order.id, // key cho bảng Ant Design
-          orderNumber: order.id,
-          // Kiểm tra và chuyển đổi kiểu dữ liệu ngày
-          orderDate: order.orderDate
-            ? moment(order.orderDate).format('DD/MM/YYYY')  // Định dạng ngày với moment nếu tồn tại
-            : 'Không xác định', // Xử lý khi orderDate là null hoặc không hợp lệ
-          address: order.address || 'Không xác định', // Đảm bảo có giá trị cho địa chỉ
-          totalMoney: order.totalMoney
-            ? parseInt(order.totalMoney).toLocaleString('vi-VN') + '₫' // Định dạng tổng tiền
-            : 'Không xác định', // Xử lý khi totalMoney là null
-          
-          note: order.note,
-          status: translateStatus(order.status) // Chuyển đổi status thành tiếng Việt
-        }));
-
-        setOrders(fetchedOrders); // Cập nhật danh sách đơn hàng hiển thị
+        setOrders(fetchedOrders);
       } catch (error) {
         console.log(error);
         notification.error({
@@ -126,11 +95,123 @@ const Orders: React.FC = () => {
       }
     };
 
-    fetchOrders(); // Lấy thông tin đơn hàng khi component được render
-  }, []); // Cập nhật mỗi khi component này được render sau điều hướng
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    // Cập nhật danh sách đơn hàng mỗi 1 giây để kiểm tra thời gian hủy
+    const interval = setInterval(() => {
+      setOrders((prevOrders) =>
+        prevOrders.filter((order) => {
+          // Kiểm tra nếu trạng thái là "CANCELLED" và thời gian hủy đã vượt quá 3 phút thì xóa đơn hàng khỏi danh sách
+          if (order.status === 'CANCELLED' && order.cancelTime) {
+            const timeSinceCancel = moment().diff(order.cancelTime, 'minutes');
+            return timeSinceCancel < 3;
+          }
+          return true; // Giữ lại những đơn hàng không bị hủy
+        })
+      );
+    }, 1000); // Cập nhật mỗi giây
+
+    return () => clearInterval(interval); // Dọn dẹp khi component bị hủy
+  }, []);
+
+  const showConfirmCancel = (key: string) => {
+    confirm({
+      title: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
+      content: 'Đơn hàng sẽ không thể phục hồi sau khi hủy.',
+      okText: 'Xác nhận',
+      cancelText: 'Hủy',
+      onOk() {
+        handleCancelOrder(key); // Gọi hàm hủy đơn hàng khi người dùng xác nhận
+      },
+      onCancel() {
+        console.log('Hủy hành động');
+      },
+    });
+  };
+
+  const handleCancelOrder = async (key: string) => {
+    try {
+      // Gửi yêu cầu cập nhật trạng thái về server
+      await api.put(`/api/orders/${key}`, { status: 'CANCELLED' });
+
+      // Cập nhật lại trạng thái trên frontend sau khi yêu cầu thành công
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.key === key
+            ? { ...order, status: 'CANCELLED', showCancel: false, cancelTime: moment() } // Ghi lại thời gian hủy
+            : order
+        )
+      );
+
+      notification.success({
+        message: 'Đã hủy đơn hàng',
+        description: 'Đơn hàng đã được hủy thành công.',
+      });
+    } catch (error) {
+      console.log(error);
+      notification.error({
+        message: 'Lỗi',
+        description: 'Không thể hủy đơn hàng. Vui lòng thử lại.',
+      });
+    }
+  };
+
+  const columns = [
+    {
+      title: 'Đơn hàng',
+      dataIndex: 'orderNumber',
+      key: 'orderNumber',
+    },
+    {
+      title: 'Ngày Đặt',
+      dataIndex: 'orderDate',
+      key: 'orderDate',
+    },
+    {
+      title: 'Địa chỉ',
+      dataIndex: 'address',
+      key: 'address',
+    },
+    {
+      title: 'Tổng tiền đơn hàng',
+      dataIndex: 'totalMoney',
+      key: 'totalMoney',
+    },
+    {
+      title: 'Trạng Thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: (status: string) => translateStatus(status), // Dịch trạng thái
+    },
+    {
+      title: 'Ghi chú',
+      dataIndex: 'note',
+      key: 'note',
+    },
+    {
+      title: 'Xác Nhận',
+      dataIndex: 'check',
+      key: 'check',
+      render: (_: string, record: Order) => (
+        record.showCancel ? (
+          <Button 
+            danger 
+            onClick={() => showConfirmCancel(record.key)}  // Gọi hộp thoại xác nhận khi nhấn nút hủy
+            disabled={record.cancelDisabled} // Vô hiệu hóa nếu quá 30 phút
+          >
+            Hủy
+          </Button>
+        ) : (
+          <span>{record.status === 'CANCELLED' ? 'Đã hủy' : 'Hết hạn hủy'}</span>
+        )
+      ),
+    },
+  ];
 
   const handlePageChange = (page: number) => {
-    setCurrentPage(page); // Cập nhật trang hiện tại khi người dùng điều hướng giữa các trang
+    setCurrentPage(page);
   };
 
   return (
@@ -138,14 +219,14 @@ const Orders: React.FC = () => {
       <h2>ĐƠN HÀNG CỦA BẠN</h2>
       <Table
         columns={columns}
-        dataSource={orders}
+        dataSource={orders}  // Hiển thị tất cả các đơn hàng (đã hủy và chưa hủy)
         loading={loading}
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: orders.length, // Tổng số đơn hàng
-          onChange: handlePageChange, // Hàm để chuyển trang
-          showSizeChanger: false, // Ẩn nút thay đổi số lượng sản phẩm trên mỗi trang
+          total: orders.length, // Cập nhật số lượng đơn hàng hiển thị
+          onChange: handlePageChange,
+          showSizeChanger: false,
         }}
         locale={{ emptyText: 'Không có đơn hàng nào đã thanh toán.' }}
         bordered
