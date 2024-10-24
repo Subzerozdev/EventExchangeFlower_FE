@@ -1,15 +1,19 @@
-import { Table, Button, message, Image } from "antd"; // Thêm Image từ Ant Design
+import { Table, Button, message, Image, Carousel } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
-import './ReviewPost.scss';
+import "./ReviewPost.scss";
 
 interface Post {
     id: number;
     name: string;
     price: number;
     address: string;
-    status: string; // Trạng thái là string
-    thumbnail: string; // Thêm thuộc tính thumbnail để hiển thị hình ảnh
+    status: string;
+    thumbnail: string;
+    imageUrls: { imageUrl: string }[];
+    description: string;
+    start_date: string;
+    end_date: string;
 }
 
 function ReviewPosts() {
@@ -19,51 +23,45 @@ function ReviewPosts() {
         fetchPosts();
     }, []);
 
-    // Hàm để lấy tất cả các bài đăng với API mới
     const fetchPosts = async () => {
         try {
-            const response = await api.get<{ posts: Post[] }>(
-                "/posts?categoryID=&sort=&pageNumber=&searchValue="
-            );
-            console.log(response.data.posts); // Kiểm tra dữ liệu nhận được từ API
-
-            // Lọc bỏ các bài đăng có trạng thái SOLD_OUT và DELETED
+            const response = await api.get<{ posts: Post[] }>("/posts");
             const filteredPosts = response.data.posts.filter(
-                (post) => post.status !== " " && post.status !== "DELETED"
+                (post) => post.status !== "DELETED"
             );
-
-            setPosts(filteredPosts); // Cập nhật danh sách bài đăng trong state
+            setPosts(filteredPosts);
         } catch (error) {
             console.error(error);
             message.error("Có lỗi khi tải bài đăng.");
         }
     };
 
-    // Duyệt bài đăng (status = APPROVE)
     const handleApprove = async (id: number) => {
         try {
             await api.put(`/api/admin/posts/${id}/true`);
             message.success("Bài đăng đã được duyệt!");
-            fetchPosts(); // Cập nhật danh sách sau khi duyệt
+            setPosts((prevPosts) =>
+                prevPosts.map((post) =>
+                    post.id === id ? { ...post, status: "APPROVE" } : post
+                )
+            );
         } catch (error) {
             console.error(error);
             message.error("Có lỗi xảy ra khi duyệt bài đăng.");
         }
     };
 
-    // Từ chối bài đăng (status = DISAPPROVE)
     const handleReject = async (id: number) => {
         try {
             await api.put(`/api/admin/posts/${id}/false`);
             message.success("Bài đăng đã bị từ chối!");
-            fetchPosts(); // Cập nhật danh sách sau khi từ chối
+            setPosts((prevPosts) => prevPosts.filter((post) => post.id !== id));
         } catch (error) {
             console.error(error);
             message.error("Có lỗi xảy ra khi từ chối bài đăng.");
         }
     };
 
-    // Hàm render trạng thái dựa trên string status
     const renderStatus = (status: string) => {
         switch (status) {
             case "PENDING":
@@ -77,38 +75,60 @@ function ReviewPosts() {
         }
     };
 
-    // Cấu trúc của bảng hiển thị bài đăng
     const columns = [
         {
             title: "Hình ảnh",
-            dataIndex: "thumbnail",
-            key: "thumbnail",
-            render: (thumbnail: string) => (
-                <Image.PreviewGroup>
-                    <Image width={120} height={120} src={thumbnail} alt="thumbnail" />
-                </Image.PreviewGroup>
+            key: "images",
+            render: (record: Post) => (
+                <div className="image-column">
+                    <h4>Ảnh bìa</h4>
+                    <Image
+                        width={180}
+                        height={180}
+                        src={record.thumbnail}
+                        alt="thumbnail"
+                        style={{ marginBottom: "10px", borderRadius: "8px" }}
+                    />
+                    {record.imageUrls.length > 0 && (
+                        <div className="carousel-container">
+                            <h4>Các ảnh khác</h4>
+                            <Carousel
+                                autoplay
+                                dots={true}
+                                style={{ maxWidth: "250px", margin: "0 auto" }}
+                            >
+                                {record.imageUrls.map((img, index) => (
+                                    <div key={index} className="carousel-image">
+                                        <Image
+                                            width={250}
+                                            height={180}
+                                            src={img.imageUrl}
+                                            alt={`image-${index}`}
+                                        />
+                                    </div>
+                                ))}
+                            </Carousel>
+                        </div>
+                    )}
+                </div>
             ),
         },
-        {
-            title: "Tên bài đăng",
-            dataIndex: "name",
-            key: "name",
-        },
+        { title: "Tên bài đăng", dataIndex: "name", key: "name" },
+        { title: "Mô tả", dataIndex: "description", key: "description" },
         {
             title: "Giá",
             dataIndex: "price",
             key: "price",
+            render: (price: number) => `${price.toLocaleString()} đ`,
         },
-        {
-            title: "Địa chỉ",
-            dataIndex: "address",
-            key: "address",
-        },
+        { title: "Địa chỉ", dataIndex: "address", key: "address" },
+        { title: "Ngày bắt đầu", dataIndex: "start_date", key: "start_date" },
+        { title: "Ngày kết thúc", dataIndex: "end_date", key: "end_date" },
         {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
-            render: (status: string) => renderStatus(status), // Hiển thị trạng thái với renderStatus
+            render: (status: string) => renderStatus(status),
         },
         {
             title: "Hành động",
@@ -118,7 +138,7 @@ function ReviewPosts() {
                     <Button
                         type="primary"
                         onClick={() => handleApprove(record.id)}
-                        disabled={record.status === "APPROVE"} // Disable button nếu đã duyệt
+                        disabled={record.status === "APPROVE"}
                     >
                         Duyệt
                     </Button>
@@ -126,7 +146,7 @@ function ReviewPosts() {
                         danger
                         onClick={() => handleReject(record.id)}
                         style={{ marginLeft: 10 }}
-                        disabled={record.status === "DISAPPROVE"} // Disable button nếu đã từ chối
+                        disabled={record.status === "DISAPPROVE"}
                     >
                         Từ chối
                     </Button>

@@ -1,13 +1,13 @@
 .review-posts-container {
   padding: 20px;
-  background-color: #f9f9f9; // Màu nền nhẹ cho vùng quản lý
-  border-radius: 8px; // Các góc bo tròn
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); // Tạo đổ bóng nhẹ cho hộp
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
 
   h2 {
-    font-size: 24px;
+    font-size: 28px;
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
     color: #333;
     text-align: center;
   }
@@ -18,76 +18,61 @@
     border-radius: 8px;
     box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.05);
 
-    .ant-table {
-      .ant-table-thead > tr > th {
-        background-color: #fafafa;
-        font-weight: bold;
-        text-align: center;
-        color: #555;
-      }
+    th {
+      font-size: 18px;
+    }
 
-      .ant-table-tbody > tr > td {
-        text-align: center;
-        padding: 12px;
-      }
+    td {
+      font-size: 16px;
+    }
+  }
 
-      // Style cho các dòng có trạng thái SOLD_OUT
-      .sold-out-row {
-        background-color: #fff1f0; // Nền màu nhạt cho trạng thái đã bán
+  .image-column {
+    text-align: center;
+
+    h4 {
+      margin: 5px 0;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .carousel-container {
+      margin-top: 10px;
+      max-width: 250px;
+
+      .carousel-image {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 180px;
       }
     }
   }
 
-  .ant-btn {
-    border-radius: 4px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
-
-    &.ant-btn-primary {
-      background-color: #1890ff;
-      border-color: #1890ff;
-      &:hover {
-        background-color: #40a9ff;
-        border-color: #40a9ff;
-      }
-    }
-
-    &.ant-btn-danger {
-      background-color: #ff4d4f;
-      border-color: #ff4d4f;
-      &:hover {
-        background-color: #ff7875;
-        border-color: #ff7875;
-      }
-    }
-
-    // Style cho nút "Đã bán"
-    &.ant-btn-dashed {
-      color: #ff4d4f;
-      border-color: #ff4d4f;
-      &:hover {
-        color: #ff7875;
-        border-color: #ff7875;
-      }
-    }
-  }
-
-  // Style cho hình ảnh để hiển thị đẹp hơn và phù hợp
   .ant-image {
     border-radius: 8px;
-    width: 120px; // Tăng kích thước chiều rộng
-    height: 120px; // Tăng kích thước chiều cao
-    object-fit: cover; // Giữ tỉ lệ hình ảnh, không bị méo
+    object-fit: cover;
+    margin-bottom: 10px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    margin: auto; // Căn giữa hình ảnh trong ô
   }
 
-  // Style cho trạng thái
-  .status {
-    font-weight: bold;
-    &.sold-out-status {
-      color: #ff4d4f; // Màu đỏ để nhấn mạnh trạng thái "Đã bán"
+  .ant-carousel {
+    margin-top: 10px;
+    height: 200px;
+    overflow: hidden;
+
+    .slick-dots {
+      bottom: -30px;
+
+      li button {
+        width: 12px;
+        height: 12px;
+        background-color: #1890ff;
+      }
+
+      li.slick-active button {
+        background-color: #40a9ff;
+      }
     }
   }
 }

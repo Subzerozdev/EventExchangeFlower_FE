@@ -9,7 +9,7 @@ import {
   Modal,
 } from "antd";
 import { PhoneOutlined, DeleteOutlined } from "@ant-design/icons";
-import "./Checkout.scss";
+import "./checkOut.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
