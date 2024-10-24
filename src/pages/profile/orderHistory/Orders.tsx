@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { notification, Table, Button, Modal } from 'antd'; // Import Modal
-import moment from 'moment';
-import api from '../../../config/api';  // Đường dẫn API
-
+import React, { useEffect, useState } from "react";
+import { notification, Table, Button, Modal } from "antd"; // Import Modal
+import moment from "moment";
+import api from "../../../config/api"; // Đường dẫn API
+import "./Orders.scss";
 const { confirm } = Modal; // Sử dụng Modal.confirm cho hộp thoại xác nhận
 
 interface ApiOrder {
@@ -29,21 +29,20 @@ interface Order {
   check: string;
   showCancel: boolean;
   cancelDisabled: boolean; // Trạng thái của nút Hủy (vô hiệu hóa hay không)
-  cancelTime?: moment.Moment; // Thêm thời gian hủy để quản lý trạng thái hiển thị trong 3 phút
 }
 
 const translateStatus = (status: string): string => {
   switch (status) {
-    case 'AWAITING_PAYMENT':
-      return 'Đang chờ thanh toán';
-    case 'AWAITING_PICKUP':
-      return 'Đang chờ lấy hàng';
-    case 'COMPLETED':
-      return 'Hoàn thành';
-    case 'CANCELLED':
-      return 'Đã hủy';
+    case "AWAITING_PAYMENT":
+      return "Đang chờ thanh toán";
+    case "AWAITING_PICKUP":
+      return "Đang chờ lấy hàng";
+    case "COMPLETED":
+      return "Hoàn thành";
+    case "CANCELLED":
+      return "Đã hủy";
     default:
-      return 'Không xác định';
+      return "Không xác định";
   }
 };
 
@@ -57,24 +56,27 @@ const Orders: React.FC = () => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const response = await api.get<ApiOrder[]>('/api/orders'); // API gọi danh sách đơn hàng
+        const response = await api.get<ApiOrder[]>("/api/orders"); // API gọi danh sách đơn hàng
         const fetchedOrders = response.data.map((order) => {
           const orderTime = moment(order.orderDate);
           const currentTime = moment();
-          const timeDifference = currentTime.diff(orderTime, 'minutes');
-          const showCancel = timeDifference < 30 && order.status !== 'CANCELLED'; // Nút Hủy chỉ hiển thị nếu trong 30 phút và trạng thái không phải đã hủy
+          const timeDifference = currentTime.diff(orderTime, "minutes");
+          const showCancel =
+            timeDifference < 30 &&
+            order.status !== "CANCELLED" &&
+            order.status !== "COMPLETED"; // Nút Hủy chỉ hiển thị nếu trong 30 phút và trạng thái không phải đã hủy hoặc hoàn thành
           const cancelDisabled = timeDifference >= 30; // Vô hiệu hóa nếu quá 30 phút
 
           return {
             key: order.id,
             orderNumber: order.id,
             orderDate: order.orderDate
-              ? moment(order.orderDate).format('DD/MM/YYYY')
-              : 'Không xác định',
-            address: order.address || 'Không xác định',
+              ? moment(order.orderDate).format("DD/MM/YYYY")
+              : "Không xác định",
+            address: order.address || "Không xác định",
             totalMoney: order.totalMoney
-              ? parseInt(order.totalMoney).toLocaleString('vi-VN') + '₫'
-              : 'Không xác định',
+              ? parseInt(order.totalMoney).toLocaleString("vi-VN") + "₫"
+              : "Không xác định",
             note: order.note,
             status: order.status, // Lưu trạng thái ban đầu
             check: order.check,
@@ -87,8 +89,8 @@ const Orders: React.FC = () => {
       } catch (error) {
         console.log(error);
         notification.error({
-          message: 'Lỗi',
-          description: 'Không thể lấy thông tin đơn hàng.',
+          message: "Lỗi",
+          description: "Không thể lấy thông tin đơn hàng.",
         });
       } finally {
         setLoading(false);
@@ -98,35 +100,17 @@ const Orders: React.FC = () => {
     fetchOrders();
   }, []);
 
-  useEffect(() => {
-    // Cập nhật danh sách đơn hàng mỗi 1 giây để kiểm tra thời gian hủy
-    const interval = setInterval(() => {
-      setOrders((prevOrders) =>
-        prevOrders.filter((order) => {
-          // Kiểm tra nếu trạng thái là "CANCELLED" và thời gian hủy đã vượt quá 3 phút thì xóa đơn hàng khỏi danh sách
-          if (order.status === 'CANCELLED' && order.cancelTime) {
-            const timeSinceCancel = moment().diff(order.cancelTime, 'minutes');
-            return timeSinceCancel < 3;
-          }
-          return true; // Giữ lại những đơn hàng không bị hủy
-        })
-      );
-    }, 1000); // Cập nhật mỗi giây
-
-    return () => clearInterval(interval); // Dọn dẹp khi component bị hủy
-  }, []);
-
   const showConfirmCancel = (key: string) => {
     confirm({
-      title: 'Bạn có chắc chắn muốn hủy đơn hàng này không?',
-      content: 'Đơn hàng sẽ không thể phục hồi sau khi hủy.',
-      okText: 'Xác nhận',
-      cancelText: 'Hủy',
+      title: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
+      content: "Đơn hàng sẽ không thể phục hồi sau khi hủy.",
+      okText: "Xác nhận",
+      cancelText: "Hủy",
       onOk() {
         handleCancelOrder(key); // Gọi hàm hủy đơn hàng khi người dùng xác nhận
       },
       onCancel() {
-        console.log('Hủy hành động');
+        console.log("Hủy hành động");
       },
     });
   };
@@ -134,79 +118,81 @@ const Orders: React.FC = () => {
   const handleCancelOrder = async (key: string) => {
     try {
       // Gửi yêu cầu cập nhật trạng thái về server
-      await api.put(`/api/orders/${key}`, { status: 'CANCELLED' });
+      await api.put(`/api/orders/${key}`, { status: "CANCELLED" });
 
-      // Cập nhật lại trạng thái trên frontend sau khi yêu cầu thành công
+      // Cập nhật lại trạng thái trên frontend, giữ các đơn hàng không bị hủy
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order.key === key
-            ? { ...order, status: 'CANCELLED', showCancel: false, cancelTime: moment() } // Ghi lại thời gian hủy
-            : order
+          order.key === key ? { ...order, status: "CANCELLED" } : order
         )
       );
 
       notification.success({
-        message: 'Đã hủy đơn hàng',
-        description: 'Đơn hàng đã được hủy thành công.',
+        message: "Đã hủy đơn hàng",
+        description: "Đơn hàng đã được hủy thành công.",
       });
     } catch (error) {
       console.log(error);
       notification.error({
-        message: 'Lỗi',
-        description: 'Không thể hủy đơn hàng. Vui lòng thử lại.',
+        message: "Lỗi",
+        description: "Không thể hủy đơn hàng. Vui lòng thử lại.",
       });
     }
   };
 
+  // Lọc các đơn hàng để ẩn những đơn hàng có trạng thái "CANCELLED"
+  const filteredOrders = orders.filter((order) => order.status !== "CANCELLED");
+
   const columns = [
     {
-      title: 'Đơn hàng',
-      dataIndex: 'orderNumber',
-      key: 'orderNumber',
+      title: "Đơn hàng",
+      dataIndex: "orderNumber",
+      key: "orderNumber",
     },
     {
-      title: 'Ngày Đặt',
-      dataIndex: 'orderDate',
-      key: 'orderDate',
+      title: "Ngày Đặt",
+      dataIndex: "orderDate",
+      key: "orderDate",
     },
     {
-      title: 'Địa chỉ',
-      dataIndex: 'address',
-      key: 'address',
+      title: "Địa chỉ",
+      dataIndex: "address",
+      key: "address",
     },
     {
-      title: 'Tổng tiền đơn hàng',
-      dataIndex: 'totalMoney',
-      key: 'totalMoney',
+      title: "Tổng tiền đơn hàng",
+      dataIndex: "totalMoney",
+      key: "totalMoney",
     },
     {
-      title: 'Trạng Thái',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Trạng Thái",
+      dataIndex: "status",
+      key: "status",
       render: (status: string) => translateStatus(status), // Dịch trạng thái
     },
     {
-      title: 'Ghi chú',
-      dataIndex: 'note',
-      key: 'note',
+      title: "Ghi chú",
+      dataIndex: "note",
+      key: "note",
     },
     {
-      title: 'Xác Nhận',
-      dataIndex: 'check',
-      key: 'check',
-      render: (_: string, record: Order) => (
+      title: "Xác Nhận",
+      dataIndex: "check",
+      key: "check",
+      render: (_: string, record: Order) =>
         record.showCancel ? (
-          <Button 
-            danger 
-            onClick={() => showConfirmCancel(record.key)}  // Gọi hộp thoại xác nhận khi nhấn nút hủy
+          <Button
+            danger
+            onClick={() => showConfirmCancel(record.key)} // Gọi hộp thoại xác nhận khi nhấn nút hủy
             disabled={record.cancelDisabled} // Vô hiệu hóa nếu quá 30 phút
           >
             Hủy
           </Button>
         ) : (
-          <span>{record.status === 'CANCELLED' ? 'Đã hủy' : 'Hết hạn hủy'}</span>
-        )
-      ),
+          <span>
+            {record.status === "CANCELLED" ? "Đã hủy" : "Hết hạn hủy"}
+          </span>
+        ),
     },
   ];
 
@@ -216,19 +202,19 @@ const Orders: React.FC = () => {
 
   return (
     <div className="order_container">
-      <h2>ĐƠN HÀNG CỦA BẠN</h2>
+      <h2> LỊCH SỬ ĐĂT HÀNG CỦA BẠN</h2>
       <Table
         columns={columns}
-        dataSource={orders}  // Hiển thị tất cả các đơn hàng (đã hủy và chưa hủy)
+        dataSource={filteredOrders} // Sử dụng danh sách đã lọc để không hiển thị đơn hàng đã hủy
         loading={loading}
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: orders.length, // Cập nhật số lượng đơn hàng hiển thị
+          total: filteredOrders.length, // Cập nhật số lượng đơn hàng hiển thị
           onChange: handlePageChange,
           showSizeChanger: false,
         }}
-        locale={{ emptyText: 'Không có đơn hàng nào đã thanh toán.' }}
+        locale={{ emptyText: "Không có đơn hàng nào đã thanh toán." }}
         bordered
       />
     </div>
