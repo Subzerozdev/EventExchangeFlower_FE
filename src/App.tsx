@@ -35,19 +35,12 @@ import SoldOrders from "./pages/profile/Seller/SoldOrders/SoldOders";
 import Orders from "./pages/profile/orderHistory/Orders";
 import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetais";
 import { NotificationProvider } from "./context/NotificationContext";
-// import SellerProfile from "./pages/sellerPage/SellerPageView";
-
-
-
-
-
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   // Hàm xử lý khi người dùng đồng ý với điều khoản
   const handleAgree = () => {
-    // Cập nhật trạng thái hoặc thực hiện logic liên quan khi người dùng đồng ý
     console.log("Người dùng đã đồng ý với điều khoản");
   };
 
@@ -66,7 +59,7 @@ function App() {
           element: <Login />,
         },
         {
-          path: "forgot-password/verify-otp", // Đường dẫn mới cho quên mật khẩu
+          path: "forgot-password/verify-otp",
           element: <VerifyOtpForgotPassword />,
         },
         {
@@ -103,7 +96,6 @@ function App() {
           path: "updateProfile",
           element: <UpdateProfile />,
         },
-
         {
           path: "blog",
           element: <BlogPage />,
@@ -141,9 +133,10 @@ function App() {
           element: <PaymentFailure />,
         },
 
-        // Thêm các route dành cho Seller
+        // Route dành cho Seller (phân quyền)
         {
           path: "seller",
+          element: <ProtectedRoute rolesAllowed={["ROLE_SELLER", "ROLE_ADMIN"]} />,
           children: [
             { path: "form", element: <SellerForm /> },
             { path: "sold-orders", element: <SoldOrders /> },
@@ -166,11 +159,11 @@ function App() {
     },
     {
       path: "admin",
-      element: <ProtectedRoute roleRequired="ROLE_ADMIN" />,
+      element: <ProtectedRoute rolesAllowed={["ROLE_ADMIN"]} />,
       children: [
         {
           path: "",
-          element: <AdminPage />, // Sử dụng AdminPage làm layout chính
+          element: <AdminPage />,
           children: [
             {
               path: "categories",
