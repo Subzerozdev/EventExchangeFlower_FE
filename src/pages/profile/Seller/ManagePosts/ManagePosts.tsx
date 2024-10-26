@@ -334,16 +334,58 @@ function ManagePosts() {
                         name="startDate"
                         rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu" }]}
                     >
-                        <DatePicker format="YYYY-MM-DD" />
+                        <DatePicker
+                            format="YYYY-MM-DD"
+                            disabledDate={(current) =>
+                                // Chỉ cho phép chọn từ ngày mai trở đi (không bao gồm hôm nay và các ngày trước đó)
+                                current && current < moment().startOf("day").add(1, "day")
+                            }
+                        />
                     </Form.Item>
+
+
 
                     <Form.Item
                         label="Ngày kết thúc"
                         name="endDate"
-                        rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
+                        dependencies={['startDate']}
+                        rules={[
+                            { required: true, message: "Vui lòng chọn ngày kết thúc" },
+                            ({ getFieldValue }) => ({
+                                validator(_, value) {
+                                    const startDate = getFieldValue('startDate');
+                                    if (!value || !startDate) {
+                                        return Promise.reject(new Error("Vui lòng chọn ngày bắt đầu trước"));
+                                    }
+                                    if (value.isSame(startDate, 'day')) {
+                                        return Promise.reject(new Error("Ngày kết thúc không được trùng với ngày bắt đầu"));
+                                    }
+                                    if (value.isBefore(startDate)) {
+                                        return Promise.reject(new Error("Ngày kết thúc không được trước ngày bắt đầu"));
+                                    }
+                                    if (value.isAfter(startDate.clone().add(25, 'days'))) {
+                                        return Promise.reject(
+                                            new Error("Ngày kết thúc phải trong vòng 25 ngày kể từ ngày bắt đầu")
+                                        );
+                                    }
+                                    return Promise.resolve();
+                                },
+                            }),
+                        ]}
                     >
-                        <DatePicker format="YYYY-MM-DD" />
+                        <DatePicker
+                            format="YYYY-MM-DD"
+                            disabledDate={(current) => {
+                                const startDate = form.getFieldValue('startDate');
+                                // Ngăn không cho chọn ngày trước ngày bắt đầu, trùng ngày bắt đầu, hoặc sau 20 ngày từ ngày bắt đầu
+                                return (
+                                    current &&
+                                    (current <= startDate || current > startDate?.clone().add(20, 'days'))
+                                );
+                            }}
+                        />
                     </Form.Item>
+
                 </Form>
             </Modal>
         </div>
