@@ -35,6 +35,7 @@ import SoldOrders from "./pages/profile/Seller/SoldOrders/SoldOders";
 import Orders from "./pages/profile/orderHistory/Orders";
 import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetais";
 import { NotificationProvider } from "./context/NotificationContext";
+import FeedbackForm from "./pages/feedback/feedBack";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -131,6 +132,10 @@ function App() {
         {
           path: "paymentFailure",
           element: <PaymentFailure />,
+        },
+        {
+          path: "feedBack",
+          element:<FeedbackForm/>,
         },
 
         // Route dành cho Seller (phân quyền)

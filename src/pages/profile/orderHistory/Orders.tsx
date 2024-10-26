@@ -29,6 +29,7 @@ interface Order {
   check: string;
   showCancel: boolean;
   cancelDisabled: boolean; // Trạng thái của nút Hủy (vô hiệu hóa hay không)
+  hasFeedback: boolean; // hasFeedback để theo dõi trạng thái đã đánh giá
 }
 
 const translateStatus = (status: string): string => {
@@ -56,7 +57,11 @@ const Orders: React.FC = () => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
-        const response = await api.get<ApiOrder[]>("/api/orders"); // API gọi danh sách đơn hàng
+        const response = await api.get<ApiOrder[]>("/api/orders");
+        const feedbackStatus = localStorage.getItem("feedbackStatus")
+          ? JSON.parse(localStorage.getItem("feedbackStatus") || "{}")
+          : {};
+
         const fetchedOrders = response.data.map((order) => {
           const orderTime = moment(order.orderDate);
           const currentTime = moment();
@@ -64,8 +69,8 @@ const Orders: React.FC = () => {
           const showCancel =
             timeDifference < 30 &&
             order.status !== "CANCELLED" &&
-            order.status !== "COMPLETED"; // Nút Hủy chỉ hiển thị nếu trong 30 phút và trạng thái không phải đã hủy hoặc hoàn thành
-          const cancelDisabled = timeDifference >= 30; // Vô hiệu hóa nếu quá 30 phút
+            order.status !== "COMPLETED";
+          const cancelDisabled = timeDifference >= 30;
 
           return {
             key: order.id,
@@ -78,10 +83,11 @@ const Orders: React.FC = () => {
               ? parseInt(order.totalMoney).toLocaleString("vi-VN") + "₫"
               : "Không xác định",
             note: order.note,
-            status: order.status, // Lưu trạng thái ban đầu
+            status: order.status,
             check: order.check,
-            showCancel: showCancel, // Hiển thị nút Hủy nếu đủ điều kiện
-            cancelDisabled: cancelDisabled, // Trạng thái để vô hiệu hóa nút Hủy nếu quá 30 phút
+            showCancel: showCancel,
+            cancelDisabled: cancelDisabled,
+            hasFeedback: feedbackStatus[order.id] || false, // Lấy trạng thái đã đánh giá từ localStorage
           };
         });
 
@@ -143,6 +149,30 @@ const Orders: React.FC = () => {
   // Lọc các đơn hàng để ẩn những đơn hàng có trạng thái "CANCELLED"
   const filteredOrders = orders.filter((order) => order.status !== "CANCELLED");
 
+  const handleFeedback = (orderId: string, shopId?: number) => {
+    if (shopId !== undefined) {
+      localStorage.setItem("shopId", shopId.toString());
+    }
+    localStorage.setItem("orderId", orderId);
+
+    // Cập nhật trạng thái đã đánh giá vào localStorage
+    const feedbackStatus = localStorage.getItem("feedbackStatus")
+      ? JSON.parse(localStorage.getItem("feedbackStatus") || "{}")
+      : {};
+    feedbackStatus[orderId] = true;
+    localStorage.setItem("feedbackStatus", JSON.stringify(feedbackStatus));
+
+    // Cập nhật trạng thái hasFeedback của đơn hàng trong state
+    setOrders((prevOrders) =>
+      prevOrders.map((order) =>
+        order.key === orderId ? { ...order, hasFeedback: true } : order
+      )
+    );
+
+    // Điều hướng đến trang phản hồi
+    window.location.href = `/feedBack`;
+  };
+
   const columns = [
     {
       title: "Đơn hàng",
@@ -175,6 +205,23 @@ const Orders: React.FC = () => {
       dataIndex: "note",
       key: "note",
     },
+    {
+      title: "Đánh Giá",
+      dataIndex: "status",
+      key: "feedback",
+      render: (_: string, record: Order) =>
+        record.status === "COMPLETED" && !record.hasFeedback ? (
+          <Button
+            type="primary"
+            onClick={() => handleFeedback(record.key)} // Chỉ truyền orderId
+          >
+            Đánh giá
+          </Button>
+        ) : (
+          <span>{record.hasFeedback ? "Đã đánh giá" : "Chưa hoàn thành"}</span>
+        ),
+    },
+
     {
       title: "Xác Nhận",
       dataIndex: "check",

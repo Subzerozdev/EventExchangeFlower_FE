@@ -239,13 +239,7 @@ const Checkout: React.FC = () => {
           <div style={{ textAlign: "right", marginBottom: 20 }}>
             <Button.Group>
               <Button type="link" onClick={() => navigate("/updateProfile")}>
-                Chỉnh sửa Họ và tên
-              </Button>
-              <Button type="link" onClick={() => navigate("/updateProfile")}>
-                Chỉnh sửa Số điện thoại
-              </Button>
-              <Button type="link" onClick={() => navigate("/updateProfile")}>
-                Chỉnh sửa Địa chỉ
+                Chỉnh sửa thông tin
               </Button>
             </Button.Group>
           </div>
