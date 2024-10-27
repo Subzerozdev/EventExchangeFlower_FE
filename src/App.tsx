@@ -33,7 +33,7 @@ import LoadingPage from "./components/checkOut/payment/loading/loadingPage";
 import ProductList from "./components/product/ProductList/ProductList";
 import SoldOrders from "./pages/profile/Seller/SoldOrders/SoldOders";
 import Orders from "./pages/profile/orderHistory/Orders";
-import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetais";
+import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetails";
 import { NotificationProvider } from "./context/NotificationContext";
 import FeedbackForm from "./pages/feedback/feedBack";
 
@@ -135,7 +135,7 @@ function App() {
         },
         {
           path: "feedBack",
-          element:<FeedbackForm/>,
+          element: <FeedbackForm />,
         },
 
         // Route dành cho Seller (phân quyền)

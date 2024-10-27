@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Table, Tag, Button, message } from "antd";
 import { useNavigate } from "react-router-dom";
+import './SoldOrders.scss'; // Import SCSS
 
 import api from "../../../../config/api";
 
@@ -9,7 +10,7 @@ interface OrderRecord {
     id: number;
     fullName: string;
     status: string;
-    totalAmount?: number; // Tổng tiền sẽ được tính dựa trên `OrderDetail`
+    totalAmount?: number;
 }
 
 // Định nghĩa kiểu dữ liệu cho chi tiết đơn hàng
@@ -24,7 +25,7 @@ interface OrderDetail {
     };
 }
 
-// Map trạng thái đơn hàng sang boolean (nếu cần)
+// Map trạng thái đơn hàng
 const statusMapping: { [key: string]: boolean } = {
     COMPLETED: true,
     CANCELLED: false,
@@ -33,9 +34,9 @@ const statusMapping: { [key: string]: boolean } = {
 const SoldOrders = () => {
     const [orders, setOrders] = useState<OrderRecord[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
-    const navigate = useNavigate(); // Sử dụng để điều hướng trang
+    const navigate = useNavigate(); // Điều hướng
 
-    // Lấy chi tiết đơn hàng và tính tổng tiền từ `OrderDetail`
+    // Lấy chi tiết đơn hàng và tính tổng tiền
     const fetchOrderDetails = async (orderId: number): Promise<number> => {
         try {
             const response = await api.get<OrderDetail[]>(`/api/orders/${orderId}`);
@@ -46,17 +47,14 @@ const SoldOrders = () => {
         }
     };
 
-    // Gọi API để lấy danh sách đơn hàng đã bán và tính tổng tiền cho từng đơn hàng
+    // Lấy danh sách đơn hàng đã bán và tính tổng tiền
     const fetchSoldOrders = async () => {
         setLoading(true);
         try {
             const response = await api.get<OrderRecord[]>("/api/seller/orders", {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem("token")}`,
-                },
+                headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
 
-            // Cập nhật tổng tiền của mỗi đơn hàng từ chi tiết đơn hàng
             const ordersWithTotal = await Promise.all(
                 response.data.map(async (order) => {
                     const totalAmount = await fetchOrderDetails(order.id);
@@ -78,12 +76,10 @@ const SoldOrders = () => {
         fetchSoldOrders();
     }, []);
 
-    // Điều hướng sang trang chi tiết đơn hàng
     const handleViewOrderDetails = (orderId: number) => {
         navigate(`/seller/sold-orders/${orderId}`);
     };
 
-    // Hàm cập nhật trạng thái đơn hàng
     const handleUpdateOrderStatus = async (orderId: number, newStatus: string) => {
         try {
             await api.put(
@@ -104,7 +100,6 @@ const SoldOrders = () => {
         }
     };
 
-    // Cột cho bảng hiển thị đơn hàng
     const columns = [
         {
             title: "Mã đơn hàng",
@@ -121,19 +116,23 @@ const SoldOrders = () => {
             dataIndex: "totalAmount",
             key: "totalAmount",
             render: (total?: number) =>
-                total !== undefined ? `${total.toLocaleString("vi-VN")} ₫` : "Chưa có tổng tiền",
+                total !== undefined ? (
+                    <span className="currency">
+                        {total.toLocaleString("vi-VN")} <span className="currency-symbol">đ</span>
+                    </span>
+                ) : (
+                    "Chưa có tổng tiền"
+                ),
         },
+        
+        
         {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
             render: (status: string) => {
                 const color =
-                    status === "COMPLETED"
-                        ? "green"
-                        : status === "CANCELLED"
-                            ? "red"
-                            : "blue";
+                    status === "COMPLETED" ? "green" : status === "CANCELLED" ? "red" : "blue";
                 const label =
                     status === "COMPLETED"
                         ? "Hoàn thành"
@@ -147,7 +146,7 @@ const SoldOrders = () => {
             title: "Hành động",
             key: "action",
             render: (record: OrderRecord) => (
-                <div style={{ display: "flex", gap: "8px" }}>
+                <div className="action-buttons">
                     <Button
                         type="primary"
                         onClick={() => handleUpdateOrderStatus(record.id, "COMPLETED")}
@@ -155,18 +154,7 @@ const SoldOrders = () => {
                     >
                         Đã giao thành công
                     </Button>
-                    {/* <Button
-                        type="default"
-                        danger
-                        onClick={() => handleUpdateOrderStatus(record.id, "CANCELLED")}
-                        disabled={record.status === "CANCELLED"}
-                    >
-                        Hủy đơn
-                    </Button> */}
-                    <Button
-                        type="link"
-                        onClick={() => handleViewOrderDetails(record.id)}
-                    >
+                    <Button type="link" onClick={() => handleViewOrderDetails(record.id)}>
                         Xem chi tiết
                     </Button>
                 </div>
@@ -175,7 +163,7 @@ const SoldOrders = () => {
     ];
 
     return (
-        <div>
+        <div className="sold-orders-container">
             <h2>Quản lý đơn hàng đã bán</h2>
             <Table
                 dataSource={orders}

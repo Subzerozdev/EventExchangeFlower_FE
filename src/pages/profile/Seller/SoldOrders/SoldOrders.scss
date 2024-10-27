@@ -1,0 +1,103 @@
+/* SoldOrders.scss */
+
+/* Container chính của đơn hàng */
+.sold-orders-container {
+  padding: 24px;
+  background: linear-gradient(135deg, #f5f7fa, #ffffff);
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+
+  h2 {
+    text-align: center;
+    font-size: 28px;
+    margin-bottom: 24px;
+    color: #0050b3;
+    text-transform: uppercase;
+  }
+
+  .ant-table {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+
+    .ant-table-thead > tr > th {
+      background: linear-gradient(135deg, #1890ff, #40a9ff);
+      color: white;
+      font-weight: bold;
+      text-transform: uppercase;
+      text-align: center;
+      padding: 12px;
+    }
+
+    .ant-table-row {
+      transition: background-color 0.3s ease, transform 0.2s;
+
+      &:hover {
+        background-color: #e6f7ff;
+        transform: translateY(-2px);
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+    }
+  }
+}
+
+/* CSS cho nút hành động */
+.action-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  .ant-btn-primary {
+    background-color: #52c41a;
+    border-color: #52c41a;
+    color: white;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s;
+
+    &:hover {
+      background-color: #73d13d;
+      border-color: #73d13d;
+      transform: scale(1.05);
+    }
+
+    &:disabled {
+      background-color: #d9f7be;
+      color: #389e0d; /* Màu chữ xanh đậm hơn để dễ nhìn */
+      border-color: #a0d911;
+      cursor: not-allowed;
+    }
+  }
+
+  .ant-btn-link {
+    color: #1890ff;
+    font-weight: 500;
+
+    &:hover {
+      color: #40a9ff;
+      transform: scale(1.1);
+    }
+  }
+}
+/* CSS cho Tổng tiền và Đơn vị tiền */
+.currency {
+  display: inline-flex; /* Hiển thị nội dung trên cùng một dòng */
+  align-items: baseline; /* Căn đơn vị và số tiền theo đường cơ sở */
+  gap: 4px; /* Khoảng cách giữa số và đơn vị */
+  font-size: 16px; /* Kích thước font cho số tiền */
+  font-weight: 600;
+
+  .currency-symbol {
+    font-size: 14px; /* Kích thước nhỏ hơn cho đơn vị tiền */
+    color: #8c8c8c; /* Màu nhạt hơn cho đơn vị tiền */
+  }
+
+  &:hover {
+    color: #1890ff; /* Màu xanh khi hover */
+    .currency-symbol {
+      color: #40a9ff; /* Đổi màu đơn vị tiền khi hover */
+    }
+  }
+
+  transition: color 0.3s ease; /* Hiệu ứng chuyển màu */
+}
