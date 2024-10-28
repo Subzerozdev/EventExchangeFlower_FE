@@ -6,6 +6,7 @@ import {
   SettingOutlined,
   TagsOutlined,
   LogoutOutlined,
+  UserOutlined,  // Import icon cho Quản lý người dùng
 } from '@ant-design/icons';
 import { useUser } from '../../../context/UserContext';
 import './sideBar.scss';
@@ -29,7 +30,7 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
       <div className="sidebar-title">
         <div className="sidebar-brand">
           <SettingOutlined className="icon_header" />
-          ADMIN- HoaThanhLy
+          ADMIN - HoaThanhLy
         </div>
       </div>
       <ul className="sidebar-list">
@@ -39,17 +40,22 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
           </button>
         </li>
         <li className="sidebar-list-item">
-          <button onClick={() => navigate('/admin/review-posts')} className="btn-link">
-            <FileTextOutlined className="icon" /> Quản lý bài đăng
-          </button>
-        </li>
-        <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/types')} className="btn-link">
             <TagsOutlined className="icon" /> Phân loại
           </button>
         </li>
         <li className="sidebar-list-item">
-          <button onClick={() => navigate('/admin/settings')} className="btn-link">
+          <button onClick={() => navigate('/admin/review-posts')} className="btn-link">
+            <FileTextOutlined className="icon" /> Quản lý bài đăng
+          </button>
+        </li>
+        <li className="sidebar-list-item">
+          <button onClick={() => navigate('/admin/usermanagement')} className="btn-link">
+            <UserOutlined className="icon" /> Quản lý người dùng
+          </button>
+        </li>
+        <li className="sidebar-list-item">
+          <button onClick={() => navigate('/admin/dashboard')} className="btn-link">
             <SettingOutlined className="icon" /> Dashboard
           </button>
         </li>

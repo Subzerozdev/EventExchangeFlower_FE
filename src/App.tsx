@@ -36,6 +36,8 @@ import Orders from "./pages/profile/orderHistory/Orders";
 import OrderDetails from "./pages/profile/Seller/SoldOrders/OrderDetails";
 import { NotificationProvider } from "./context/NotificationContext";
 import FeedbackForm from "./pages/feedback/feedBack";
+import DashBoard from "./pages/adminPage/DashBoard/DashBoard";
+import UserManagement from "./pages/adminPage/UserManagement/UserManagement";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -177,6 +179,14 @@ function App() {
             {
               path: "review-posts",
               element: <ReviewPosts />,
+            },
+            {
+              path: "dashboard",
+              element: <DashBoard />,
+            },
+            {
+              path: "usermanagement",
+              element: <UserManagement />,
             },
             {
               path: "types",

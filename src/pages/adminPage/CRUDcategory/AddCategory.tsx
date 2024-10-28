@@ -88,7 +88,7 @@ function AddCategory() {
 
   return (
     <div className="add-category">
-      <h1>Quản lý doanh mục</h1>
+      <h1>Quản lý danh mục</h1>
 
       <Form
         name="add-category"

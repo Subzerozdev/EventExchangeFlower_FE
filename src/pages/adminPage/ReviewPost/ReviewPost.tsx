@@ -30,8 +30,10 @@ function ReviewPosts() {
         try {
             const response = await api.get<{ posts: Post[] }>("/posts");
             const filteredPosts = response.data.posts.filter(
-                (post) => post.status !== "DELETED" && post.status !== "DISAPPROVE"
+                (post) => post.status !== "DELETED" && post.status !== "DISAPPROVE" && post.status !== "SOLD_OUT"
+
             );
+            console.log(response);
             setPosts(filteredPosts);
         } catch (error) {
             console.error(error);
@@ -88,6 +90,7 @@ function ReviewPosts() {
                 return "Từ chối";
             default:
                 return "Không xác định";
+
         }
     };
 
