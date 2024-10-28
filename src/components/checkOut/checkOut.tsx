@@ -314,6 +314,7 @@ const Checkout: React.FC = () => {
                 {item.price.toLocaleString()}₫
               </p>
               <InputNumber
+              readOnly
                 min={1}
                 value={item.quantity}
                 onChange={(value) => handleQuantityChange(value || 1, item.id)}

@@ -9,7 +9,6 @@ import {
   message,
   Drawer,
   Badge,
-  InputNumber,
   Spin,
   Input,
 } from "antd";
@@ -112,21 +111,19 @@ const ProductList: React.FC = () => {
   }, []);
 
   // Thêm sản phẩm vào giỏ hàng
-  const addToCart = (product: Product) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find((item) => item.id === product.id);
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }];
-      }
-    });
-    message.success(`${product.name} đã được thêm vào giỏ hàng`);
-  };
+  // Thêm sản phẩm vào giỏ hàng
+const addToCart = (product: Product) => {
+  setCart((prevCart) => {
+    const existingItem = prevCart.find((item) => item.id === product.id);
+    if (existingItem) {
+      message.warning(`${product.name} đã có trong giỏ hàng`);
+      return prevCart; // Nếu sản phẩm đã tồn tại, không thêm lại nữa
+    } else {
+      return [...prevCart, { ...product, quantity: 1 }]; // Thêm sản phẩm mới với số lượng mặc định là 1
+    }
+  });
+  message.success(`${product.name} đã được thêm vào giỏ hàng`);
+};
 
   // Xóa sản phẩm khỏi giỏ hàng
   const removeFromCart = (id: number) => {
@@ -134,12 +131,7 @@ const ProductList: React.FC = () => {
     message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
-  // Cập nhật số lượng sản phẩm trong giỏ hàng
-  const updateQuantity = (id: number, quantity: number) => {
-    setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
+
 
   // Tính tổng tiền trong giỏ hàng
   const calculateTotal = () => {
@@ -307,77 +299,74 @@ const ProductList: React.FC = () => {
         style={{ textAlign: "center", marginTop: "20px", marginLeft: "644px" }}
       />
 
-      <Drawer
-        title="Giỏ hàng"
-        placement="right"
-        onClose={toggleDrawer}
-        visible={drawerVisible}
-      >
-        {cart.length === 0 ? (
-          <p>Giỏ hàng của bạn trống</p>
-        ) : (
-          <>
-            {cart.map((item) => (
-              <div
-                key={item.id}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  marginBottom: "10px",
-                }}
-              >
-                <img
-                  src={item.thumbnail}
-                  alt={item.name}
-                  style={{
-                    width: "60px",
-                    height: "60px",
-                    objectFit: "cover",
-                    marginRight: "10px",
-                  }}
-                />
-                <div style={{ flexGrow: 1 }}>
-                  <p>{item.name}</p>
-                  <InputNumber
-                    min={1}
-                    value={item.quantity}
-                    onChange={(value) => updateQuantity(item.id, value!)}
-                  />
-                </div>
-                <div style={{ marginLeft: "10px" }}>
-                  <p>{(item.price * item.quantity).toLocaleString("vi-VN")}₫</p>
-                </div>
-                <Button
-                  icon={<DeleteOutlined />}
-                  type="link"
-                  danger
-                  onClick={() => removeFromCart(item.id)}
-                >
-                  Xóa
-                </Button>
-              </div>
-            ))}
+<Drawer
+  title="Giỏ hàng"
+  placement="right"
+  onClose={toggleDrawer}
+  visible={drawerVisible}
+>
+  {cart.length === 0 ? (
+    <p>Giỏ hàng của bạn trống</p>
+  ) : (
+    <>
+      {cart.map((item) => (
+        <div
+          key={item.id}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "10px",
+          }}
+        >
+          <img
+            src={item.thumbnail}
+            alt={item.name}
+            style={{
+              width: "60px",
+              height: "60px",
+              objectFit: "cover",
+              marginRight: "10px",
+            }}
+          />
+          <div style={{ flexGrow: 1 }}>
+            <p>{item.name}</p>
+            <p>Số lượng: {item.quantity}</p> {/* Hiển thị số lượng thay vì InputNumber */}
+          </div>
+          <div style={{ marginLeft: "10px" }}>
+            <p>{(item.price * item.quantity).toLocaleString("vi-VN")}₫</p>
+          </div>
+          <Button
+            icon={<DeleteOutlined />}
+            type="link"
+            danger
+            onClick={() => removeFromCart(item.id)}
+          >
+            Xóa
+          </Button>
+        </div>
+      ))}
 
-            {/*Thanh toán trong giỏ hàng*/}
-            <div style={{ marginTop: "10px" }}>
-              <h3>Total: {calculateTotal().toLocaleString("vi-VN")}₫</h3>
-              <Button
-                type="primary"
-                style={{ marginTop: "10px" }}
-                onClick={() => {
-                  if (cart.length > 0) {
-                    navigate("/checkout"); // Điều hướng đến trang thanh toán khi có sản phẩm trong giỏ hàng
-                  } else {
-                    message.warning("Giỏ hàng của bạn trống");
-                  }
-                }}
-              >
-                Thanh Toán
-              </Button>
-            </div>
-          </>
-        )}
-      </Drawer>
+      {/*Thanh toán trong giỏ hàng*/}
+      <div style={{ marginTop: "10px" }}>
+        <h3>Total: {calculateTotal().toLocaleString("vi-VN")}₫</h3>
+        <Button
+          type="primary"
+          style={{ marginTop: "10px" }}
+          onClick={() => {
+            if (cart.length > 0) {
+              navigate("/checkout"); // Điều hướng đến trang thanh toán khi có sản phẩm trong giỏ hàng
+            } else {
+              message.warning("Giỏ hàng của bạn trống");
+            }
+          }}
+        >
+          Thanh Toán
+        </Button>
+      </div>
+    </>
+  )}
+</Drawer>
+
     </div>
   );
 };
