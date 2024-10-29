@@ -16,7 +16,7 @@ import TermsModal from "./Seller/TermsModal/TermsModal";
 import { useNavigate } from "react-router-dom";
 import Orders from "./orderHistory/Orders";
 import SoldOrders from "./Seller/SoldOrders/SoldOders"; // Đảm bảo đường dẫn đúng
-// import FeedBackUser from "./Seller/FeedBackByUser/FeedBackUser";
+import FeedBackUser from "./Seller/FeedBackByUser/FeedBackUser";
 
 
 function Profile() {
@@ -60,9 +60,10 @@ function Profile() {
         key: "manage-shop",
       },
       {
-        label: "Xem FeedBack người dùng",
-        key:"feedback-users",
-      }
+        label: "Xem FeedBack từ người dùng",
+        key: "feedback-user",
+      },
+
     ]
     : [
       {
@@ -151,8 +152,9 @@ function Profile() {
         return <ManageShop />;
       case "orders":
         return <Orders />;
-      // case "feedback-users":
-      //   return <FeedBackUser/>
+      case "feedback-user":
+        return<FeedBackUser/>  
+
       case "wishlist":
         return (
           <div>

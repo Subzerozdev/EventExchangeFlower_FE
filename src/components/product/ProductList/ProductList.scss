@@ -103,3 +103,27 @@
     }
   }
 }
+.no-product {
+  text-align: center;
+  margin: 40px auto;
+  color: #666;
+
+  .icon {
+    font-size: 80px;
+    color: #ccc; // Màu xám nhẹ cho icon
+    margin-bottom: 20px; // Thêm khoảng cách dưới icon
+  }
+
+  .main-text {
+    color: rgb(242, 80, 80);
+    font-size: 25px;
+    font-family: "Times New Roman", serif;
+    margin: 10px 0;
+    font-weight: bold; // Đậm chữ để dễ nhìn hơn
+  }
+
+  .sub-text {
+    font-size: 16px;
+    color: #666; // Màu xám nhạt cho dòng hướng dẫn
+  }
+}

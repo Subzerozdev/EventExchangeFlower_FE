@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Input,
-  Radio,
-  Form,
-  notification,
-  InputNumber,
-  Modal,
-} from "antd";
+import { Button, Input, Radio, Form, notification, InputNumber } from "antd";
 import { PhoneOutlined, DeleteOutlined } from "@ant-design/icons";
 import "./checkOut.scss";
 import { useUser } from "../../context/UserContext";
@@ -15,8 +7,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
 import { useNotification } from "../../context/NotificationContext";
 
-const { confirm } = Modal;
-
+// Interface cho thông tin sản phẩm trong giỏ hàng
 interface Product {
   id: number;
   name: string;
@@ -25,24 +16,24 @@ interface Product {
   thumbnail: string;
 }
 
+// Interface cho dữ liệu biểu mẫu đầu vào
 interface FormValues {
   email: string;
   fullname: string;
   phone: string;
   address: string;
   note: string;
-  payment_method: string;
 }
 
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
-  const { user } = useUser();
-  const [loading, setLoading] = useState(false);
-  const [form] = Form.useForm();
-  const [paymentMethod, setPaymentMethod] = useState<string>("COD");
-  const [cart, setCart] = useState<Product[]>([]);
-  const { addNotification } = useNotification();
+  const { user } = useUser(); // Lấy thông tin người dùng từ context
+  const [loading, setLoading] = useState(false); // Trạng thái tải
+  const [form] = Form.useForm(); // Khởi tạo biểu mẫu với Ant Design Form
+  const [cart, setCart] = useState<Product[]>([]); // Danh sách sản phẩm trong giỏ hàng
+  const { addNotification } = useNotification(); // Hàm để thêm thông báo vào context
 
+  // Lấy giỏ hàng từ localStorage khi component được mount
   useEffect(() => {
     const storedCart = localStorage.getItem("cart");
     if (storedCart) {
@@ -50,6 +41,7 @@ const Checkout: React.FC = () => {
     }
   }, []);
 
+  // Nếu người dùng chưa đăng nhập, chuyển hướng họ đến trang đăng nhập
   useEffect(() => {
     if (!user || !user.email) {
       notification.warning({
@@ -60,18 +52,21 @@ const Checkout: React.FC = () => {
     }
   }, [user, navigate]);
 
+  // Tính tổng tiền của tất cả sản phẩm trong giỏ hàng
   const totalPrice = cart.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
+  // Xử lý xóa sản phẩm khỏi giỏ hàng
   const handleDelete = (id: number) => {
-    const updatedCart = cart.filter((item) => item.id !== id);
+    const updatedCart = cart.filter((item) => item.id !== id); // Xóa sản phẩm có id được truyền vào
     setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
+    localStorage.setItem("cart", JSON.stringify(updatedCart)); // Cập nhật giỏ hàng trong localStorage
     notification.success({ message: "Sản phẩm đã được xóa" });
   };
 
+  // Xử lý thay đổi số lượng sản phẩm trong giỏ hàng
   const handleQuantityChange = (value: number, id: number) => {
     const updatedCart = cart.map((item) =>
       item.id === id ? { ...item, quantity: value } : item
@@ -80,9 +75,11 @@ const Checkout: React.FC = () => {
     localStorage.setItem("cart", JSON.stringify(updatedCart));
   };
 
+  // Xử lý khi hoàn tất đặt hàng
   const onFinish = async (values: FormValues) => {
     setLoading(true);
 
+    // Kiểm tra giỏ hàng rỗng
     if (cart.length === 0) {
       notification.error({
         message: "Giỏ hàng trống",
@@ -94,13 +91,14 @@ const Checkout: React.FC = () => {
     }
 
     try {
+      // Tạo payload gửi lên API đặt hàng
       const payload = {
         fullName: user.fullName,
         phoneNumber: user.phone,
         email: user.email,
         address: user.address,
         note: values.note || "",
-        paymentMethod: paymentMethod,
+        paymentMethod: "VNPAY",
         totalMoney: totalPrice,
         orderDetails: cart.map((item) => ({
           postID: item.id,
@@ -108,11 +106,14 @@ const Checkout: React.FC = () => {
         })),
       };
 
+      // Gửi yêu cầu đặt hàng đến API
       const response = await api.post("/api/orders", payload);
 
+      // Kiểm tra phản hồi từ API
       if (response.status === 200) {
         const updateStatus = async () => {
           try {
+            // Cập nhật trạng thái sản phẩm trong giỏ hàng thành "SOLD_OUT"
             await Promise.all(
               cart.map(async (item) => {
                 await api.patch(`/posts/${item.id}`, { status: "SOLD_OUT" });
@@ -122,38 +123,25 @@ const Checkout: React.FC = () => {
             console.error("Error updating status:", error);
           }
         };
-        if (paymentMethod === "VNPAY" || paymentMethod === "COD") {
-          const vnpayResult = response.data;
-          if (vnpayResult) {
-            await updateStatus();
-            window.location.href = vnpayResult;
-            localStorage.removeItem("cart");
-            addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
-          } else {
-            const failureUrl = response.data.failureUrl;
-            if (failureUrl) {
-              window.location.href = failureUrl;
-            } else {
-              notification.error({
-                message: "Lỗi thanh toán",
-                description: "Không nhận được URL thanh toán từ VNPay.",
-              });
 
-              navigate("/paymentFailure");
-            }
+        const vnpayResult = response.data; // URL thanh toán của VNPay
+        if (vnpayResult) {
+          await updateStatus();
+          window.location.href = vnpayResult; // Chuyển hướng người dùng đến trang thanh toán
+          localStorage.removeItem("cart"); // Xóa giỏ hàng sau khi thanh toán
+          addNotification("Bạn đã thanh toán thành công 1 đơn hàng!"); // Thông báo thành công
+        } else {
+          const failureUrl = response.data.failureUrl;
+          if (failureUrl) {
+            window.location.href = failureUrl;
+          } else {
+            notification.error({
+              message: "Lỗi thanh toán",
+              description: "Không nhận được URL thanh toán từ VNPay.",
+            });
+            navigate("/paymentFailure");
           }
         }
-        //  else {
-        //   await updateStatus();
-        //   notification.success({
-        //     message: "Đặt hàng thành công",
-        //     description: "Đơn hàng của bạn đã được gửi đi.",
-        //   });
-        //   localStorage.removeItem("cart");
-        //   setCart([]);
-        //   addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
-        //   navigate(`/paymentSuccess`);
-        // }
       } else {
         throw new Error("Thất bại khi đặt hàng");
       }
@@ -166,39 +154,17 @@ const Checkout: React.FC = () => {
       addNotification("Bạn thanh toán không thành công vui lòng kiểm tra lại!");
       navigate("/paymentFailure");
     } finally {
-      setLoading(false);
+      setLoading(false); // Tắt trạng thái loading
     }
-  };
-
-  const handleCODConfirmation = (values: FormValues) => {
-    confirm({
-      title: "Xác nhận thanh toán",
-      content: "Bạn có chắc chắn muốn chọn thanh toán bằng COD không?",
-      onOk() {
-        onFinish(values);
-      },
-      onCancel() {
-        console.log("Hủy thanh toán COD");
-      },
-    });
   };
 
   return (
     <div className="checkout-container">
       <div className="checkout-form">
-        <Form
-          layout="vertical"
-          form={form}
-          onFinish={(values) => {
-            if (paymentMethod === "COD") {
-              handleCODConfirmation(values);
-            } else {
-              onFinish(values);
-            }
-          }}
-        >
+        <Form layout="vertical" form={form} onFinish={onFinish}>
           <h2>Thông tin nhận hàng</h2>
 
+          {/* Thông tin email người dùng */}
           <Form.Item
             style={{ color: "#4CC9FE", fontWeight: "bold" }}
             name="email"
@@ -207,6 +173,7 @@ const Checkout: React.FC = () => {
             <span>{user.email}</span>
           </Form.Item>
 
+          {/* Thông tin họ và tên người dùng */}
           <Form.Item
             style={{ color: "#4CC9FE", fontWeight: "bold" }}
             name="fullname"
@@ -215,6 +182,7 @@ const Checkout: React.FC = () => {
             <span>{user.fullName}</span>
           </Form.Item>
 
+          {/* Thông tin số điện thoại người dùng */}
           <Form.Item
             style={{ color: "#4CC9FE", fontWeight: "bold" }}
             name="phone"
@@ -224,6 +192,7 @@ const Checkout: React.FC = () => {
             <span>{user.phone}</span>
           </Form.Item>
 
+          {/* Thông tin địa chỉ người dùng */}
           <Form.Item
             style={{ color: "#4CC9FE", fontWeight: "bold" }}
             name="address"
@@ -232,18 +201,12 @@ const Checkout: React.FC = () => {
             <span>{user.address}</span>
           </Form.Item>
 
+          {/* Ghi chú cho đơn hàng */}
           <Form.Item name="note" label="Ghi chú (tùy chọn)">
             <Input.TextArea placeholder="Ghi chú cho đơn hàng" />
           </Form.Item>
 
-          <div style={{ textAlign: "right", marginBottom: 20 }}>
-            <Button.Group>
-              <Button type="link" onClick={() => navigate("/updateProfile")}>
-                Chỉnh sửa thông tin
-              </Button>
-            </Button.Group>
-          </div>
-
+          {/* Phương thức thanh toán */}
           <h2>Thanh toán</h2>
           <Form.Item
             name="payment"
@@ -255,28 +218,12 @@ const Checkout: React.FC = () => {
               },
             ]}
           >
-            <Radio.Group
-              onChange={(e) => setPaymentMethod(e.target.value)}
-              value={paymentMethod}
-            >
+            <Radio.Group value="VNPAY">
               <Radio value="VNPAY">Thanh toán qua VNPAY-QR</Radio>
-              <Radio value="COD">Thanh toán khi giao hàng (COD)</Radio>
             </Radio.Group>
           </Form.Item>
 
-          {paymentMethod === "COD" && (
-            <div
-              style={{
-                marginTop: "10px",
-                background: "#f0f0f0",
-                padding: "10px",
-                borderRadius: "8px",
-              }}
-            >
-              <p style={{ margin: 0 }}>Bạn sẽ thanh toán khi nhận được hàng</p>
-            </div>
-          )}
-
+          {/* Nút đặt hàng */}
           <Button
             type="primary"
             htmlType="submit"
@@ -293,6 +240,7 @@ const Checkout: React.FC = () => {
         </Form>
       </div>
 
+      {/* Giỏ hàng hiển thị các sản phẩm */}
       <div className="checkout-cart">
         <h2>Đơn hàng ({cart.length} sản phẩm)</h2>
         {cart.map((item) => (
@@ -314,7 +262,7 @@ const Checkout: React.FC = () => {
                 {item.price.toLocaleString()}₫
               </p>
               <InputNumber
-              readOnly
+                readOnly
                 min={1}
                 value={item.quantity}
                 onChange={(value) => handleQuantityChange(value || 1, item.id)}

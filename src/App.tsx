@@ -38,7 +38,6 @@ import { NotificationProvider } from "./context/NotificationContext";
 import FeedbackForm from "./pages/feedback/feedBack";
 import DashBoard from "./pages/adminPage/DashBoard/DashBoard";
 import UserManagement from "./pages/adminPage/UserManagement/UserManagement";
-// import FeedBackUser from "./pages/profile/Seller/FeedBackByUser/FeedBackUser";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -151,7 +150,6 @@ function App() {
             { path: "sold-orders/:id", element: <OrderDetails /> },
             { path: "manage-posts", element: <ManagePosts /> },
             { path: "manage-shop", element: <ManageShop /> },
-            // { path: "feedback-users", element: <FeedBackUser /> },
             {
               path: "term",
               element: (
