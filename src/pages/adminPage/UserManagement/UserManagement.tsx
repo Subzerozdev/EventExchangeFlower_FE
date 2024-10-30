@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import api from '../../../config/api'; // Import API instance
-import './UserManagement.scss'; // Import SCSS
+import './userManagement.scss'; // Import SCSS
 
 interface User {
     id: string;
