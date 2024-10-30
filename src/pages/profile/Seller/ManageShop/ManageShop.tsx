@@ -65,12 +65,7 @@ function ManageShop() {
                 <Form.Item label="Mô tả" name="description">
                     <Input.TextArea rows={4} placeholder="Mô tả shop của bạn (không bắt buộc)" />
                 </Form.Item>
-                <Form.Item label="Mã QR (tùy chọn)" name="qrCode">
-                    <Input placeholder="Nhập mã QR của shop nếu có" />
-                </Form.Item>
-                <Form.Item label="Hình ảnh Shop (tùy chọn)" name="shopImage">
-                    <Input placeholder="URL hình ảnh của shop" />
-                </Form.Item>
+
                 <Button type="primary" htmlType="submit">
                     Cập nhật Shop
                 </Button>

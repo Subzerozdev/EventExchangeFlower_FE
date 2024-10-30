@@ -6,6 +6,8 @@ import { UploadFile } from "antd/lib/upload/interface";
 import { UploadOutlined } from "@ant-design/icons";
 import uploadFile from "../../../../utils/file"; // Hàm upload lên Firebase
 import "./ManagePost.scss";
+import type { ColumnsType } from 'antd/es/table'; // Import kiểu dữ liệu chính xác
+
 
 interface Post {
     id: number;
@@ -13,8 +15,8 @@ interface Post {
     description: string;
     price: number;
     address: string;
-    startDate: string;
-    endDate: string;
+    start_date: string;
+    end_date: string;
     category: { id: number; name: string };
     types: { id: number; name: string }[];
     imageUrls: string[];
@@ -51,6 +53,7 @@ function ManagePosts() {
     const fetchPosts = async () => {
         try {
             const response = await api.get<Post[]>("/api/seller/posts");
+            console.log(response);
             // Lọc bài đăng không hiển thị status DELETED và SOLD_OUT
             const filteredPosts = response.data.filter(
                 post => post.status !== "DELETED" && post.status !== "SOLD_OUT"
@@ -81,14 +84,24 @@ function ManagePosts() {
 
     const handleEdit = (post: Post) => {
         setEditingPost(post);
+        const [city, ...specificAddressParts] = post.address.split(', ');
+        const specificAddress = specificAddressParts.join(', ');
+
+
         form.setFieldsValue({
             ...post,
-            startDate: moment(post.startDate),
-            endDate: moment(post.endDate),
+            startDate: moment(post.start_date),
+            endDate: moment(post.end_date),
             category_id: post.category?.id,
             type_id: post.types ? post.types.map((type) => type.id) : [],
+            city,  // Thành phố
+            specificAddress,  // Địa chỉ cụ thể
+
         });
         setIsModalVisible(true);
+
+        setEditingPost(post);  // Lưu bài đăng đang chỉnh sửa vào state
+        setIsModalVisible(true);  // Hiển thị modal chỉnh sửa
     };
 
     const handleDelete = async (id: number) => {
@@ -119,25 +132,29 @@ function ManagePosts() {
                 thumbnailUrl = await uploadFile(thumbnailFile);
             }
 
-            for (let i = 0; i < fileList.length; i++) {
-                const file = fileList[i].originFileObj as File;
+            for (const fileItem of fileList) {
+                const file = fileItem.originFileObj as File;
                 const imageUrl = await uploadFile(file);
                 imageUrls.push(imageUrl);
             }
 
             const values = await form.validateFields();
+
+            // Gộp thành một trường địa chỉ đầy đủ
+            const fullAddress = `${values.city}, ${values.specificAddress}`;
+
             const postData = {
                 ...values,
+                address: fullAddress, // Gộp địa chỉ trước khi gửi lên API
                 startDate: values.startDate.toISOString(),
                 endDate: values.endDate.toISOString(),
-                category_id: values.category_id,
-                type_id: values.type_id,
                 thumbnail: thumbnailUrl,
                 imageUrls,
             };
 
             if (editingPost) {
                 await api.put(`/api/seller/posts/${editingPost.id}`, postData);
+
                 message.success("Cập nhật bài đăng thành công!");
             } else {
                 await api.post("/api/seller/posts", postData);
@@ -146,10 +163,12 @@ function ManagePosts() {
 
             setIsModalVisible(false);
             fetchPosts();
-        } catch {
+        } catch (error) {
+            console.error("Có lỗi xảy ra:", error);
             message.error("Có lỗi xảy ra trong quá trình xử lý.");
         }
     };
+
 
     const handleCancel = () => {
         setIsModalVisible(false);
@@ -164,7 +183,9 @@ function ManagePosts() {
         setFileList(fileList);
     };
 
-    const columns = [
+
+
+    const columns: ColumnsType<Post> = [
         {
             title: "Hình ảnh",
             dataIndex: "thumbnail",
@@ -190,6 +211,18 @@ function ManagePosts() {
             title: "Trạng thái",
             dataIndex: "status",
             key: "status",
+            filters: [
+                { text: "Chờ duyệt", value: "PENDING" },
+                { text: "Đã duyệt", value: "APPROVE" },
+                { text: "Bị từ chối", value: "DISAPPROVE" },
+                { text: "Đã bán hết", value: "SOLD_OUT" },
+                { text: "Đã xóa", value: "DELETED" },
+            ],
+            onFilter: (value: unknown, record: Post) => {
+                return record.status === value as string;
+            },
+
+
             render: (status: string) => {
                 let color = "";
                 let label = "";
@@ -235,7 +268,6 @@ function ManagePosts() {
             ),
         },
     ];
-
 
     return (
         <div className="manage-posts-container">
@@ -321,13 +353,33 @@ function ManagePosts() {
                         </Upload>
                     </Form.Item>
 
-                    <Form.Item
-                        label="Địa chỉ"
-                        name="address"
-                        rules={[{ required: true, message: "Vui lòng nhập địa chỉ" }]}
-                    >
-                        <Input />
+                    <Form.Item label="Địa chỉ" required>
+                        <Input.Group compact>
+                            <Form.Item
+                                name="city"
+                                noStyle
+                                rules={[{ required: true, message: "Vui lòng chọn thành phố/tỉnh" }]}
+                            >
+                                <Select placeholder="Chọn thành phố/tỉnh" style={{ width: "30%" }}>
+                                    <Select.Option value="TP. Hồ Chí Minh">TP. Hồ Chí Minh</Select.Option>
+                                    <Select.Option value="Bình Dương">Bình Dương</Select.Option>
+                                    <Select.Option value="Long An">Long An</Select.Option>
+                                </Select>
+                            </Form.Item>
+
+                            <Form.Item
+                                name="specificAddress"
+                                noStyle
+                                rules={[{ required: true, message: "Vui lòng nhập địa chỉ cụ thể" }]}
+                            >
+                                <Input
+                                    placeholder="Nhập địa chỉ cụ thể (số nhà, đường, quận...)"
+                                    style={{ width: "70%" }}
+                                />
+                            </Form.Item>
+                        </Input.Group>
                     </Form.Item>
+
 
                     <Form.Item
                         label="Ngày bắt đầu"

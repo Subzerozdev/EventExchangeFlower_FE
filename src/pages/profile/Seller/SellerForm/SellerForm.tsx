@@ -64,13 +64,13 @@ function SellerForm() {
         />
       </Form.Item>
 
-      <Form.Item label="Mã QR (tùy chọn)" name="qrCode">
+      {/* <Form.Item label="Mã QR (tùy chọn)" name="qrCode">
         <Input placeholder="Nhập mã QR của shop nếu có" />
       </Form.Item>
 
       <Form.Item label="Hình ảnh Shop (tùy chọn)" name="shopImage">
         <Input placeholder="URL hình ảnh của shop" />
-      </Form.Item>
+      </Form.Item> */}
 
       <Form.Item>
         <Button type="primary" htmlType="submit">
