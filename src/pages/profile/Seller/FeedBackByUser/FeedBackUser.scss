@@ -1,0 +1,91 @@
+// Container toàn bộ bảng phản hồi
+.feedback-container {
+  max-width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #fcf9fb;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  .feedback-title {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #a94b94;
+    margin-bottom: 20px;
+    font-weight: bold;
+    &:hover {
+      color: #e19bd3;
+    }
+  }
+
+  .feedback-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 0;
+  }
+}
+
+// Styling cho bảng
+.feedback-table {
+  .ant-table {
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #ffffff;
+
+    .ant-table-thead > tr > th {
+      background-color: #e24ac9;
+      color: #ffffff;
+      font-weight: 600;
+      text-align: center;
+      font-size: 1rem;
+      padding: 12px;
+      &:hover {
+        color: #faabab;
+      }
+    }
+
+    .ant-table-tbody > tr > td {
+      font-size: 0.95rem;
+      padding: 12px;
+      text-align: center;
+      color: #333;
+
+      &:nth-child(odd) {
+        background-color: #f4f6f8;
+      }
+    }
+
+    .ant-table-tbody > tr {
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #e6f7ff;
+      }
+    }
+  }
+
+  // Pagination styling
+  .ant-pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+}
+
+// Các cột riêng biệt trong bảng (nếu muốn tùy chỉnh thêm)
+.feedback-table-column-id {
+  width: 10%;
+}
+
+.feedback-table-column-content {
+  width: 40%;
+}
+
+.feedback-table-column-rating {
+  width: 20%;
+}
+
+.feedback-table-column-email {
+  width: 30%;
+}

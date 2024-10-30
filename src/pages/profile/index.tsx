@@ -18,7 +18,6 @@ import Orders from "./orderHistory/Orders";
 import SoldOrders from "./Seller/SoldOrders/SoldOders"; // Đảm bảo đường dẫn đúng
 import FeedBackUser from "./Seller/FeedBackByUser/FeedBackUser";
 
-
 function Profile() {
   const { user, logout } = useUser(); // Lấy thông tin người dùng từ context
   const navigate = useNavigate();
@@ -45,32 +44,32 @@ function Profile() {
     }
   };
 
-  const sellerMenuChildren: MenuProps["items"] = user.role === "ROLE_SELLER" || user.role === "ROLE_ADMIN"
-    ? [
-      {
-        label: "Quản lý sản phẩm cửa hàng của bạn",
-        key: "manage-posts",
-      },
-      {
-        label: "Đơn hàng đã bán",
-        key: "sold-orders",
-      },
-      {
-        label: "Xem và chỉnh sửa thông tin cửa hàng",
-        key: "manage-shop",
-      },
-      {
-        label: "Xem FeedBack từ người dùng",
-        key: "feedback-user",
-      },
-
-    ]
-    : [
-      {
-        label: "Tạo tài khoản bán hàng",
-        key: "form", // Hiển thị điều khoản nếu chưa là seller
-      },
-    ];
+  const sellerMenuChildren: MenuProps["items"] =
+    user.role === "ROLE_SELLER" || user.role === "ROLE_ADMIN"
+      ? [
+          {
+            label: "Quản lý sản phẩm cửa hàng của bạn",
+            key: "manage-posts",
+          },
+          {
+            label: "Đơn hàng đã bán",
+            key: "sold-orders",
+          },
+          {
+            label: "Xem và chỉnh sửa thông tin cửa hàng",
+            key: "manage-shop",
+          },
+          {
+            label: "Xem phản hồi từ người dùng",
+            key: "feedback-user",
+          },
+        ]
+      : [
+          {
+            label: "Tạo tài khoản bán hàng",
+            key: "form", // Hiển thị điều khoản nếu chưa là seller
+          },
+        ];
 
   const items: MenuProps["items"] = [
     {
@@ -153,7 +152,7 @@ function Profile() {
       case "orders":
         return <Orders />;
       case "feedback-user":
-        return<FeedBackUser/>  
+        return <FeedBackUser />;
 
       case "wishlist":
         return (
