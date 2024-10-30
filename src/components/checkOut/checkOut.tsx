@@ -205,6 +205,14 @@ const Checkout: React.FC = () => {
           <Form.Item name="note" label="Ghi chú (tùy chọn)">
             <Input.TextArea placeholder="Ghi chú cho đơn hàng" />
           </Form.Item>
+          {/*Chinh sua thong tin*/}
+          <div style={{ textAlign: "right", marginBottom: 20 }}>
+            <Button.Group>
+              <Button type="link" onClick={() => navigate("/updateProfile")}>
+                Chỉnh sửa thông tin
+              </Button>
+            </Button.Group>
+          </div>
 
           {/* Phương thức thanh toán */}
           <h2>Thanh toán</h2>
