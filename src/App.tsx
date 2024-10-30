@@ -38,6 +38,7 @@ import { NotificationProvider } from "./context/NotificationContext";
 import FeedbackForm from "./pages/feedback/feedBack";
 import DashBoard from "./pages/adminPage/DashBoard/DashBoard";
 import UserManagement from "./pages/adminPage/UserManagement/UserManagement";
+import PlatformFee from "./pages/adminPage/PlatFormFee/PlatformFee";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -132,7 +133,7 @@ function App() {
           element: <PaymentSuccess />,
         },
         {
-          path: "paymentFailure",
+          path: " paymentFailure",
           element: <PaymentFailure />,
         },
         {
@@ -150,6 +151,10 @@ function App() {
             { path: "sold-orders/:id", element: <OrderDetails /> },
             { path: "manage-posts", element: <ManagePosts /> },
             { path: "manage-shop", element: <ManageShop /> },
+            {
+              path: "fee",  // Đảm bảo đúng tên đường dẫn
+              element: <PlatformFee />,
+            },
             {
               path: "term",
               element: (
@@ -191,6 +196,10 @@ function App() {
             {
               path: "types",
               element: <AddType />,
+            },
+            {
+              path: "fee",
+              element: <PlatformFee />,
             },
           ],
         },

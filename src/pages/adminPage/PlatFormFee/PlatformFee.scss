@@ -1,0 +1,65 @@
+/* PlatformFee.scss */
+
+.platform-fee-container {
+  padding: 40px;
+  max-width: 600px;
+  margin: 50px auto;
+  background: rgba(255, 255, 255, 0.85); /* Nền mờ */
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+
+  &:hover {
+    transform: scale(1.02); /* Hiệu ứng phóng to khi hover */
+  }
+
+  h2 {
+    text-align: center;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: #1890ff;
+  }
+
+  .fee-type {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+    color: #555;
+  }
+
+  .input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+
+    label {
+      font-weight: 500;
+      font-size: 16px;
+      margin-right: 10px;
+    }
+  }
+
+  .ant-input-number {
+    width: 100px;
+  }
+
+  .update-button {
+    display: block;
+    width: 100%;
+    margin-top: 10px;
+    background-color: #1890ff;
+    color: white;
+    font-weight: 500;
+    border: none;
+    border-radius: 8px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+
+    &:hover {
+      background-color: #40a9ff;
+    }
+  }
+}
+
+/* Ảnh nền cho toàn bộ trang */

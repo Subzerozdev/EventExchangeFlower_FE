@@ -6,7 +6,9 @@ import {
   SettingOutlined,
   TagsOutlined,
   LogoutOutlined,
-  UserOutlined,  // Import icon cho Quản lý người dùng
+  UserOutlined,
+
+  RedEnvelopeOutlined,  // Import icon cho Quản lý người dùng
 } from '@ant-design/icons';
 import { useUser } from '../../../context/UserContext';
 import './sideBar.scss';
@@ -59,6 +61,12 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
             <SettingOutlined className="icon" /> Dashboard
           </button>
         </li>
+        <li className="sidebar-list-item">
+          <button onClick={() => navigate('/admin/fee')} className="btn-link">
+            <RedEnvelopeOutlined className="icon" /> Quản lý Phí Nền Tảng
+          </button>
+        </li>
+
         <li className="sidebar-list-item">
           <button onClick={handleLogout} className="btn-link">
             <LogoutOutlined className="icon" /> Đăng xuất
