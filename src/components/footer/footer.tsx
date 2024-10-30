@@ -10,30 +10,23 @@ const Footer: React.FC = () => {
           <h4>CHĂM SÓC KHÁCH HÀNG</h4>
           <ul>
             <li>
-              <a href="/help">Trung Tâm Trợ Giúp</a>
+              <a href="/TermsAndConditions">Trung Tâm Trợ Giúp</a>
             </li>
 
             <li>
-              <a href="/guide">Hướng Dẫn Mua Hàng</a>
+              <a href="/TermsAndConditions">Hướng Dẫn Bán Hàng</a>
             </li>
             <li>
-              <a href="/sell-guide">Hướng Dẫn Bán Hàng</a>
-            </li>
-            <li>
-              <a href="/payment">Thanh Toán</a>
+              <a href="/TermsAndConditions">Điều Khoản Và Quy Định Của Nền Tảng</a>
             </li>
 
-            <li>
-              <a href="/refund">Trả Hàng & Hoàn Tiền</a>
-            </li>
-            <li>
-              <a href="/warranty">Chính Sách Bảo Hành</a>
-            </li>
+
+
           </ul>
         </div>
 
         {/* Cột 2: Về Shopee */}
-        <div className="footer-column">
+        {/* <div className="footer-column">
           <h4>MỘT SỐ THÔNG TIN VỀ SHOP</h4>
           <ul>
             <li>
@@ -47,7 +40,7 @@ const Footer: React.FC = () => {
               <a href="/affiliate">Kênh Người Bán</a>
             </li>
           </ul>
-        </div>
+        </div> */}
 
         {/* Cột 3: Thanh Toán */}
         <div className="footer-column">
@@ -87,14 +80,14 @@ const Footer: React.FC = () => {
               <img src="./img/img/facebook4.jpg" alt="Facebook" />
               <a href="https://facebook.com">Facebook</a>
             </li>
-            <li>
+            {/* <li>
               <img src="./img/img/instegram.jpg" alt="Instagram" />
               <a href="https://instagram.com">Instagram</a>
             </li>
             <li>
               <img src="./img/img/in4.jpg" alt="LinkedIn" />
               <a href="https://linkedin.com">LinkedIn</a>
-            </li>
+            </li> */}
           </ul>
         </div>
       </div>

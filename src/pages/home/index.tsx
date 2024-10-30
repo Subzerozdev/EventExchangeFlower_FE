@@ -19,7 +19,7 @@ const testimonials = [
   {
     content:
       "“Hoa Lối Cũ đã giúp tôi gửi đi một bó hoa tươi tuyệt đẹp cho đối tác của mình. Rất nhanh chóng và chất lượng cao!”",
-    author: "Anh Lê Minh Nghĩa",
+    author: "Anh Lê Trung Tín",
     title: "CEO of Diamond Coin",
     image:
       "https://media.yeah1.com/files/ngoctran/2022/07/01/289693821_582015943280803_2102006602626651935_n-205941.jpg", // URL ảnh của khách hàng
@@ -64,7 +64,7 @@ const steps = [
   {
     title: "Bước 2: Thanh toán đơn giản",
     description:
-      "Thanh toán trực tuyến qua QR VNPAY, hỗ trợ mọi ngân hàng tại Việt Nam hoặc thanh toán trực tiếp khi nhận hàng.",
+      "Thanh toán trực tuyến qua QR VNPAY, hỗ trợ mọi ngân hàng tại Việt Nam .",
     icon: <DollarOutlined style={{ fontSize: "24px", color: "#FF5733" }} />,
   },
   {
@@ -130,8 +130,11 @@ const Home = () => {
 
         {/* Nút Call to Action */}
         <div className="cta-button">
-          <button>Bấm để tìm hiểu về chúng tôi</button>
+          <button onClick={() => window.location.href = '/blog'}>
+            Bấm để tìm hiểu về chúng tôi
+          </button>
         </div>
+
       </section>
 
       {/* Danh Mục Hoa Nổi Bật */}

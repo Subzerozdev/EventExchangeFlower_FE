@@ -284,9 +284,11 @@ const BlogPage: React.FC = () => {
                     src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/blog%2F6.jpg?alt=media&token=f182cfd0-4b87-42ae-b79e-ca2c85e98fb0"
                     alt="Sự kiện với Hoa Lối Cũ"
                 />
-                <button>Liên Hệ Ngay</button>
+                <a href="/LienHe" className="contact-button">
+                    Liên Hệ Ngay Tại Đây Nhé!
+                </a>
             </div>
-           <ScrollToTop/>
+            <ScrollToTop />
         </div>
     );
 };

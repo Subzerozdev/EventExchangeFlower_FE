@@ -402,4 +402,28 @@
       }
     }
   }
+  .contact-button {
+    display: inline-block;
+    background-color: #ff6347;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 8px;
+    padding: 2dvh 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+
+    margin-left: -25%;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+
+    &:hover {
+      background-color: #438a39;
+      transform: scale(1.05);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
 }

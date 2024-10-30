@@ -39,6 +39,7 @@ import FeedbackForm from "./pages/feedback/feedBack";
 import DashBoard from "./pages/adminPage/DashBoard/DashBoard";
 import UserManagement from "./pages/adminPage/UserManagement/UserManagement";
 import PlatformFee from "./pages/adminPage/PlatFormFee/PlatformFee";
+import TermsAndConditions from "./components/Term/TermsAndConditions";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -61,6 +62,10 @@ function App() {
         {
           path: "login",
           element: <Login />,
+        },
+        {
+          path: "TermsAndConditions",
+          element: <TermsAndConditions />,
         },
         {
           path: "forgot-password/verify-otp",
