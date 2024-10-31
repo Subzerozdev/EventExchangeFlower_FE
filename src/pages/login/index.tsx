@@ -1,5 +1,3 @@
-import { GoogleCircleFilled } from "@ant-design/icons";
-import { useGoogleLogin } from "@react-oauth/google";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
@@ -31,37 +29,37 @@ function Login() {
   const navigate = useNavigate();
   const { setUser } = useUser();
 
-  // Đăng nhập bằng Google
-  const loginWithGoogle = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      try {
-        const { data } = await api.get(
-          "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
-          {
-            headers: {
-              Authorization: `Bearer ${tokenResponse.access_token}`,
-            },
-          }
-        );
-        setUser({
-          fullName: data.name || "Google User",
-          email: data.email || "",
-          phone: null,
-          address: null,
-          role: null,
-          id: null,
-        });
+  // // Đăng nhập bằng Google
+  // const loginWithGoogle = useGoogleLogin({
+  //   onSuccess: async (tokenResponse) => {
+  //     try {
+  //       const { data } = await api.get(
+  //         "https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${tokenResponse.access_token}`,
+  //           },
+  //         }
+  //       );
+  //       setUser({
+  //         fullName: data.name || "Google User",
+  //         email: data.email || "",
+  //         phone: null,
+  //         address: null,
+  //         role: null,
+  //         id: null,
+  //       });
 
-        message.success("Đăng nhập bằng Google thành công!");
-        navigate("/");
-      } catch (error) {
-        message.error(
-          "Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại!"
-        );
-        console.log("Google Login Error:", error);
-      }
-    },
-  });
+  //       message.success("Đăng nhập bằng Google thành công!");
+  //       navigate("/");
+  //     } catch (error) {
+  //       message.error(
+  //         "Có lỗi xảy ra khi đăng nhập bằng Google. Vui lòng thử lại!"
+  //       );
+  //       console.log("Google Login Error:", error);
+  //     }
+  //   },
+  // });
 
   // Đăng nhập bằng email và mật khẩu
   const onFinish = async (values: LoginFormValues) => {
@@ -130,7 +128,7 @@ function Login() {
           >
             <Input.Password placeholder="Mật khẩu" />
           </Form.Item>
-          <div >
+          <div>
             <a onClick={() => navigate("/forgot-password")}>Quên mật khẩu?</a>
           </div>
           <Form.Item>
@@ -139,15 +137,15 @@ function Login() {
             </Button>
           </Form.Item>
 
-          <div className="divider">
+          {/* <div className="divider">
             <span>HOẶC</span>
-          </div>
+          </div> */}
 
-          <Form.Item>
+          {/* <Form.Item>
             <Button onClick={() => loginWithGoogle()} className="google-button">
               <GoogleCircleFilled /> Tiếp tục với Google
             </Button>
-          </Form.Item>
+          </Form.Item> */}
         </Form>
       </div>
     </div>
