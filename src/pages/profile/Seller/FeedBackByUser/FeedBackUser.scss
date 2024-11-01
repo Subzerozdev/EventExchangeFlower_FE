@@ -1,91 +1,81 @@
-// Container toàn bộ bảng phản hồi
+// Đặt trong file FeedBackUser.scss
 .feedback-container {
-  max-width: 80%;
-  margin: 0 auto;
   padding: 20px;
-  background-color: #fcf9fb;
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #f5f5f5;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
 
   .feedback-title {
+    font-size: 24px;
+    font-weight: 600;
     text-align: center;
-    font-size: 1.8rem;
-    color: #a94b94;
+    color: #333;
     margin-bottom: 20px;
-    font-weight: bold;
-    &:hover {
-      color: #e19bd3;
-    }
   }
 
   .feedback-loading {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 50px 0;
+    height: 200px;
   }
-}
 
-// Styling cho bảng
-.feedback-table {
-  .ant-table {
+  .feedback-table {
+    background-color: white;
     border-radius: 8px;
     overflow: hidden;
-    background-color: #ffffff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
     .ant-table-thead > tr > th {
-      background-color: #e24ac9;
-      color: #ffffff;
-      font-weight: 600;
+      background-color: #eb54ca;
+      color: white;
+      font-weight: 500;
       text-align: center;
-      font-size: 1rem;
       padding: 12px;
-      &:hover {
-        color: #faabab;
-      }
     }
 
     .ant-table-tbody > tr > td {
-      font-size: 0.95rem;
-      padding: 12px;
       text-align: center;
+      font-size: 14px;
+      padding: 10px;
       color: #333;
 
       &:nth-child(odd) {
-        background-color: #f4f6f8;
+        background-color: #fafafa; // Màu nền xen kẽ cho các dòng
+      }
+
+      &:nth-child(even) {
+        background-color: #ffffff;
       }
     }
 
-    .ant-table-tbody > tr {
-      transition: background-color 0.3s ease;
+    .feedback-table-column-id {
+      width: 10%;
+      font-weight: 500;
+    }
 
-      &:hover {
-        background-color: #e6f7ff;
-      }
+    .feedback-table-column-content {
+      width: 50%;
+      text-align: left; // Căn trái nội dung phản hồi
+    }
+
+    .feedback-table-column-rating {
+      width: 15%;
+      color: #ff9800;
+      font-weight: 600;
+    }
+
+    .feedback-table-column-email {
+      width: 25%;
+      font-style: italic;
+      color: #555;
+    }
+
+    .ant-pagination {
+      margin-top: 20px;
+      text-align: center;
     }
   }
-
-  // Pagination styling
-  .ant-pagination {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-}
-
-// Các cột riêng biệt trong bảng (nếu muốn tùy chỉnh thêm)
-.feedback-table-column-id {
-  width: 10%;
-}
-
-.feedback-table-column-content {
-  width: 40%;
-}
-
-.feedback-table-column-rating {
-  width: 20%;
-}
-
-.feedback-table-column-email {
-  width: 30%;
 }

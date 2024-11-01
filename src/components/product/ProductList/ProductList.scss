@@ -1,39 +1,113 @@
 .product-list {
   padding: 20px;
 
-  .search-bar {
-    margin-bottom: 20px;
+  // Container cho bộ lọc và thanh tìm kiếm
+  .filter-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap; // Cho phép các phần tử xuống dòng nếu không đủ không gian
+    gap: 10px;
+    margin-bottom: 20px;
+    background-color: #e8f1ff57;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 
-    .ant-input-search {
-      width: 100%;
-      max-width: 400px; // Giới hạn chiều rộng tối đa cho thanh tìm kiếm
-      border-radius: 50px; // Làm tròn các góc của thanh tìm kiếm
-      overflow: hidden;
+    // Thiết kế cho nút bộ lọc
+    .product-filter {
+      display: flex;
+      gap: 10px;
 
-      .ant-input-wrapper {
-        .ant-input {
-          border-radius: 50px 0 0 50px; // Làm tròn góc trái của ô input
-          border: 2px solid #1890ff; // Đặt viền màu xanh
-          padding: 10px 15px; // Khoảng cách padding để thanh tìm kiếm trông cân đối
+      .filter-button {
+        background-color: #b388ff;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 8px;
+        font-weight: bold;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s;
+
+        &:hover {
+          background-color: #9c4dcc;
+          transform: translateY(-2px);
         }
 
-        .ant-btn {
-          border-radius: 0 50px 50px 0; // Làm tròn góc phải của nút tìm kiếm
-          background-color: #1890ff; // Màu nền xanh
-          color: white; // Màu chữ trắng
-          border: 2px solid #1890ff; // Viền cùng màu với nền
-          transition: background-color 0.3s ease; // Hiệu ứng khi hover
+        &:active {
+          background-color: #7e57c2;
+        }
+      }
 
-          &:hover {
-            background-color: #40a9ff; // Màu nền khi hover
-          }
+      // Các nút sắp xếp kiểu lọc
+      .sort-option {
+        background-color: #d1c4e9;
+        color: #4a148c;
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s;
+
+        &:hover {
+          background-color: #b39ddb;
+          color: #311b92;
+        }
+      }
+    }
+    // Biểu tượng hoa ở giữa
+    .flower-icon {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      background-color: #fff;
+      border-radius: 50%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      // Tạo khoảng cách giữa bộ lọc và thanh tìm kiếm
+      margin-right: 120px;
+      &:hover {
+        background-color: #f9f9f9;
+      }
+    }
+  }
+
+  // Thiết kế thanh tìm kiếm
+  .search-bar {
+    max-width: 400px;
+    width: 100%;
+    border-radius: 50px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+
+    .ant-input-wrapper {
+      .ant-input {
+        border-radius: 50px 0 0 50px;
+
+        padding: 10px 15px;
+        outline: none; // Loại bỏ viền xanh khi focus
+        box-shadow: none; // Loại bỏ shadow khi focus
+
+        &:focus {
+          border-color: #1890ff;
+        }
+      }
+
+      .ant-btn {
+        border-radius: 0 50px 50px 0;
+        background-color: #1890ff;
+        color: white;
+        border: none;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #40a9ff;
         }
       }
     }
   }
 
+  // Các thẻ sản phẩm
   .ant-card {
     transition: transform 0.3s;
     margin-bottom: 20px;
@@ -66,6 +140,7 @@
         background-color: #52c41a;
         color: white;
         border-radius: 0 0 8px 8px;
+
         &:hover {
           background-color: #73d13d;
         }

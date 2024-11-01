@@ -153,12 +153,6 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
       {/* Thêm nút sắp xếp */}
       <div className="sort-options">
         <Button
-          className={sortType === "default" ? "active" : ""}
-          onClick={() => handleSortChange("default")}
-        >
-          Mặc định
-        </Button>
-        <Button
           className={sortType === "az" ? "active" : ""}
           onClick={() => handleSortChange("az")}
         >
@@ -170,12 +164,7 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
         >
           Tên Z-A
         </Button>
-        <Button
-          className={sortType === "newest" ? "active" : ""}
-          onClick={() => handleSortChange("newest")}
-        >
-          Hàng mới
-        </Button>
+
         <Button
           className={sortType === "priceAsc" ? "active" : ""}
           onClick={() => handleSortChange("priceAsc")}

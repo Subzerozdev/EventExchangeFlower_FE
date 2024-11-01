@@ -249,7 +249,7 @@ const Orders: React.FC = () => {
 
   return (
     <div className="order_container">
-      <h2> LỊCH SỬ ĐĂT HÀNG CỦA BẠN</h2>
+      <h2> LỊCH SỬ ĐẶT HÀNG CỦA BẠN</h2>
       <Table
         columns={columns}
         dataSource={filteredOrders} // Sử dụng danh sách đã lọc để không hiển thị đơn hàng đã hủy
@@ -263,6 +263,7 @@ const Orders: React.FC = () => {
         }}
         locale={{ emptyText: "Không có đơn hàng nào đã thanh toán." }}
         bordered
+        scroll={{ x: "max-content" }} // Kích hoạt thanh cuộn ngang
       />
     </div>
   );

@@ -16,6 +16,7 @@ import {
   ShoppingCartOutlined,
   FileSearchOutlined,
   DeleteOutlined,
+  ShopOutlined,
 } from "@ant-design/icons";
 import "./ProductList.scss";
 import ProductFilter from "../FilterPanel/FilterPanel";
@@ -205,27 +206,31 @@ const ProductList: React.FC = () => {
 
   return (
     <div className="product-list">
-      <ProductFilter
-        onFilterChange={(minPrice, maxPrice) => {
-          setMinPrice(minPrice);
-          setMaxPrice(maxPrice);
-          filterProducts(selectedCategories, minPrice, maxPrice); // Kết hợp bộ lọc giá và loại
-        }}
-        onSortChange={sortProducts}
-        onCategoryChange={(categories) => {
-          setSelectedCategories(categories); // Lưu loại sản phẩm đã chọn
-          filterProducts(categories, minPrice, maxPrice); // Áp dụng lọc kết hợp
-        }}
-        categories={categories}
-      />
-
-      <Input.Search
-        className="search-bar" // Thêm class để áp dụng CSS
-        placeholder="Tìm kiếm sản phẩm"
-        onSearch={handleSearch}
-        allowClear
-        enterButton="Tìm kiếm"
-      />
+      <div className="filter-container">
+        <ProductFilter
+          onFilterChange={(minPrice, maxPrice) => {
+            setMinPrice(minPrice);
+            setMaxPrice(maxPrice);
+            filterProducts(selectedCategories, minPrice, maxPrice);
+          }}
+          onSortChange={sortProducts}
+          onCategoryChange={(categories) => {
+            setSelectedCategories(categories);
+            filterProducts(categories, minPrice, maxPrice);
+          }}
+          categories={categories}
+        />
+        <div className="flower-icon">
+          <ShopOutlined style={{ fontSize: "40px", color: "#b388ff" }} />
+        </div>
+        <Input.Search
+          className="search-bar"
+          placeholder="Tìm kiếm sản phẩm"
+          onSearch={handleSearch}
+          allowClear
+          enterButton="Tìm kiếm"
+        />
+      </div>
 
       <div style={{ position: "fixed", bottom: 20, right: 8 }}>
         <Badge count={cart.length}>
@@ -304,7 +309,7 @@ const ProductList: React.FC = () => {
         pageSize={pageSize} // Số sản phẩm mỗi trang
         total={filteredProducts.length} // Tổng số sản phẩm sau khi lọc
         onChange={(page) => setCurrentPage(page)} // Cập nhật trang khi người dùng thay đổi
-        style={{ textAlign: "center", marginTop: "20px", marginLeft: "660px" }}
+        style={{ textAlign: "center", marginTop: "20px", marginLeft: "689px" }}
       />
 
       <Drawer

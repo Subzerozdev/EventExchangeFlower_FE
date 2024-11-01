@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, Input, Radio, Form, notification, InputNumber } from "antd";
-import { PhoneOutlined, DeleteOutlined } from "@ant-design/icons";
+import { PhoneOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "./checkOut.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -200,19 +200,25 @@ const Checkout: React.FC = () => {
           >
             <span>{user.address}</span>
           </Form.Item>
-
+          <div style={{ textAlign: "right", marginBottom: 20 }}>
+            <Button
+              type="primary"
+              className="edit-info-button"
+              icon={<EditOutlined />}
+              onClick={() => navigate("/updateProfile")}
+            >
+              Chỉnh sửa thông tin
+            </Button>
+          </div>
           {/* Ghi chú cho đơn hàng */}
-          <Form.Item name="note" label="Ghi chú (tùy chọn)">
+          <Form.Item
+            name="note"
+            style={{ fontWeight: "bold" }}
+            label="Ghi chú (tùy chọn)"
+          >
             <Input.TextArea placeholder="Ghi chú cho đơn hàng" />
           </Form.Item>
           {/*Chinh sua thong tin*/}
-          <div style={{ textAlign: "right", marginBottom: 20 }}>
-            <Button.Group>
-              <Button type="link" onClick={() => navigate("/updateProfile")}>
-                Chỉnh sửa thông tin
-              </Button>
-            </Button.Group>
-          </div>
 
           {/* Phương thức thanh toán */}
           <h2>Thanh toán</h2>

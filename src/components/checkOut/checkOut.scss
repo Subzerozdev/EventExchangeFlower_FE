@@ -12,6 +12,39 @@
     padding: 20px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    // Style for "Chỉnh sửa thông tin" button
+    .edit-info-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      background-color: #6f42c1;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #eb4460;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(90, 50, 163, 0.3);
+      }
+
+      &:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(111, 66, 193, 0.3);
+      }
+
+      &:active {
+        background-color: #4a2891;
+        transform: translateY(0);
+        box-shadow: none;
+      }
+    }
   }
 
   .checkout-cart {
