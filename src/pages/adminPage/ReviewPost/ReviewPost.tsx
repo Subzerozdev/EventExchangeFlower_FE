@@ -20,7 +20,8 @@ function ReviewPosts() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0); // Track current image
+    const [currentImageIndexes, setCurrentImageIndexes] = useState<{ [key: number]: number }>({});
+
 
     useEffect(() => {
         fetchPosts();
@@ -95,18 +96,21 @@ function ReviewPosts() {
     };
 
     // Handle Next Image
-    const handleNextImage = (imageUrls: { imageUrl: string }[]) => {
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === imageUrls.length - 1 ? 0 : prevIndex + 1
-        );
+    const handleNextImage = (postId: number, imageUrls: { imageUrl: string }[]) => {
+        setCurrentImageIndexes((prevIndexes) => ({
+            ...prevIndexes,
+            [postId]: prevIndexes[postId] === imageUrls.length - 1 ? 0 : (prevIndexes[postId] || 0) + 1,
+        }));
     };
 
-    // Handle Previous Image
-    const handlePrevImage = (imageUrls: { imageUrl: string }[]) => {
-        setCurrentImageIndex((prevIndex) =>
-            prevIndex === 0 ? imageUrls.length - 1 : prevIndex - 1
-        );
+    const handlePrevImage = (postId: number, imageUrls: { imageUrl: string }[]) => {
+        setCurrentImageIndexes((prevIndexes) => ({
+            ...prevIndexes,
+            [postId]: prevIndexes[postId] === 0 ? imageUrls.length - 1 : (prevIndexes[postId] || 0) - 1,
+        }));
     };
+
+
 
     const columns = [
         {
@@ -122,32 +126,35 @@ function ReviewPosts() {
                         alt="thumbnail"
                         style={{ marginBottom: "10px", borderRadius: "8px" }}
                     />
-                    {record.imageUrls.length > 0 && (
-                        <div className="manual-gallery">
-                            <h4>Các ảnh khác</h4>
-                            <Image
-                                width={140}
-                                height={140}
-                                src={record.imageUrls[currentImageIndex].imageUrl}
-                                alt={`image-${currentImageIndex}`}
-                                style={{ objectFit: "cover", borderRadius: "8px" }}
-                            />
-                            <div className="gallery-controls">
-                                <Button
-                                    size="small"
-                                    onClick={() => handlePrevImage(record.imageUrls)}
-                                >
-                                    Trước
-                                </Button>
-                                <Button
-                                    size="small"
-                                    onClick={() => handleNextImage(record.imageUrls)}
-                                >
-                                    Tiếp
-                                </Button>
+                    {
+                        record.imageUrls.length > 0 && (
+                            <div className="manual-gallery">
+                                <h4>Các ảnh khác</h4>
+                                <Image
+                                    width={140}
+                                    height={140}
+                                    src={record.imageUrls[currentImageIndexes[record.id] || 0]?.imageUrl || record.thumbnail}
+                                    alt={`image-${currentImageIndexes[record.id] || 0}`}
+                                    style={{ objectFit: "cover", borderRadius: "8px" }}
+                                />
+                                <div className="gallery-controls">
+                                    <Button
+                                        size="small"
+                                        onClick={() => handlePrevImage(record.id, record.imageUrls)}
+                                    >
+                                        Trước
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => handleNextImage(record.id, record.imageUrls)}
+                                    >
+                                        Tiếp
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                    }
+
                 </div>
             ),
         },

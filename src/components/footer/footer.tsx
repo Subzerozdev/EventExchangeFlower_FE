@@ -48,14 +48,15 @@ const Footer: React.FC = () => {
           <div className="payment-icons">
             <ul>
               <li>
-                <img src="./img/img/VNPay.jpg" alt="VnPay" />
-                <img src="./img/img/MOMO.jpg" alt="MOMO" />
-                <img src="./img/img/ZALOPay.jpg" alt="ZaloPay" />
+
+                {/* <img src="./img/img/MOMO.jpg" alt="MOMO" />
+                <img src="./img/img/ZALOPay.jpg" alt="ZaloPay" /> */}
               </li>
               <h4>HỖ TRỢ CÁC LOẠI NGÂN HÀNG</h4>
               <li>
+                <img src="./img/img/VNPay.jpg" alt="VnPay" />
                 <img src="./img/img/Vietcombank.jpg" alt="VietcombankPay" />
-                <img src="./img/img/Tecombank.jpg" alt="MOMO" />
+                {/* <img src="./img/img/Tecombank.jpg" alt="MOMO" /> */}
                 <img src="./img/img/BIDV.jpg" alt="ZaloPay" />
               </li>
               <li>

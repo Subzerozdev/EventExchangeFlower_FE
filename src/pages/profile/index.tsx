@@ -2,7 +2,7 @@ import { Descriptions, Button, Menu } from "antd";
 import { useUser } from "../../context/UserContext";
 import { useState } from "react";
 import {
-  AppstoreOutlined,
+  // AppstoreOutlined,
   UserOutlined,
   ShoppingCartOutlined,
   ShopOutlined,
@@ -47,29 +47,29 @@ function Profile() {
   const sellerMenuChildren: MenuProps["items"] =
     user.role === "ROLE_SELLER" || user.role === "ROLE_ADMIN"
       ? [
-          {
-            label: "Quản lý sản phẩm cửa hàng của bạn",
-            key: "manage-posts",
-          },
-          {
-            label: "Đơn hàng đã bán",
-            key: "sold-orders",
-          },
-          {
-            label: "Xem và chỉnh sửa thông tin cửa hàng",
-            key: "manage-shop",
-          },
-          {
-            label: "Xem phản hồi từ người dùng",
-            key: "feedback-user",
-          },
-        ]
+        {
+          label: "Quản lý sản phẩm cửa hàng của bạn",
+          key: "manage-posts",
+        },
+        {
+          label: "Đơn hàng đã bán",
+          key: "sold-orders",
+        },
+        {
+          label: "Xem và chỉnh sửa thông tin cửa hàng",
+          key: "manage-shop",
+        },
+        {
+          label: "Xem phản hồi từ người dùng",
+          key: "feedback-user",
+        },
+      ]
       : [
-          {
-            label: "Tạo tài khoản bán hàng",
-            key: "form", // Hiển thị điều khoản nếu chưa là seller
-          },
-        ];
+        {
+          label: "Tạo tài khoản bán hàng",
+          key: "form", // Hiển thị điều khoản nếu chưa là seller
+        },
+      ];
 
   const items: MenuProps["items"] = [
     {
@@ -88,21 +88,21 @@ function Profile() {
       key: "orders",
       icon: <ShoppingCartOutlined />,
     },
-    {
-      label: "Danh sách yêu thích",
-      key: "wishlist",
-      icon: <AppstoreOutlined />,
-    },
-    {
-      label: "Đổi mật khẩu",
-      key: "password",
-      icon: <UserOutlined />,
-    },
-    {
-      label: "Sổ địa chỉ",
-      key: "address",
-      icon: <AppstoreOutlined />,
-    },
+    // {
+    //   label: "Danh sách yêu thích",
+    //   key: "wishlist",
+    //   icon: <AppstoreOutlined />,
+    // },
+    // {
+    //   label: "Đổi mật khẩu",
+    //   key: "password",
+    //   icon: <UserOutlined />,
+    // },
+    // {
+    //   label: "Sổ địa chỉ",
+    //   key: "address",
+    //   icon: <AppstoreOutlined />,
+    // },,
     {
       label: "Đăng xuất",
       key: "logout",

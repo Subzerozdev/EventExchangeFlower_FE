@@ -37,7 +37,7 @@
     h4 {
       margin: 4px 0;
       font-size: 12px;
-      text-align: center; /* Căn giữa tiêu đề */
+      text-align: center;
     }
 
     img {
@@ -45,13 +45,13 @@
       height: 140px;
       object-fit: cover;
       border-radius: 8px;
-      transition: transform 0.4s ease, box-shadow 0.2s ease;
+      /* Removed hover effects */
     }
 
     .carousel-container {
-      width: 100%; /* Đảm bảo carousel chiếm đủ chiều rộng */
+      width: 100%;
       display: flex;
-      justify-content: center; /* Căn giữa các ảnh trong carousel */
+      justify-content: center;
       overflow-x: auto;
       gap: 8px;
       margin-top: 10px;
@@ -61,6 +61,8 @@
         width: 160px;
         height: 160px;
         border-radius: 8px;
+        object-fit: cover;
+        /* Removed hover effects */
       }
     }
   }
@@ -85,13 +87,12 @@
 
   .action-buttons {
     display: flex;
-    flex-direction: column; /* Chuyển thành hàng dọc */
-    gap: 8px; /* Tạo khoảng cách giữa các nút */
-    align-items: center; /* Căn giữa theo chiều ngang */
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
 
     .ant-btn {
       font-size: 12px;
-
       padding: 4px 8px;
       border-radius: 6px;
 

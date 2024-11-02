@@ -65,7 +65,7 @@ const OrderDetails = () => {
                     />
                 }
                 title={detail.post.name}
-                description={`Giá: ${detail.post.price.toLocaleString()} đ | Số lượng: ${detail.numberOfProducts}`}
+                description={`Giá: ${detail.post.price.toLocaleString()} đ | Số lượng: 1`}
             />
             <div className="product-total">
                 Tổng tiền: {`${detail.totalMoney.toLocaleString()} đ`}
