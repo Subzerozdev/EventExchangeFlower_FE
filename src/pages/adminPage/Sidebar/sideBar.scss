@@ -1,28 +1,37 @@
 /* Sidebar container */
 #sidebar {
-  grid-area: sidebar;
+  width: 180px; /* Giảm chiều rộng của sidebar */
+  height: 100vh; /* Chiều cao toàn màn hình */
   background-color: #1f2d3a;
-  height: 100%;
-  transition: all 0.4s ease-in-out; /* Mượt hơn khi mở/đóng */
-  overflow-y: auto;
-  position: fixed;
+  position: fixed; /* Cố định sidebar sang trái */
+  top: 0;
   left: 0;
+  overflow-y: auto;
+  padding: 10px; /* Giảm padding tổng thể */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
 
   /* Background image */
   background-image: url("https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/Shop%2F10835164.jpg?alt=media&token=e6e1ddc2-67db-4c73-958c-41439c5d321a");
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  transition: all 0.4s ease-in-out;
+}
+
+/* Đảm bảo nội dung bên phải của sidebar có khoảng cách */
+.main-content {
+  margin-left: 200px; /* Đẩy nội dung chính sang phải với khoảng cách phù hợp */
+  padding: 20px;
 }
 
 /* Title của sidebar */
 .sidebar-title {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
+  padding: 6px 0;
   color: #fff;
-  font-size: 28px; /* Giảm kích thước để gọn hơn */
+  font-size: 18px; /* Giảm kích thước tiêu đề */
   font-weight: 600;
 }
 
@@ -35,34 +44,44 @@
 
 /* Các mục item trong sidebar */
 .sidebar-list-item {
-  padding: 15px 25px;
-  font-size: 18px; /* Giảm kích thước chữ */
+  padding: 6px 10px; /* Giảm padding cho các mục */
+  font-size: 13px; /* Giảm kích thước font chữ */
   display: flex;
   align-items: center;
   transition: background-color 0.3s ease, color 0.3s ease;
+  border-radius: 4px; /* Giảm border-radius */
+  margin-bottom: 5px; /* Giảm khoảng cách giữa các mục */
 
-  /* Thêm hiệu ứng mượt mà */
-  border-radius: 8px;
-  margin-bottom: 8px;
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    transform: scale(1.02);
+    cursor: pointer;
+    box-shadow: 0px 4px 8px rgba(255, 255, 255, 0.1);
+  }
 }
 
-.sidebar-list-item:hover {
-  background-color: rgba(255, 255, 255, 0.2); /* Hiệu ứng hover nhẹ */
-  transform: scale(1.02); /* Phóng to nhẹ */
-  cursor: pointer;
-  transition: transform 0.2s ease-in-out;
+/* Phong cách cho mục đang chọn */
+.sidebar-list-item.active {
+  background-color: rgba(255, 255, 255, 0.3);
+  font-weight: bold;
+  color: #ff7675;
+
+  .icon {
+    color: #ff7675;
+  }
 }
 
 /* Style cho icon */
 .sidebar-list-item .icon {
-  font-size: 22px;
-  margin-right: 10px;
+  font-size: 15px; /* Giảm kích thước icon */
+  margin-right: 6px;
   color: #ffffff;
-  transition: color 0.3s;
-}
+  transition: color 0.3s, transform 0.3s;
 
-.sidebar-list-item:hover .icon {
-  color: #ff7675; /* Đổi màu icon khi hover */
+  /* Xoay icon khi hover */
+  .sidebar-list-item:hover & {
+    transform: rotate(10deg);
+  }
 }
 
 /* Nút button dạng link */
@@ -74,33 +93,42 @@
   align-items: center;
   text-align: left;
   width: 100%;
-  font-size: 18px; /* Giảm kích thước */
+  font-size: 13px; /* Giảm kích thước chữ của các mục */
   transition: color 0.3s;
-  padding: 12px 20px;
+  padding: 6px 0;
   font-weight: 500;
+
+  &:hover {
+    color: #ff6b6b;
+  }
 }
 
-.btn-link:hover {
-  color: #ff6b6b; /* Màu nổi bật khi hover */
+/* Container chính bao gồm cả phần bên trái và bên phải */
+.profile_container {
+  display: flex;
+  justify-content: flex-start; /* Căn trái cho nội dung */
+  align-items: flex-start; /* Căn đều theo chiều dọc */
+  padding: 20px; /* Khoảng trống bao quanh cho container */
+  margin: 0 auto; /* Đặt container ở giữa */
+  max-width: 1200px; /* Giới hạn chiều rộng của container */
 }
 
-/* Sidebar mở/đóng */
-.sidebar-responsive {
-  position: absolute;
-  width: 250px;
-  transition: all 0.4s ease-in-out;
-  z-index: 12;
+/* Sidebar bên trái */
+.profile_left {
+  max-width: 360px; /* Chiều rộng sidebar */
+  background-color: #f9f9f9;
+  padding: 0px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-/* Close icon */
-.close_icon {
-  color: red;
-  cursor: pointer;
-  font-size: 22px;
-}
-
-/* Thêm shadow và làm mượt */
-#sidebar {
-  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+/* Nội dung bên phải */
+.profile_right {
+  flex: 1; /* Chiếm toàn bộ không gian còn lại */
+  margin-left: 30px; /* Tạo khoảng cách giữa sidebar và nội dung chính */
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
