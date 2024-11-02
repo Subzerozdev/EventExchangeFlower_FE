@@ -19,6 +19,7 @@ const UserManagement = () => {
     const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
     const [searchTerm, setSearchTerm] = useState('');
     const [roleFilter, setRoleFilter] = useState('');
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     // Lấy danh sách người dùng từ API
     useEffect(() => {
@@ -77,6 +78,20 @@ const UserManagement = () => {
         setFilteredUsers(filtered);
     };
 
+    // Định dạng vai trò sang tiếng Việt
+    const formatRole = (role: string) => {
+        switch (role) {
+            case 'ROLE_ADMIN':
+                return 'Quản trị viên';
+            case 'ROLE_CUSTOMER':
+                return 'Khách hàng';
+            case 'ROLE_SELLER':
+                return 'Người bán';
+            default:
+                return 'Không xác định';
+        }
+    };
+
     const formatDate = (dateString: string | null) => {
         if (!dateString) return 'Chưa cập nhật';
         const options: Intl.DateTimeFormatOptions = {
@@ -88,6 +103,17 @@ const UserManagement = () => {
             second: '2-digit',
         };
         return new Date(dateString).toLocaleDateString('vi-VN', options);
+    };
+
+    // Hàm xử lý sắp xếp theo ngày tạo
+    const handleSortByDate = () => {
+        const sortedUsers = [...filteredUsers].sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+        });
+        setFilteredUsers(sortedUsers);
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
     };
 
     return (
@@ -108,6 +134,9 @@ const UserManagement = () => {
                     <option value="ROLE_CUSTOMER">Khách hàng</option>
                     <option value="ROLE_SELLER">Người bán</option>
                 </select>
+                <button onClick={handleSortByDate}>
+                    Sắp xếp theo ngày tạo ({sortOrder === 'asc' ? 'Tăng dần' : 'Giảm dần'})
+                </button>
             </div>
 
             {/* Bảng hiển thị người dùng */}
@@ -131,7 +160,7 @@ const UserManagement = () => {
                             <td>{user.fullName}</td>
                             <td>{user.email}</td>
                             <td>{user.phone}</td>
-                            <td>{user.role}</td>
+                            <td>{formatRole(user.role)}</td>
                             <td>{user.address}</td>
                             <td>{user.balance.toLocaleString('vi-VN')} VND</td>
                             <td>{formatDate(user.createdAt)}</td>

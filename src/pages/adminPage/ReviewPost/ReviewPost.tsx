@@ -22,7 +22,6 @@ function ReviewPosts() {
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
     const [currentImageIndexes, setCurrentImageIndexes] = useState<{ [key: number]: number }>({});
 
-
     useEffect(() => {
         fetchPosts();
     }, []);
@@ -32,9 +31,7 @@ function ReviewPosts() {
             const response = await api.get<{ posts: Post[] }>("/posts");
             const filteredPosts = response.data.posts.filter(
                 (post) => post.status !== "DELETED" && post.status !== "DISAPPROVE" && post.status !== "SOLD_OUT"
-
             );
-            console.log(response);
             setPosts(filteredPosts);
         } catch (error) {
             console.error(error);
@@ -91,11 +88,9 @@ function ReviewPosts() {
                 return "Từ chối";
             default:
                 return "Không xác định";
-
         }
     };
 
-    // Handle Next Image
     const handleNextImage = (postId: number, imageUrls: { imageUrl: string }[]) => {
         setCurrentImageIndexes((prevIndexes) => ({
             ...prevIndexes,
@@ -109,8 +104,6 @@ function ReviewPosts() {
             [postId]: prevIndexes[postId] === 0 ? imageUrls.length - 1 : (prevIndexes[postId] || 0) - 1,
         }));
     };
-
-
 
     const columns = [
         {
@@ -126,35 +119,32 @@ function ReviewPosts() {
                         alt="thumbnail"
                         style={{ marginBottom: "10px", borderRadius: "8px" }}
                     />
-                    {
-                        record.imageUrls.length > 0 && (
-                            <div className="manual-gallery">
-                                <h4>Các ảnh khác</h4>
-                                <Image
-                                    width={140}
-                                    height={140}
-                                    src={record.imageUrls[currentImageIndexes[record.id] || 0]?.imageUrl || record.thumbnail}
-                                    alt={`image-${currentImageIndexes[record.id] || 0}`}
-                                    style={{ objectFit: "cover", borderRadius: "8px" }}
-                                />
-                                <div className="gallery-controls">
-                                    <Button
-                                        size="small"
-                                        onClick={() => handlePrevImage(record.id, record.imageUrls)}
-                                    >
-                                        Trước
-                                    </Button>
-                                    <Button
-                                        size="small"
-                                        onClick={() => handleNextImage(record.id, record.imageUrls)}
-                                    >
-                                        Tiếp
-                                    </Button>
-                                </div>
+                    {record.imageUrls.length > 0 && (
+                        <div className="manual-gallery">
+                            <h4>Các ảnh khác</h4>
+                            <Image
+                                width={140}
+                                height={140}
+                                src={record.imageUrls[currentImageIndexes[record.id] || 0]?.imageUrl || record.thumbnail}
+                                alt={`image-${currentImageIndexes[record.id] || 0}`}
+                                style={{ objectFit: "cover", borderRadius: "8px" }}
+                            />
+                            <div className="gallery-controls">
+                                <Button
+                                    size="small"
+                                    onClick={() => handlePrevImage(record.id, record.imageUrls)}
+                                >
+                                    Trước
+                                </Button>
+                                <Button
+                                    size="small"
+                                    onClick={() => handleNextImage(record.id, record.imageUrls)}
+                                >
+                                    Tiếp
+                                </Button>
                             </div>
-                        )
-                    }
-
+                        </div>
+                    )}
                 </div>
             ),
         },
