@@ -74,7 +74,7 @@ const Orders: React.FC = () => {
 
           return {
             key: order.id,
-            orderNumber: order.id,
+            orderNumber: order.phoneNumber,
             orderDate: order.orderDate
               ? moment(order.orderDate).format("DD/MM/YYYY")
               : "Không xác định",
@@ -176,6 +176,11 @@ const Orders: React.FC = () => {
   const columns = [
     {
       title: "Đơn hàng",
+      dataIndex: "key",
+      key: "key",
+    },
+    {
+      title: "Số điện thoại",
       dataIndex: "orderNumber",
       key: "orderNumber",
     },
