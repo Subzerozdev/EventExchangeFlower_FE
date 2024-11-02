@@ -3,18 +3,21 @@ import { useUser } from "../../context/UserContext";
 import { useState } from "react";
 import api from "../../config/api";
 import "./UpdateProfile.scss";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface UpdateProfileValues {
-
   email: string;
   fullName: string;
   phone: string;
   address: string;
 }
 
+interface LocationState {
+  fromCheckout?: boolean;
+}
 function UpdateProfile() {
   const navigate = useNavigate();
+  const location = useLocation() as { state: LocationState };
   const { user, setUser } = useUser(); // Lấy thông tin người dùng từ context
   const [loading, setLoading] = useState(false);
 
@@ -22,7 +25,6 @@ function UpdateProfile() {
     setLoading(true);
 
     try {
-
       const response = await api.put(`/api/user`, values, {});
       console.log("Success:", response.data);
 
@@ -38,7 +40,11 @@ function UpdateProfile() {
         message: "Cập nhật thành công!",
         description: "Thông tin tài khoản đã được cập nhật.",
       });
-      navigate("/profile");
+      if (location.state?.fromCheckout) {
+        navigate("/checkout"); // Quay lại trang Checkout
+      } else {
+        navigate("/profile");
+      }
     } catch (error) {
       console.error("Error:", error);
       notification.error({

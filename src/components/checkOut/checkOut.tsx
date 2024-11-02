@@ -29,9 +29,23 @@ const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUser(); // Lấy thông tin người dùng từ context
   const [loading, setLoading] = useState(false); // Trạng thái tải
+  const [editProfile, setEditProfile] = useState(false); // Trạng thái để kiểm tra chỉnh sửa thông tin
   const [form] = Form.useForm(); // Khởi tạo biểu mẫu với Ant Design Form
   const [cart, setCart] = useState<Product[]>([]); // Danh sách sản phẩm trong giỏ hàng
   const { addNotification } = useNotification(); // Hàm để thêm thông báo vào context
+
+  // Hàm chuyển hướng tới trang cập nhật thông tin với trạng thái chỉnh sửa
+  const handleEditProfile = () => {
+    setEditProfile(true);
+    navigate("/updateProfile", { state: { fromCheckout: true } });
+  };
+
+  // Sử dụng useEffect để kiểm tra nếu người dùng quay lại từ trang cập nhật
+  useEffect(() => {
+    if (editProfile) {
+      setEditProfile(false); // Reset trạng thái sau khi quay lại
+    }
+  }, [editProfile]);
 
   // Lấy giỏ hàng từ localStorage khi component được mount
   useEffect(() => {
@@ -205,7 +219,7 @@ const Checkout: React.FC = () => {
               type="primary"
               className="edit-info-button"
               icon={<EditOutlined />}
-              onClick={() => navigate("/updateProfile")}
+              onClick={handleEditProfile} // Gọi hàm chỉnh sửa
             >
               Chỉnh sửa thông tin
             </Button>
