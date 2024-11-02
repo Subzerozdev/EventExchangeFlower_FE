@@ -22,6 +22,8 @@ function ReviewPosts() {
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
     const [currentImageIndexes, setCurrentImageIndexes] = useState<{ [key: number]: number }>({});
 
+
+
     useEffect(() => {
         fetchPosts();
     }, []);
@@ -105,6 +107,7 @@ function ReviewPosts() {
         }));
     };
 
+
     const columns = [
         {
             title: "Hình ảnh",
@@ -119,32 +122,36 @@ function ReviewPosts() {
                         alt="thumbnail"
                         style={{ marginBottom: "10px", borderRadius: "8px" }}
                     />
-                    {record.imageUrls.length > 0 && (
-                        <div className="manual-gallery">
-                            <h4>Các ảnh khác</h4>
-                            <Image
-                                width={140}
-                                height={140}
-                                src={record.imageUrls[currentImageIndexes[record.id] || 0]?.imageUrl || record.thumbnail}
-                                alt={`image-${currentImageIndexes[record.id] || 0}`}
-                                style={{ objectFit: "cover", borderRadius: "8px" }}
-                            />
-                            <div className="gallery-controls">
-                                <Button
-                                    size="small"
-                                    onClick={() => handlePrevImage(record.id, record.imageUrls)}
-                                >
-                                    Trước
-                                </Button>
-                                <Button
-                                    size="small"
-                                    onClick={() => handleNextImage(record.id, record.imageUrls)}
-                                >
-                                    Tiếp
-                                </Button>
+                    {
+                        record.imageUrls.length > 0 && (
+                            <div className="manual-gallery">
+                                <h4>Các ảnh khác</h4>
+                                <Image
+                                    width={140}
+                                    height={140}
+                                    src={record.imageUrls[currentImageIndexes[record.id] || 0]?.imageUrl || record.thumbnail}
+                                    alt={`image-${currentImageIndexes[record.id] || 0}`}
+                                    style={{ objectFit: "cover", borderRadius: "8px" }}
+                                />
+                                <div className="gallery-controls">
+                                    <Button
+                                        size="small"
+                                        onClick={() => handlePrevImage(record.id, record.imageUrls)}
+                                    >
+                                        Trước
+                                    </Button>
+                                    <Button
+                                        size="small"
+                                        onClick={() => handleNextImage(record.id, record.imageUrls)}
+                                    >
+                                        Tiếp
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
+                        )
+                    }
+
+
                 </div>
             ),
         },
