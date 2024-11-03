@@ -40,6 +40,7 @@ import DashBoard from "./pages/adminPage/DashBoard/DashBoard";
 import UserManagement from "./pages/adminPage/UserManagement/UserManagement";
 import PlatformFee from "./pages/adminPage/PlatFormFee/PlatformFee";
 import TermsAndConditions from "./components/Term/TermsAndConditions";
+import Details from "./pages/profile/orderHistory/DetailOrder/Detail";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -102,6 +103,10 @@ function App() {
           element: <Orders />,
         },
         {
+          path: "order_details/:id",
+          element: <Details />,
+        },
+        {
           path: "updateProfile",
           element: <UpdateProfile />,
         },
@@ -138,7 +143,7 @@ function App() {
           element: <PaymentSuccess />,
         },
         {
-          path: " paymentFailure",
+          path: "/paymentFailure",
           element: <PaymentFailure />,
         },
         {
@@ -149,7 +154,9 @@ function App() {
         // Route dành cho Seller (phân quyền)
         {
           path: "seller",
-          element: <ProtectedRoute rolesAllowed={["ROLE_SELLER", "ROLE_ADMIN"]} />,
+          element: (
+            <ProtectedRoute rolesAllowed={["ROLE_SELLER", "ROLE_ADMIN"]} />
+          ),
           children: [
             { path: "form", element: <SellerForm /> },
             { path: "sold-orders", element: <SoldOrders /> },
@@ -157,7 +164,7 @@ function App() {
             { path: "manage-posts", element: <ManagePosts /> },
             { path: "manage-shop", element: <ManageShop /> },
             {
-              path: "fee",  // Đảm bảo đúng tên đường dẫn
+              path: "fee", // Đảm bảo đúng tên đường dẫn
               element: <PlatformFee />,
             },
             {

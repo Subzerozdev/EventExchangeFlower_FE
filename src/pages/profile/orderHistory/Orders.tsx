@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { notification, Table, Button, Modal } from "antd"; // Import Modal
+import { useNavigate } from "react-router-dom";
+import { notification, Table, Button } from "antd"; // Import Modal
 import moment from "moment";
 import api from "../../../config/api"; // Đường dẫn API
 import "./Orders.scss";
-const { confirm } = Modal; // Sử dụng Modal.confirm cho hộp thoại xác nhận
 
 interface ApiOrder {
   id: string;
@@ -27,9 +27,8 @@ interface Order {
   note: string;
   status: string;
   check: string;
-  showCancel: boolean;
-  cancelDisabled: boolean; // Trạng thái của nút Hủy (vô hiệu hóa hay không)
-  hasFeedback: boolean; // hasFeedback để theo dõi trạng thái đã đánh giá
+  showConfirmReceived: boolean;
+  hasFeedback: boolean;
 }
 
 const translateStatus = (status: string): string => {
@@ -50,6 +49,7 @@ const translateStatus = (status: string): string => {
 const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
 
@@ -62,34 +62,22 @@ const Orders: React.FC = () => {
           ? JSON.parse(localStorage.getItem("feedbackStatus") || "{}")
           : {};
 
-        const fetchedOrders = response.data.map((order) => {
-          const orderTime = moment(order.orderDate);
-          const currentTime = moment();
-          const timeDifference = currentTime.diff(orderTime, "minutes");
-          const showCancel =
-            timeDifference < 30 &&
-            order.status !== "CANCELLED" &&
-            order.status !== "COMPLETED";
-          const cancelDisabled = timeDifference >= 30;
-
-          return {
-            key: order.id,
-            orderNumber: order.phoneNumber,
-            orderDate: order.orderDate
-              ? moment(order.orderDate).format("DD/MM/YYYY")
-              : "Không xác định",
-            address: order.address || "Không xác định",
-            totalMoney: order.totalMoney
-              ? parseInt(order.totalMoney).toLocaleString("vi-VN") + "₫"
-              : "Không xác định",
-            note: order.note,
-            status: order.status,
-            check: order.check,
-            showCancel: showCancel,
-            cancelDisabled: cancelDisabled,
-            hasFeedback: feedbackStatus[order.id] || false, // Lấy trạng thái đã đánh giá từ localStorage
-          };
-        });
+        const fetchedOrders = response.data.map((order) => ({
+          key: order.id,
+          orderNumber: order.phoneNumber,
+          orderDate: order.orderDate
+            ? moment(order.orderDate).format("DD/MM/YYYY")
+            : "Không xác định",
+          address: order.address || "Không xác định",
+          totalMoney: order.totalMoney
+            ? parseInt(order.totalMoney).toLocaleString("vi-VN") + "₫"
+            : "Không xác định",
+          note: order.note,
+          status: order.status,
+          check: order.check,
+          showConfirmReceived: order.status === "AWAITING_PICKUP",
+          hasFeedback: feedbackStatus[order.id] || false,
+        }));
 
         setOrders(fetchedOrders);
       } catch (error) {
@@ -106,44 +94,31 @@ const Orders: React.FC = () => {
     fetchOrders();
   }, []);
 
-  const showConfirmCancel = (key: string) => {
-    confirm({
-      title: "Bạn có chắc chắn muốn hủy đơn hàng này không?",
-      content: "Đơn hàng sẽ không thể phục hồi sau khi hủy.",
-      okText: "Xác nhận",
-      cancelText: "Hủy",
-      onOk() {
-        handleCancelOrder(key); // Gọi hàm hủy đơn hàng khi người dùng xác nhận
-      },
-      onCancel() {
-        console.log("Hủy hành động");
-      },
-    });
-  };
-
-  const handleCancelOrder = async (key: string) => {
+  const handleConfirmOrderReceived = async (key: string) => {
     try {
-      // Gửi yêu cầu cập nhật trạng thái về server
-      await api.put(`/api/orders/${key}`, { status: "CANCELLED" });
+      await api.put(`/api/receive/${key}`, { status: "COMPLETED" });
 
-      // Cập nhật lại trạng thái trên frontend, giữ các đơn hàng không bị hủy
       setOrders((prevOrders) =>
         prevOrders.map((order) =>
-          order.key === key ? { ...order, status: "CANCELLED" } : order
+          order.key === key ? { ...order, status: "COMPLETED" } : order
         )
       );
 
       notification.success({
-        message: "Đã hủy đơn hàng",
-        description: "Đơn hàng đã được hủy thành công.",
+        message: "Xác nhận thành công",
+        description: "Đơn hàng đã được xác nhận là đã nhận hàng.",
       });
     } catch (error) {
       console.log(error);
       notification.error({
         message: "Lỗi",
-        description: "Không thể hủy đơn hàng. Vui lòng thử lại.",
+        description: "Không thể xác nhận đơn hàng. Vui lòng thử lại.",
       });
     }
+  };
+
+  const handleViewOrderDetails = (orderId: string) => {
+    navigate(`/order_details/${orderId}`);
   };
 
   // Lọc các đơn hàng để ẩn những đơn hàng có trạng thái "CANCELLED"
@@ -232,19 +207,30 @@ const Orders: React.FC = () => {
       dataIndex: "check",
       key: "check",
       render: (_: string, record: Order) =>
-        record.showCancel ? (
+        record.showConfirmReceived ? (
           <Button
-            danger
-            onClick={() => showConfirmCancel(record.key)} // Gọi hộp thoại xác nhận khi nhấn nút hủy
-            disabled={record.cancelDisabled} // Vô hiệu hóa nếu quá 30 phút
+            type="primary"
+            onClick={() => handleConfirmOrderReceived(record.key)}
           >
-            Hủy
+            Đã nhận hàng
           </Button>
         ) : (
           <span>
-            {record.status === "CANCELLED" ? "Đã hủy" : "Hết hạn hủy"}
+            {record.status === "COMPLETED" ? "Đã nhận hàng" : "Chưa nhận"}
           </span>
         ),
+    },
+    {
+      title: "Chi Tiết",
+      key: "details",
+      render: (_: string, record: Order) => (
+        <Button
+          type="default"
+          onClick={() => handleViewOrderDetails(record.key)} // Truyền ID của đơn hàng vào hàm
+        >
+          Xem Chi Tiết
+        </Button>
+      ),
     },
   ];
 

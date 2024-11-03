@@ -114,7 +114,6 @@ const ProductList: React.FC = () => {
   }, []);
 
   // Thêm sản phẩm vào giỏ hàng
-  // Thêm sản phẩm vào giỏ hàng
   const addToCart = (product: Product) => {
     setCart((prevCart) => {
       const existingItem = prevCart.find((item) => item.id === product.id);
