@@ -41,6 +41,8 @@ import UserManagement from "./pages/adminPage/UserManagement/UserManagement";
 import PlatformFee from "./pages/adminPage/PlatFormFee/PlatformFee";
 import TermsAndConditions from "./components/Term/TermsAndConditions";
 import Details from "./pages/profile/orderHistory/DetailOrder/Detail";
+import AdminOrderManagement from "./pages/adminPage/OderManagement/AdminOrderManagement";
+
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -163,9 +165,9 @@ function App() {
             { path: "sold-orders/:id", element: <OrderDetails /> },
             { path: "manage-posts", element: <ManagePosts /> },
             { path: "manage-shop", element: <ManageShop /> },
+
             {
-              path: "fee", // Đảm bảo đúng tên đường dẫn
-              element: <PlatformFee />,
+              path: "fee", // Đảm bảo đúng tên đường dẫn        element: <PlatformFee />,
             },
             {
               path: "term",
@@ -205,6 +207,7 @@ function App() {
               path: "usermanagement",
               element: <UserManagement />,
             },
+            { path: "order-management", element: <AdminOrderManagement /> },
             {
               path: "types",
               element: <AddType />,

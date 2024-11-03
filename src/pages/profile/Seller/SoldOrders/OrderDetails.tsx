@@ -17,6 +17,11 @@ interface OrderDetail {
     };
 }
 
+interface Seller {
+    email: string;
+    phone: string;
+}
+
 interface Order {
     id: number;
     email: string;
@@ -24,39 +29,42 @@ interface Order {
     address: string;
     note: string;
     totalMoney: number;
+    totalFee: number;
+    finalAmountReceived: number; // Calculated as totalMoney - totalFee
 }
-
-// interface Seller {
-//     email: string;
-//     phone: string;
-// }
 
 const OrderDetail = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [orderDetails, setOrderDetails] = useState<OrderDetail[]>([]);
-    const [order, setOrder] = useState<Order | null>(null); // Thêm trạng thái cho Order
-    // const [seller, setSeller] = useState<Seller | null>(null); // Thêm trạng thái cho người bán
+    const [order, setOrder] = useState<Order | null>(null);
+    // const [seller, setSeller] = useState<Seller | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleBackToProfile = () => {
         navigate("/profile");
     };
-    const handleBack = () => {
+    const handleBackToOrders = () => {
         navigate("/seller/sold-orders");
     };
+
     const fetchOrderDetails = async () => {
         setLoading(true);
         try {
             const response = await api.get<{
-                order: Order;
+                order: Omit<Order, 'finalAmountReceived'> & { totalMoney?: number };
                 orderDetail: OrderDetail[];
-                // sellerInformation: Seller;
+                sellerInformation: Seller;
+                totalFee?: number; // Assuming totalFee is a direct property of response.data
             }>(`/api/orders/${id}`);
-            console.log(response.data.order)
-            setOrder(response.data.order); // Lưu thông tin Order vào state
+
+            const totalMoney = response.data.order.totalMoney ?? 0; // Default to 0 if undefined
+            const totalFee = response.data.totalFee ?? 0; // Accessing totalFee directly from response.data
+            const finalAmountReceived = totalMoney - totalFee;
+
+            setOrder({ ...response.data.order, totalMoney, totalFee, finalAmountReceived });
             setOrderDetails(response.data.orderDetail);
-            // setSeller(response.data.sellerInformation); // Lưu thông tin người bán vào state
+            // setSeller(response.data.sellerInformation);
             message.success("Tải chi tiết đơn hàng thành công!");
         } catch (error) {
             console.error("Lỗi khi tải chi tiết đơn hàng:", error);
@@ -66,10 +74,10 @@ const OrderDetail = () => {
         }
     };
 
+
     useEffect(() => {
         fetchOrderDetails();
     }, [id]);
-
 
     const renderProductDetails = (detail: OrderDetail) => (
         <List.Item key={detail.id}>
@@ -83,11 +91,10 @@ const OrderDetail = () => {
                     />
                 }
                 title={detail.post?.name || "Không có tên sản phẩm"}
-                description={`Giá: ${detail.post?.price ? detail.post.price.toLocaleString() : "Không xác định"
-                    } đ | Số lượng: ${detail.numberOfProducts || 1}`}
+                description={`Giá: ${detail.post?.price || "Không xác định"} đ | Số lượng: ${detail.numberOfProducts || 1}`}
             />
             <div className="product-total">
-                Tổng tiền: {`${detail.totalMoney ? detail.totalMoney.toLocaleString() : "0"} đ`}
+                Tổng tiền: {`${detail.totalMoney || 0} đ`}
             </div>
         </List.Item>
     );
@@ -100,7 +107,7 @@ const OrderDetail = () => {
                 <Button type="default" onClick={handleBackToProfile}>
                     Quay lại Profile
                 </Button>
-                <Button type="primary" onClick={handleBackToProfile}>
+                <Button type="primary" onClick={handleBackToOrders}>
                     Quay Đơn hàng đã bán
                 </Button>
             </div>
@@ -122,6 +129,14 @@ const OrderDetail = () => {
                 <Descriptions.Item label="Tổng tiền">
                     {order ? `${order.totalMoney.toLocaleString()} đ` : "0 đ"}
                 </Descriptions.Item>
+                <Descriptions.Item label="Tổng phí nền tảng">
+                    {order ? `${order.totalFee.toLocaleString()} đ` : "0 đ"}
+                </Descriptions.Item>
+                <Descriptions.Item label="Tiền nhận được sau cùng">
+                    {order ? `${order.finalAmountReceived.toLocaleString()} đ` : "0 đ"}
+                </Descriptions.Item>
+
+
             </Descriptions>
 
             <Divider />

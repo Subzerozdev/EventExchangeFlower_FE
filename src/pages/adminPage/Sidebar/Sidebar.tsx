@@ -8,6 +8,7 @@ import {
   LogoutOutlined,
   UserOutlined,
   RedEnvelopeOutlined,
+  ShoppingCartOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../../../context/UserContext';
 import './sideBar.scss';
@@ -55,6 +56,14 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
             <UserOutlined className="icon" /> Quản lý người dùng
           </button>
         </li>
+
+        <li className="sidebar-list-item">
+          <button onClick={() => navigate('/admin/order-management')} className="btn-link">
+            <ShoppingCartOutlined className="icon" /> Quản lý đơn hàng
+          </button>
+        </li>
+
+
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/dashboard')} className="btn-link">
             <SettingOutlined className="icon" /> Dashboard
