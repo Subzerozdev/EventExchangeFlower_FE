@@ -10,19 +10,12 @@ interface OrderRecord {
     id: number;
     fullName: string;
     status: string;
-    totalAmount?: number;
-}
-
-// Định nghĩa kiểu dữ liệu cho chi tiết đơn hàng
-interface OrderDetail {
-    id: number;
-    numberOfProducts: number;
-    totalMoney: number;
-    post: {
-        id: number;
-        name: string;
-        price: number;
-    };
+    totalMoney: number; // Đã có totalMoney từ API trả về
+    phoneNumber?: string;
+    email?: string;
+    address?: string;
+    note?: string;
+    orderDate?: string;
 }
 
 // Map trạng thái đơn hàng
@@ -36,33 +29,15 @@ const SoldOrders = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const navigate = useNavigate(); // Điều hướng
 
-    // Lấy chi tiết đơn hàng và tính tổng tiền
-    const fetchOrderDetails = async (orderId: number): Promise<number> => {
-        try {
-            const response = await api.get<OrderDetail[]>(`/api/orders/${orderId}`);
-            return response.data.reduce((total, detail) => total + detail.totalMoney, 0);
-        } catch (error) {
-            console.error("Lỗi khi lấy chi tiết đơn hàng:", error);
-            return 0;
-        }
-    };
-
-    // Lấy danh sách đơn hàng đã bán và tính tổng tiền
+    // Lấy danh sách đơn hàng đã bán từ API
     const fetchSoldOrders = async () => {
         setLoading(true);
         try {
             const response = await api.get<OrderRecord[]>("/api/seller/orders", {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
-
-            const ordersWithTotal = await Promise.all(
-                response.data.map(async (order) => {
-                    const totalAmount = await fetchOrderDetails(order.id);
-                    return { ...order, totalAmount };
-                })
-            );
-
-            setOrders(ordersWithTotal);
+            console.log(response);
+            setOrders(response.data); // Sử dụng dữ liệu trả về trực tiếp từ API
             message.success("Tải danh sách đơn hàng thành công!");
         } catch (error) {
             console.error("Lỗi:", error);
@@ -113,19 +88,14 @@ const SoldOrders = () => {
         },
         {
             title: "Tổng tiền",
-            dataIndex: "totalAmount",
-            key: "totalAmount",
-            render: (total?: number) =>
-                total !== undefined ? (
-                    <span className="currency">
-                        {total.toLocaleString("vi-VN")} <span className="currency-symbol">đ</span>
-                    </span>
-                ) : (
-                    "Chưa có tổng tiền"
-                ),
+            dataIndex: "totalMoney",
+            key: "totalMoney",
+            render: (total: number) => (
+                <span className="currency">
+                    {total.toLocaleString("vi-VN")} <span className="currency-symbol">đ</span>
+                </span>
+            ),
         },
-        
-        
         {
             title: "Trạng thái",
             dataIndex: "status",

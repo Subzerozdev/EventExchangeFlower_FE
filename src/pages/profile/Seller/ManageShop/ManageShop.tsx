@@ -5,7 +5,7 @@ import moment from "moment";
 import { UploadFile } from "antd/lib/upload/interface";
 import { UploadOutlined } from "@ant-design/icons";
 import uploadFile from "../../../../utils/file"; // Hàm upload lên Firebase
-import "./ManagePost.scss";
+
 import type { ColumnsType } from 'antd/es/table'; // Import kiểu dữ liệu chính xác
 
 
