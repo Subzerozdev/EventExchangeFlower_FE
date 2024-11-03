@@ -205,7 +205,7 @@ const AdminOrderManagement: React.FC = () => {
                         </Row>
                     </Col>
                     <Col span={2}>
-                        <Button type="primary" onClick={handleFilter}>Filter by Price</Button>
+                        <Button type="primary" onClick={handleFilter}>Tìm kiếm theo giá</Button>
                     </Col>
                 </Row>
             </div>
