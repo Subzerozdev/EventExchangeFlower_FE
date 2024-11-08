@@ -96,7 +96,7 @@ const AdminOrderManagement: React.FC = () => {
             key: "id",
         },
         {
-            title: "Phone Number",
+            title: "Số điện thoại",
             dataIndex: ["order", "phoneNumber"],
             key: "phoneNumber",
         },
@@ -106,40 +106,40 @@ const AdminOrderManagement: React.FC = () => {
             key: "email",
         },
         {
-            title: "Customer Name",
+            title: "Tên khách hàng",
             dataIndex: ["order", "fullName"],
             key: "fullName",
         },
         {
-            title: "Address",
+            title: "Địa chỉ",
             dataIndex: ["order", "address"],
             key: "address",
         },
         {
-            title: "Note",
+            title: "Ghi chú",
             dataIndex: ["order", "note"],
             key: "note",
         },
         {
-            title: "Total Money",
+            title: "Tổng tiền",
             dataIndex: ["order", "totalMoney"],
             key: "totalMoney",
             render: (totalMoney: number) => `${totalMoney.toLocaleString()} đ`,
         },
         {
-            title: "Platform Fee",
+            title: "Phí nền tảng",
             dataIndex: "totalFee",
             key: "totalFee",
             render: (totalFee: number) => `${totalFee.toLocaleString()} đ`,
         },
         {
-            title: "Order Date",
+            title: "Ngày đặt hàng",
             dataIndex: ["order", "orderDate"],
             key: "orderDate",
             render: (date: string) => new Date(date).toLocaleString(),
         },
         {
-            title: "Status",
+            title: "Trạng thái",
             dataIndex: ["order", "status"],
             key: "status",
             render: (status: string) => translateStatus(status), // Sử dụng hàm chuyển đổi trạng thái

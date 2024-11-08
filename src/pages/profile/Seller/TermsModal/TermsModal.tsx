@@ -46,7 +46,7 @@ const TermsModal: React.FC<TermsModalProps> = ({ isModalVisible, setIsModalVisib
                 <p><strong>4. Chính Sách Giao Hàng</strong></p>
                 <p>Người bán có trách nhiệm đóng gói và gửi sản phẩm đến khách hàng đúng thời gian đã cam kết. Các chi phí liên quan đến vận chuyển sẽ do người bán hoặc người mua chịu chi phí, điều này cần được thống nhất trước khi đặt hàng.</p>
                 <p><strong>5. Chính Sách Đổi Trả</strong></p>
-                <p>Người bán cần đảm bảo chính sách đổi trả trong trường hợp hoa giao không đúng với mô tả, không đúng số lượng, hoặc hoa bị hỏng trong quá trình vận chuyển.</p>
+                <p>Người bán cần đảm bảo chính sách đổi trả trong trường hợp hoa giao không đúng với mô tả, không đúng số lượng, hoặc hoa bị hỏng trong quá trình vận chuyển. Nếu có vấn đề phát sinh trong quá trình mua bán, vui lòng liên hệ quản trị viên qua hotline: 0912345678.</p>
                 <p><strong>6. Trách Nhiệm Của Người Bán</strong></p>
                 <p>Người bán phải chịu trách nhiệm về tất cả các sản phẩm đăng bán đầu đủ đáp ứng chất lượng và tiêu chuẩn của Hoa Lối Cũ.</p>
                 <p><strong>7. Quyền Hạn Của Hoa Lối Cũ</strong></p>
@@ -55,9 +55,7 @@ const TermsModal: React.FC<TermsModalProps> = ({ isModalVisible, setIsModalVisib
                 <p>Tất cả thông tin cá nhân và doanh nghiệp của người bán sẽ được bảo mật tuyệt đối theo chính sách của nền tảng Hoa Lối Cũ.</p>
                 <p><strong>9. Phí Dịch Vụ</strong></p>
                 <p>Người bán sẽ chịu chi phí khi bán hoa thành công trên nền tảng, tỷ lệ phần trăm được quy định bởi Hoa Lối Cũ.</p>
-                <p><strong>10. Chính Sách Đăng Bài Và Gói Dịch Vụ</strong></p>
-                <p>Người bán có thể chọn các gói dịch vụ đăng bài nâng cao để hiển thị tốt hơn cho sản phẩm của mình.</p>
-                <p><strong>11. Thanh Toán Và Giá Hạn</strong></p>
+                <p><strong>10. Thanh Toán Và Giá Hạn</strong></p>
                 <p>Giao dịch sẽ hoàn tất khi người bán đã nhận đủ tiền từ khách hàng thông qua phương thức thanh toán mà Hoa Lối Cũ chấp nhận.</p>
             </div>
 
