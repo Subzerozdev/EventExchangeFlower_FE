@@ -1,5 +1,5 @@
 import { Modal, Checkbox, Button } from "antd";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 interface TermsModalProps {
     isModalVisible: boolean;
@@ -9,10 +9,27 @@ interface TermsModalProps {
 
 const TermsModal: React.FC<TermsModalProps> = ({ isModalVisible, setIsModalVisible, onAgree }) => {
     const [isAgreed, setIsAgreed] = useState(false);
+    const [platformFee, setPlatformFee] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (isModalVisible) {
+            // Gọi API để lấy phí nền tảng khi modal mở
+            fetch('/api/user/fee')
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.amount) {
+                        setPlatformFee(data.amount);
+                    }
+                })
+                .catch(error => {
+                    console.error("Lỗi khi lấy phí nền tảng:", error);
+                });
+        }
+    }, [isModalVisible]);
 
     const handleOk = () => {
         if (isAgreed) {
-            onAgree(); // Gọi hàm tiếp tục khi người dùng đã đồng ý
+            onAgree();
             setIsModalVisible(false);
         }
     };
@@ -54,7 +71,7 @@ const TermsModal: React.FC<TermsModalProps> = ({ isModalVisible, setIsModalVisib
                 <p><strong>8. Chính Sách Bảo Mật Thông Tin</strong></p>
                 <p>Tất cả thông tin cá nhân và doanh nghiệp của người bán sẽ được bảo mật tuyệt đối theo chính sách của nền tảng Hoa Lối Cũ.</p>
                 <p><strong>9. Phí Dịch Vụ</strong></p>
-                <p>Người bán sẽ chịu chi phí khi bán hoa thành công trên nền tảng, tỷ lệ phần trăm được quy định bởi Hoa Lối Cũ.</p>
+                <p>Người bán sẽ chịu chi phí khi bán hoa thành công trên nền tảng. Tỷ lệ phần trăm phí dịch vụ là {platformFee !== null ? `${platformFee * 100}%` : 'đang tải...'}.</p>
                 <p><strong>10. Thanh Toán Và Giá Hạn</strong></p>
                 <p>Giao dịch sẽ hoàn tất khi người bán đã nhận đủ tiền từ khách hàng thông qua phương thức thanh toán mà Hoa Lối Cũ chấp nhận.</p>
             </div>

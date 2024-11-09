@@ -24,7 +24,7 @@ function Header() {
 
         <div className="header__center">
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM%20(5).png?alt=media&token=9cbb177c-d1a7-46cd-9fee-0e752892a482"
+            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM-cropped.svg?alt=media&token=4e5ed419-45d6-4d59-9789-dfe30832a879"
             alt="Heading Banner"
             width={530}
             className="header__banner"
@@ -69,7 +69,7 @@ function Header() {
 
 
           <li onClick={() => navigate("/blog")}>Blog</li>
-          <li style={{marginTop:0}} onClick={() => navigate("/LienHe")}>Liên hệ</li>
+          <li style={{ marginTop: 0 }} onClick={() => navigate("/LienHe")}>Liên hệ</li>
         </ul>
       </nav>
     </header>
