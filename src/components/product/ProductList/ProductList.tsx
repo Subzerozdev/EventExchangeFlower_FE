@@ -228,6 +228,7 @@ const ProductList: React.FC = () => {
           onSearch={handleSearch}
           allowClear
           enterButton="Tìm kiếm"
+      
         />
       </div>
 
@@ -308,7 +309,7 @@ const ProductList: React.FC = () => {
         pageSize={pageSize} // Số sản phẩm mỗi trang
         total={filteredProducts.length} // Tổng số sản phẩm sau khi lọc
         onChange={(page) => setCurrentPage(page)} // Cập nhật trang khi người dùng thay đổi
-        style={{ textAlign: "center", marginTop: "20px", marginLeft: "689px" }}
+        style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}
       />
 
       <Drawer

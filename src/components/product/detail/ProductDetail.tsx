@@ -4,7 +4,6 @@ import {
   Card,
   Spin,
   Button,
-  InputNumber,
   Row,
   Col,
   message,
@@ -38,16 +37,13 @@ interface Product {
   imageUrls: ImageData[];
 }
 
-interface CartItem extends Product {
-  quantity: number;
-}
+
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [quantity, setQuantity] = useState<number>(1);
-  const [cart, setCart] = useState<CartItem[]>([]);
+  const [cart, setCart] = useState<Product[]>([]); 
   const [drawerVisible, setDrawerVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -93,7 +89,6 @@ const ProductDetail: React.FC = () => {
     fetchProduct();
   }, [id]);
 
-  // Cập nhật lại hàm addToCart để sử dụng callback cho navigate
   const addToCartAndNavigate = (product: Product) => {
     const existingItem = cart.find((item) => item.id === product.id);
     if (existingItem) {
@@ -102,16 +97,15 @@ const ProductDetail: React.FC = () => {
       );
       navigateToCheckout(); // Điều hướng đến trang thanh toán nếu sản phẩm đã có trong giỏ hàng
     } else {
-      // Thêm sản phẩm vào giỏ hàng và sau đó điều hướng đến trang thanh toán
       setCart((prevCart) => {
-        const updatedCart = [...prevCart, { ...product, quantity: 1 }];
-        localStorage.setItem("cart", JSON.stringify(updatedCart)); // Lưu giỏ hàng vào localStorage
+        const updatedCart = [...prevCart, { ...product }];
+        localStorage.setItem("cart", JSON.stringify(updatedCart));
         return updatedCart;
       });
       message.success(
         `${product.name} đã được thêm vào giỏ hàng, chuyển đến trang thanh toán`
       );
-      navigateToCheckout(); // Điều hướng đến trang thanh toán sau khi thêm sản phẩm thành công
+      navigateToCheckout();
     }
   };
 
@@ -124,9 +118,9 @@ const ProductDetail: React.FC = () => {
       const existingItem = prevCart.find((item) => item.id === product.id);
       if (existingItem) {
         message.warning(`${product.name} đã có trong giỏ hàng`);
-        return prevCart; // Nếu sản phẩm đã tồn tại, không thêm lại nữa
+        return prevCart;
       } else {
-        return [...prevCart, { ...product, quantity: 1 }]; // Thêm sản phẩm mới với số lượng mặc định là 1
+        return [...prevCart, { ...product }];
       }
     });
     message.success(`${product.name} đã được thêm vào giỏ hàng`);
@@ -137,15 +131,9 @@ const ProductDetail: React.FC = () => {
     message.success("Sản phẩm đã được xóa khỏi giỏ hàng");
   };
 
-  const updateQuantity = (id: number, quantity: number) => {
-    setCart((prevCart) =>
-      prevCart.map((item) => (item.id === id ? { ...item, quantity } : item))
-    );
-  };
-
   const calculateTotal = () => {
     return cart.reduce((total, item) => {
-      return total + item.price * item.quantity;
+      return total + item.price;
     }, 0);
   };
 
@@ -183,7 +171,7 @@ const ProductDetail: React.FC = () => {
                         alt={`Image ${index}`}
                         width={100}
                         height={100}
-                        className="additional-image" // Sử dụng class SCSS cho ảnh nhỏ
+                        className="additional-image"
                       />
                     ))}
                 </Image.PreviewGroup>
@@ -201,14 +189,6 @@ const ProductDetail: React.FC = () => {
               >
                 Giá: {product.price.toLocaleString("vi-VN")}₫
               </p>
-              <p>Số lượng:</p>
-              <InputNumber
-                readOnly
-                min={1}
-                value={quantity}
-                onChange={(value) => setQuantity(value!)}
-                style={{ marginBottom: "20px" }}
-              />
               <div className="buttons">
                 <Button
                   type="primary"
@@ -222,7 +202,7 @@ const ProductDetail: React.FC = () => {
                   onClick={() => {
                     addToCartAndNavigate(product);
                   }}
-                  disabled={cart.length === 0} // Vô hiệu hóa nếu giỏ hàng trống
+                  disabled={cart.length === 0}
                 >
                   Mua ngay
                 </Button>
@@ -287,17 +267,9 @@ const ProductDetail: React.FC = () => {
                     />
                     <div style={{ flexGrow: 1 }}>
                       <p>{item.name}</p>
-                      <InputNumber
-                        readOnly
-                        min={1}
-                        value={item.quantity}
-                        onChange={(value) => updateQuantity(item.id, value!)}
-                      />
                     </div>
                     <div style={{ marginLeft: "10px" }}>
-                      <p>
-                        {(item.price * item.quantity).toLocaleString("vi-VN")}₫
-                      </p>
+                      <p>{item.price.toLocaleString("vi-VN")}₫</p>
                     </div>
                     <Button
                       icon={<DeleteOutlined />}

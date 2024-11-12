@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Input,
-  Radio,
-  Form,
-  notification,
-  InputNumber,
-  Modal,
-} from "antd";
+import { Button, Input, Radio, Form, notification, Modal } from "antd";
 import { PhoneOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import "./checkOut.scss";
 import { useUser } from "../../context/UserContext";
@@ -84,13 +76,13 @@ const Checkout: React.FC = () => {
     notification.success({ message: "Sản phẩm đã được xóa" });
   };
 
-  const handleQuantityChange = (value: number, id: number) => {
-    const updatedCart = cart.map((item) =>
-      item.id === id ? { ...item, quantity: value } : item
-    );
-    setCart(updatedCart);
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
-  };
+  // const handleQuantityChange = (value: number, id: number) => {
+  //   const updatedCart = cart.map((item) =>
+  //     item.id === id ? { ...item, quantity: value } : item
+  //   );
+  //   setCart(updatedCart);
+  //   localStorage.setItem("cart", JSON.stringify(updatedCart));
+  // };
 
   const onFinish = async (values: FormValues) => {
     setLoading(true);
@@ -161,22 +153,70 @@ const Checkout: React.FC = () => {
       setIsModalVisible(true);
     }
   };
+  const handleModalCancel = () => {
+    setIsModalVisible(false);
+    form.setFieldsValue({ payment: null }); // Bỏ chọn VNPay trong Radio.Group
+  };
 
   return (
     <div className="checkout-container">
       <Modal
-        title="Lưu ý"
+        title="⚠️ Lưu ý quan trọng"
         visible={isModalVisible}
         onOk={() => setIsModalVisible(false)}
-        onCancel={() => setIsModalVisible(false)}
+        onCancel={handleModalCancel} // Gọi handleModalCancel khi nhấn nút "Bỏ chọn"
+        okText="Tôi đã hiểu"
+        cancelText="Bỏ chọn"
+        maskClosable={false} // Ngăn đóng Modal khi nhấn ra ngoài
       >
-        <p>Nếu bạn đã thanh toán thì sẽ không được hủy đơn hàng.</p>
+        <p style={{ fontSize: "16px", lineHeight: "1.6" }}>
+          <strong style={{ color: "#d9534f" }}>Xin lưu ý:</strong> Vì đây là
+          phương thức thanh toán qua
+          <strong style={{ color: "#007bff" }}> VNPay</strong> và hoàn tất thanh
+          toán, đơn hàng của bạn sẽ được
+          <strong> xử lý ngay lập tức</strong>.
+          <br />
+          <br />
+          <span
+            style={{ color: "#d9534f", fontWeight: "bold", fontSize: "16px" }}
+          >
+            ❗ Sau khi thanh toán thành công, bạn sẽ không thể hủy hoặc thay đổi
+            đơn hàng.
+          </span>
+          <br />
+          <br />
+          Vui lòng <em>kiểm tra kỹ thông tin</em> trước khi tiếp tục thanh toán
+          để đảm bảo tính chính xác.
+          <br />
+          <br />
+          <span style={{ color: "#28a745", fontWeight: "bold" }}>
+            Cảm ơn bạn đã tin tưởng và sử dụng dịch vụ của chúng tôi.
+          </span>
+        </p>
       </Modal>
 
       <div className="checkout-form">
-        <Form layout="vertical" form={form} onFinish={onFinish}>
+        {/* Container cho tiêu đề và nút */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+          }}
+        >
           <h2>Thông tin nhận hàng</h2>
+          <Button
+            type="primary"
+            className="edit-info-button"
+            icon={<EditOutlined />}
+            onClick={handleEditProfile}
+            style={{ marginLeft: "auto" }}
+          >
+            Chỉnh sửa thông tin
+          </Button>
+        </div>
 
+        <Form layout="vertical" form={form} onFinish={onFinish}>
           <Form.Item
             style={{ color: "#4CC9FE", fontWeight: "bold" }}
             name="email"
@@ -209,23 +249,23 @@ const Checkout: React.FC = () => {
           >
             <span>{user.address}</span>
           </Form.Item>
-          <div style={{ textAlign: "right", marginBottom: 20 }}>
-            <Button
-              type="primary"
-              className="edit-info-button"
-              icon={<EditOutlined />}
-              onClick={handleEditProfile}
-            >
-              Chỉnh sửa thông tin
-            </Button>
-          </div>
 
+          {/* Các phần tử khác trong form */}
           <Form.Item
             name="note"
             style={{ fontWeight: "bold" }}
             label="Ghi chú (tùy chọn)"
+            rules={[
+              {
+                max: 255,
+                message: "Ghi chú không được vượt quá 255 ký tự",
+              },
+            ]}
           >
-            <Input.TextArea placeholder="Ghi chú cho đơn hàng" />
+            <Input.TextArea
+              placeholder="Ghi chú cho đơn hàng( Không vượt quá 255 ký tự)"
+              maxLength={255}
+            />
           </Form.Item>
 
           <h2>Thanh toán</h2>
@@ -280,18 +320,28 @@ const Checkout: React.FC = () => {
               <p style={{ color: "#999", margin: 0 }}>
                 {item.price.toLocaleString()}₫
               </p>
-              <InputNumber
+              {/* <InputNumber
                 readOnly
                 min={1}
                 value={item.quantity}
                 onChange={(value) => handleQuantityChange(value || 1, item.id)}
                 style={{ marginRight: "10px" }}
-              />
+              /> */}
               <Button
                 type="link"
                 icon={<DeleteOutlined />}
                 onClick={() => handleDelete(item.id)}
-                style={{ color: "#f5222d" }}
+                style={{
+                  color: "#f5222d",
+                  display: "flex",
+                  alignItems: "center",
+                  fontWeight: "bold",
+                  padding: 0,
+                  gap: "4px", // Khoảng cách giữa biểu tượng và chữ
+                  transition: "color 0.3s",
+                }}
+                onMouseEnter={(e) => (e.currentTarget.style.color = "#d32029")}
+                onMouseLeave={(e) => (e.currentTarget.style.color = "#f5222d")}
               >
                 Xóa
               </Button>

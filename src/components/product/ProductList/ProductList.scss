@@ -89,19 +89,21 @@
         box-shadow: none; // Loại bỏ shadow khi focus
 
         &:focus {
-          border-color: #1890ff;
+          border-color: #6a1b9a;
         }
       }
 
       .ant-btn {
         border-radius: 0 50px 50px 0;
-        background-color: #1890ff;
+        background-color: #6a1b9a;
+        border-color: #6a1b9a;
         color: white;
         border: none;
         transition: background-color 0.3s;
 
         &:hover {
-          background-color: #40a9ff;
+          background-color: #9c27b0;
+          border-color: #9c27b0;
         }
       }
     }

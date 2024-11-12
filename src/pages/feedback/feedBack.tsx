@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Form, Input, Button, message, Rate } from "antd";
-import api from "../../config/api"; // Đường dẫn tới tệp api.ts
+import api from "../../config/api";
 
 const { TextArea } = Input;
 
@@ -9,7 +9,7 @@ interface FeedbackValues {
   content: string;
   rating: number;
   customer_id: number;
-  shopID: string; // Để shop_id là kiểu string
+  shopID: string;
 }
 
 interface User {
@@ -21,11 +21,10 @@ interface User {
 const FeedbackForm: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [user, setUser] = useState<User | null>(null);
-  const [rating, setRating] = useState<number>(0);
-  const [shopId, setShopId] = useState<string | null>(null); // Để shopId là string
-  const [orderId, setOrderId] = useState<number | null>(null); // Đảm bảo orderId là kiểu number
+  const [rating, setRating] = useState<number>(0); // Default to 0, requiring at least 1 star
+  const [shopId, setShopId] = useState<string | null>(null);
+  const [orderId, setOrderId] = useState<number | null>(null);
 
-  // Lấy thông tin người dùng và orderId từ localStorage
   useEffect(() => {
     const fetchUser = async () => {
       const storedUser = localStorage.getItem("user");
@@ -35,19 +34,18 @@ const FeedbackForm: React.FC = () => {
 
       const storedOrderId = localStorage.getItem("orderId");
       if (storedOrderId) {
-        setOrderId(parseInt(storedOrderId, 10)); // Chuyển đổi orderId từ string sang number
+        setOrderId(parseInt(storedOrderId, 10));
       }
     };
 
     fetchUser();
   }, []);
 
-  // Hàm gọi API để lấy shopId từ orderId
   const fetchShopId = async (orderId: number) => {
     try {
       const response = await api.get(`/api/order/shop/${orderId}`);
       if (response.data) {
-        setShopId(response.data); // Lưu shopId vào state
+        setShopId(response.data);
       } else {
         message.error("Không tìm thấy shopId!");
       }
@@ -57,7 +55,6 @@ const FeedbackForm: React.FC = () => {
     }
   };
 
-  // Gọi fetchShopId khi có orderId
   useEffect(() => {
     if (orderId !== null) {
       fetchShopId(orderId);
@@ -67,6 +64,11 @@ const FeedbackForm: React.FC = () => {
   const onFinish = async (
     values: Omit<FeedbackValues, "customer_id" | "rating" | "id" | "shopID">
   ) => {
+    if (rating < 1) {
+      message.error("Vui lòng chọn ít nhất 1 sao cho đánh giá.");
+      return;
+    }
+
     try {
       if (!user || !shopId) {
         message.error("Không có thông tin người dùng hoặc shopId!");
@@ -79,17 +81,16 @@ const FeedbackForm: React.FC = () => {
         content: values.content,
         rating: rating,
         customer_id: user.id,
-        shopID: shopId, // Sử dụng shopId đã lấy được (dạng string)
+        shopID: shopId,
       };
 
       const response = await api.post("/api/feedback", feedbackData);
 
       if (response.data) {
         message.success("Bạn đã gửi đánh giá thành công!");
-        // Chuyển hướng về trang productList sau khi gửi thành công
         setTimeout(() => {
           window.location.href = "/productList";
-        }, 1000); // Đợi 1 giây để hiển thị thông báo trước khi chuyển hướng
+        }, 1000);
       } else {
         message.error("Gửi phản hồi thất bại!");
       }
@@ -135,7 +136,7 @@ const FeedbackForm: React.FC = () => {
             <TextArea rows={4} placeholder="Enter content" />
           </Form.Item>
 
-          <Form.Item label="Rating">
+          <Form.Item label="Rating" required>
             <Rate onChange={setRating} value={rating} />
           </Form.Item>
 
