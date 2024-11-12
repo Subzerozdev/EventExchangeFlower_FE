@@ -34,13 +34,16 @@ const DashBoard = () => {
     useEffect(() => {
 
         api.get('/api/status', {
+
             headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
         })
 
             .then((response) => setRevenueData(response.data.monthlyRevenue || []))
 
             .catch((error) => console.error('Error fetching revenue data:', error));
-    }, []);
+    }, []
+    );
+
 
     // Cấu hình Pie Chart (Thống kê tổng quan)
     const pieOption = {
@@ -85,7 +88,7 @@ const DashBoard = () => {
             },
         ],
     };
-
+    console.log(Response);
     return (
         <div>
             <h1>Dashboard</h1>

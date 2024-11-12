@@ -1,5 +1,6 @@
-import { Modal, Checkbox, Button } from "antd";
+import { Modal, Checkbox, Button, message } from "antd";
 import { useState, useEffect } from "react";
+import api from "../../../../config/api"; // Ensure api is configured correctly
 
 interface TermsModalProps {
     isModalVisible: boolean;
@@ -12,18 +13,28 @@ const TermsModal: React.FC<TermsModalProps> = ({ isModalVisible, setIsModalVisib
     const [platformFee, setPlatformFee] = useState<number | null>(null);
 
     useEffect(() => {
-        if (isModalVisible) {
-            // Gọi API để lấy phí nền tảng khi modal mở
-            fetch('/api/user/fee')
-                .then(response => response.json())
-                .then(data => {
-                    if (data && data.amount) {
-                        setPlatformFee(data.amount);
+        const fetchPlatformFee = async () => {
+            try {
+                // Fetch the platform fee from the API using the api instance
+                const response = await api.get('/api/user/fee', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem("token")}`, // Use token from localStorage or other secure storage
                     }
-                })
-                .catch(error => {
-                    console.error("Lỗi khi lấy phí nền tảng:", error);
                 });
+
+                // Check if response contains the amount
+                if (response.data && response.data.amount) {
+                    setPlatformFee(response.data.amount);
+                }
+            } catch (error) {
+                console.error("Error fetching platform fee:", error);
+                message.error("Không thể tải phí nền tảng.");
+            }
+        };
+
+        // Call fetchPlatformFee only if modal is visible
+        if (isModalVisible) {
+            fetchPlatformFee();
         }
     }, [isModalVisible]);
 
@@ -70,9 +81,12 @@ const TermsModal: React.FC<TermsModalProps> = ({ isModalVisible, setIsModalVisib
                 <p>Hoa Lối Cũ có quyền kiểm soát và quyết định các nội dung đăng bán vi phạm nội quy của nền tảng.</p>
                 <p><strong>8. Chính Sách Bảo Mật Thông Tin</strong></p>
                 <p>Tất cả thông tin cá nhân và doanh nghiệp của người bán sẽ được bảo mật tuyệt đối theo chính sách của nền tảng Hoa Lối Cũ.</p>
-                <p><strong>9. Phí Dịch Vụ</strong></p>
+                <p><strong>9. Điều khoản về giao dịch trên nền tảng</strong></p>
+                <p>Để đảm bảo tính minh bạch và an toàn cho tất cả người tham gia, website yêu cầu mọi giao dịch giữa người bán (Seller) và người mua (User) phải được thực hiện thông qua hệ thống của trang web. Các hành vi giao dịch ngoài nền tảng sẽ bị nghiêm cấm. Người dùng vi phạm quy định này, dù là người mua hay người bán, có thể bị xử lý tài khoản, bao gồm cảnh cáo, tạm ngưng hoặc khóa tài khoản vĩnh viễn.</p>
+
+                <p><strong>10. Phí Dịch Vụ</strong></p>
                 <p>Người bán sẽ chịu chi phí khi bán hoa thành công trên nền tảng. Tỷ lệ phần trăm phí dịch vụ là {platformFee !== null ? `${platformFee * 100}%` : 'đang tải...'}.</p>
-                <p><strong>10. Thanh Toán Và Giá Hạn</strong></p>
+                <p><strong>11. Thanh Toán Và Giá Hạn</strong></p>
                 <p>Giao dịch sẽ hoàn tất khi người bán đã nhận đủ tiền từ khách hàng thông qua phương thức thanh toán mà Hoa Lối Cũ chấp nhận.</p>
             </div>
 

@@ -24,7 +24,7 @@ function Header() {
 
         <div className="header__center">
           <img
-            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM-cropped.svg?alt=media&token=4e5ed419-45d6-4d59-9789-dfe30832a879"
+            src="https://firebasestorage.googleapis.com/v0/b/swphoathanhly.appspot.com/o/HomePage%2FN%E1%BB%80N%20T%C3%80NG%20GIAO%20D%E1%BB%8ACH%20HOA%20UY%20T%C3%8DN%20S%E1%BB%90%201%20VI%E1%BB%86T%20NAM%20(1)-cropped.svg?alt=media&token=fed3573a-6337-4180-8214-ea712efdd8db"
             alt="Heading Banner"
             width={530}
             className="header__banner"

@@ -49,7 +49,7 @@ const PlatformFee: React.FC = () => {
         <div className="platform-fee-page">
             <div className="platform-fee-container">
                 <h2>Cập Nhật Phí Nền Tảng</h2>
-                {fee && <p className="fee-type">Loại phí: {fee.type}</p>}
+                {fee && <p className="fee-type">Loại phí: Phí nền tảng phụ thu vào mỗi đơn hàng</p>}
                 <div className="input-container">
                     <label>Phần trăm phí hiện tại:</label>
                     <InputNumber
