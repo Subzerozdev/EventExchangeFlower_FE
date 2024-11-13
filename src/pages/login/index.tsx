@@ -115,38 +115,44 @@ function Login() {
             <h1>Đăng nhập</h1>
           </Form.Item>
 
+          {/* Email */}
           <Form.Item
             name="email"
-            rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập email!" },
+              { type: "email", message: "Địa chỉ email không hợp lệ!" },
+              { max: 50, message: "Email không được vượt quá 50 ký tự!" },
+            ]}
           >
             <Input placeholder="Địa chỉ email" />
           </Form.Item>
 
+          {/* Mật khẩu */}
           <Form.Item
             name="password"
-            rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập mật khẩu!" },
+              { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
+              { max: 40, message: "Mật khẩu không được vượt quá 40 ký tự!" },
+            ]}
           >
             <Input.Password placeholder="Mật khẩu" />
           </Form.Item>
+
           <div>
             <a onClick={() => navigate("/forgot-password")}>Quên mật khẩu?</a>
           </div>
+          <div style={{ textAlign: "center", marginTop: "10px" }}>
+            Chưa có tài khoản? <a onClick={() => navigate("/register")}>Đăng ký tại đây</a>
+          </div>
+
           <Form.Item>
             <Button type="primary" htmlType="submit">
               Đăng nhập
             </Button>
           </Form.Item>
-
-          {/* <div className="divider">
-            <span>HOẶC</span>
-          </div> */}
-
-          {/* <Form.Item>
-            <Button onClick={() => loginWithGoogle()} className="google-button">
-              <GoogleCircleFilled /> Tiếp tục với Google
-            </Button>
-          </Form.Item> */}
         </Form>
+
       </div>
     </div>
   );

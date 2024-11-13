@@ -56,15 +56,44 @@ function ManageShop() {
         <>
             {shopInfo && <div>Shop: {shopInfo.shopName}</div>} {/* Hiển thị thông tin shop nếu cần */}
             <Form form={form} layout="vertical" onFinish={onFinish}>
-                <Form.Item label="Tên Shop" name="shopName" rules={[{ required: true }]}>
+                <Form.Item
+                    label="Tên Shop"
+                    name="shopName"
+                    rules={[
+                        { required: true, message: "Vui lòng nhập tên shop" },
+                        { max: 50, message: "Tên shop không được quá 50 ký tự" },
+                        {
+                            pattern: /^[^0-9!@#$%^&*()_+\-=[\]{};:'"\\|,.<>/?]*$/,
+                            message: "Tên shop không được chứa số hoặc ký tự đặc biệt",
+                        },
+                    ]}
+                >
                     <Input />
                 </Form.Item>
-                <Form.Item label="Địa chỉ Shop" name="shopAddress" rules={[{ required: true }]}>
+
+                <Form.Item
+                    label="Địa chỉ Shop"
+                    name="shopAddress"
+                    rules={[
+                        { required: true, message: "Vui lòng nhập địa chỉ shop" },
+                        { max: 100, message: "Địa chỉ shop không được quá 100 ký tự" },
+
+                    ]}
+                >
                     <Input />
                 </Form.Item>
-                <Form.Item label="Mô tả" name="description">
+
+
+                <Form.Item
+                    label="Mô tả"
+                    name="description"
+                    rules={[
+                        { max: 100, message: "Mô tả không được quá 100 ký tự" }
+                    ]}
+                >
                     <Input.TextArea rows={4} placeholder="Mô tả shop của bạn (không bắt buộc)" />
                 </Form.Item>
+
 
                 <Button type="primary" htmlType="submit">
                     Cập nhật Shop
@@ -75,4 +104,3 @@ function ManageShop() {
 }
 
 export default ManageShop;
-///

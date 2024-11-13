@@ -89,7 +89,7 @@ function AddCategory() {
   return (
     <div className="add-category">
       <h1>Quản lý danh mục</h1>
-
+      {/* thêm catgory */}
       <Form
         name="add-category"
         onFinish={handleAddCategory}
@@ -97,7 +97,12 @@ function AddCategory() {
       >
         <Form.Item
           name="name"
-          rules={[{ required: true, message: "Vui lòng nhập tên category!" }]}
+          rules={[{ required: true, message: "Vui lòng nhập tên category!" },
+          { max: 35, message: "Tên category không được quá 35 ký tự" },
+          {
+            pattern: /^[a-zA-Z\s]*$/,
+            message: "Tên category không được chứa số hoặc ký tự đặc biệt",
+          },]}
         >
           <Input placeholder="Tên Category" />
         </Form.Item>
@@ -123,7 +128,12 @@ function AddCategory() {
               >
                 <Form.Item
                   name="name"
-                  rules={[{ required: true, message: "Vui lòng nhập tên category!" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập tên category!" },
+                  { max: 35, message: "Tên category không được quá 35 ký tự" },
+                  {
+                    pattern: /^[\p{L}\s]+$/u,
+                    message: "Tên category không được chứa số hoặc ký tự đặc biệt",
+                  },]}
                 >
                   <Input placeholder="Tên Category" />
                 </Form.Item>

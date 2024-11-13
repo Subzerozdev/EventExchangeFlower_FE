@@ -96,7 +96,14 @@ function AddType() {
       >
         <Form.Item
           name="name"
-          rules={[{ required: true, message: "Vui lòng nhập tên type!" }]}
+          rules={[{ required: true, message: "Vui lòng nhập tên type!" },
+          { max: 50, message: "Tên type không được quá 50 ký tự" },
+          {
+            pattern: /^[\p{L}\s]+$/u,
+            message: "Tên type chỉ được chứa chữ cái và khoảng trắng",
+          },
+
+          ]}
         >
           <Input placeholder="Tên Type" />
         </Form.Item>
@@ -121,7 +128,12 @@ function AddType() {
               >
                 <Form.Item
                   name="name"
-                  rules={[{ required: true, message: "Vui lòng nhập tên type!" }]}
+                  rules={[{ required: true, message: "Vui lòng nhập tên type!" },
+                  { max: 50, message: "Tên type không được quá 50 ký tự" },
+                  {
+                    pattern: /^[\p{L}\s]+$/u,
+                    message: "Tên type chỉ được chứa chữ cái và khoảng trắng",
+                  },]}
                 >
                   <Input placeholder="Tên Type" />
                 </Form.Item>

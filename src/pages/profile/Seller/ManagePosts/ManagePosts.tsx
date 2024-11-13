@@ -216,7 +216,7 @@ function ManagePosts() {
                 { text: "Đã duyệt", value: "APPROVE" },
                 { text: "Bị từ chối", value: "DISAPPROVE" },
                 { text: "Đã bán hết", value: "SOLD_OUT" },
-                { text: "Đã xóa", value: "DELETED" },
+                // { text: "Đã xóa", value: "DELETED" },
             ],
             onFilter: (value: unknown, record: Post) => {
                 return record.status === value as string;
@@ -286,22 +286,45 @@ function ManagePosts() {
                     <Form.Item
                         label="Tên bài đăng"
                         name="name"
-                        rules={[{ required: true, message: "Vui lòng nhập tên bài đăng" }]}
+                        rules={[{ required: true, message: "Vui lòng nhập tên bài đăng" },
+                        { max: 60, message: "Tên bài đăng không được quá 60 ký tự" }
+
+                        ]}
                     >
                         <Input />
                     </Form.Item>
 
-                    <Form.Item label="Mô tả" name="description">
+                    <Form.Item label="Mô tả" name="description" rules={[{ max: 300, message: "Mô tả không được quá 300 ký tự" }]}>
                         <Input.TextArea rows={4} />
                     </Form.Item>
+
 
                     <Form.Item
                         label="Giá"
                         name="price"
-                        rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+                        rules={[
+                            { required: true, message: "Vui lòng nhập giá" },
+                            {
+                                validator: (_, value) => {
+                                    if (!/^\d+$/.test(value)) {
+                                        return Promise.reject(new Error("Giá chỉ được chứa các ký tự số và không âm"));
+                                    }
+                                    if (value < 0) {
+                                        return Promise.reject(new Error("Giá không được là số âm"));
+                                    }
+                                    if (value > 15000000) {
+                                        return Promise.reject(new Error("Giá không được vượt quá 15,000,000"));
+                                    }
+                                    return Promise.resolve();
+                                }
+                            }
+                        ]}
                     >
-                        <Input type="number" />
+                        <Input />
                     </Form.Item>
+
+
+
 
                     <Form.Item
                         label="Danh mục"
@@ -370,7 +393,9 @@ function ManagePosts() {
                             <Form.Item
                                 name="specificAddress"
                                 noStyle
-                                rules={[{ required: true, message: "Vui lòng nhập địa chỉ cụ thể" }]}
+                                rules={[{ required: true, message: "Vui lòng nhập địa chỉ cụ thể" },
+                                { max: 100, message: "Địa chỉ cụ thể không được quá 100 ký tự" }
+                                ]}
                             >
                                 <Input
                                     placeholder="Nhập địa chỉ cụ thể (số nhà, đường, quận...)"

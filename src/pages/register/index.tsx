@@ -109,13 +109,20 @@ function Register() {
           <Form.Item>
             <h1>Đăng ký tài khoản</h1>
           </Form.Item>
-          <Form.Item name="email" rules={[{ required: true, type: "email" }]}>
+          <Form.Item name="email" rules={[{ required: true, message: "Vui lòng nhập email!" },
+          { type: "email", message: "Email không hợp lệ! Email phải có dạng: @gmail.com" }]}>
             <Input placeholder="Email address" />
           </Form.Item>
-          <Form.Item name="fullName" rules={[{ required: true }]}>
+          <Form.Item name="fullName" rules={[{ required: true, message: "Vui lòng nhập tên người dùng!" },
+          { max: 50, message: "Tên người dùng không được quá 50 ký tự!" },
+          {
+            pattern: /^[\p{L}\s]+$/u,
+            message: "Tên người dùng chỉ được chứa chữ cái và khoảng trắng!",
+          },]}>
             <Input placeholder="Tên người dùng" />
           </Form.Item>
-          <Form.Item name="password" rules={[{ required: true, min: 8 }]}>
+          <Form.Item name="password" rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" },
+          { min: 8, message: "Mật khẩu phải có ít nhất 8 ký tự!" }]}>
             <Input.Password placeholder="Mật khẩu" />
           </Form.Item>
           <Form.Item
@@ -147,7 +154,12 @@ function Register() {
           >
             <Input placeholder="Số điện thoại" />
           </Form.Item>
-          <Form.Item name="address" rules={[{ required: true }]}>
+          <Form.Item name="address" rules={[{ required: true, message: "Vui lòng nhập địa chỉ!" },
+          { max: 100, message: "Địa chỉ không được quá 100 ký tự!" },
+          {
+            pattern: /^[a-zA-Z0-9\s,/-]+$/,
+            message: "Địa chỉ chỉ được chứa chữ, số, dấu phẩy (,), dấu gạch chéo (/), và dấu gạch ngang (-)!",
+          },]}>
             <Input placeholder="Địa chỉ" />
           </Form.Item>
           <Form.Item>
