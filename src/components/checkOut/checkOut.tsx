@@ -144,7 +144,7 @@ const Checkout: React.FC = () => {
         notification.error({
           message: "Đặt hàng thất bại",
           description:
-            "Bạn không thể đặt hàng với sản phẩm của chính mình hoặc từ một shop khác.",
+            "Bạn không thể đặt hàng với sản phẩm của chính mình hoặc đặt hàng từ một shop khác .",
         });
       } else {
         notification.error({
