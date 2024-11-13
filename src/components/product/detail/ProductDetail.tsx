@@ -35,15 +35,14 @@ interface Product {
   end_date: string;
   category: { id: number; name: string };
   imageUrls: ImageData[];
+  shop_name: string;
 }
-
-
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
-  const [cart, setCart] = useState<Product[]>([]); 
+  const [cart, setCart] = useState<Product[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const navigate = useNavigate();
 
@@ -217,6 +216,7 @@ const ProductDetail: React.FC = () => {
               </div>
               <div className="product-description">
                 <h3>Thông tin sản phẩm</h3>
+                <p>Tên shop: {product.shop_name}</p>
                 <p>Loại sản phẩm: {product.category.name}</p>
                 <p>Miêu tả: {product.description}</p>
                 <p>Địa chỉ: {product.address}</p>
