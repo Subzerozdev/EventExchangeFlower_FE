@@ -36,11 +36,17 @@ interface Product {
   category: { id: number; name: string };
   imageUrls: ImageData[];
   shop_name: string;
+  types: Type[]; // Thêm mảng types vào Product
+}
+interface Type {
+  id: number;
+  name: string;
 }
 
 const ProductDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [product, setProduct] = useState<Product | null>(null);
+
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState<Product[]>([]);
   const [drawerVisible, setDrawerVisible] = useState(false);
@@ -218,6 +224,7 @@ const ProductDetail: React.FC = () => {
                 <h3>Thông tin sản phẩm</h3>
                 <p>Tên shop: {product.shop_name}</p>
                 <p>Loại sản phẩm: {product.category.name}</p>
+                <p>Loại hoa: {product.types.map((type) => type.name)}</p>{" "}
                 <p>Miêu tả: {product.description}</p>
                 <p>Địa chỉ: {product.address}</p>
                 <p>

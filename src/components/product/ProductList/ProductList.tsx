@@ -34,8 +34,12 @@ interface Product {
   end_date: string;
   category: { id: number; name: string }; // Category
   status: string;
+  types: Type[];
 }
-
+interface Type {
+  id: number;
+  name: string;
+}
 // Interface định nghĩa cấu trúc của CartItem (thêm quantity cho mỗi sản phẩm trong giỏ)
 interface CartItem extends Product {
   quantity: number;
@@ -228,7 +232,6 @@ const ProductList: React.FC = () => {
           onSearch={handleSearch}
           allowClear
           enterButton="Tìm kiếm"
-      
         />
       </div>
 
@@ -284,6 +287,9 @@ const ProductList: React.FC = () => {
                         <p>Ngày bắt đầu: {product.start_date}</p>
                         <p>Ngày kết thúc: {product.end_date}</p>
                         <p>Địa chỉ: {product.address}</p>
+                        <p>
+                          Loại hoa: {product.types.map((type) => type.name)}
+                        </p>{" "}
                         <Button
                           type="primary"
                           icon={<ShoppingCartOutlined />}
