@@ -223,8 +223,10 @@ const ProductDetail: React.FC = () => {
               <div className="product-description">
                 <h3>Thông tin sản phẩm</h3>
                 <p>Tên shop: {product.shop_name}</p>
-                <p>Loại sản phẩm: {product.category.name}</p>
-                <p>Loại hoa: {product.types.map((type) => type.name)}</p>{" "}
+                <p>Loại sự kiện: {product.category.name}</p>
+                <p>
+                  Loại hoa: {product.types.map((type) => type.name).join(", ")}
+                </p>
                 <p>Miêu tả: {product.description}</p>
                 <p>Địa chỉ: {product.address}</p>
                 <p>

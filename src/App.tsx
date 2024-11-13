@@ -43,6 +43,7 @@ import PlatformFee from "./pages/adminPage/PlatFormFee/PlatformFee";
 import TermsAndConditions from "./components/Term/TermsAndConditions";
 import Details from "./pages/profile/orderHistory/DetailOrder/Detail";
 import AdminOrderManagement from "./pages/adminPage/OderManagement/AdminOrderManagement";
+import ErrorPayment from "./components/checkOut/payment/error/errorPayment";
 
 
 function App() {
@@ -148,6 +149,10 @@ function App() {
         {
           path: "/paymentFailure",
           element: <PaymentFailure />,
+        },
+        {
+          path: "/errorPayment",
+          element: <ErrorPayment/>,
         },
         {
           path: "feedBack",

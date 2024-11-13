@@ -139,7 +139,7 @@ const ProductList: React.FC = () => {
 
   // Tính tổng tiền trong giỏ hàng
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    return cart.reduce((total, item) => total + item.price, 0);
   };
 
   // Đổi trạng thái mở/đóng của giỏ hàng
@@ -283,13 +283,15 @@ const ProductList: React.FC = () => {
                     description={
                       <div>
                         <h3>Giá: {product.price.toLocaleString("vi-VN")}₫</h3>
-                        <p>Loại hoa: {product.category.name}</p>
+                        <p>Loại sự kiện: {product.category.name}</p>
                         <p>Ngày bắt đầu: {product.start_date}</p>
                         <p>Ngày kết thúc: {product.end_date}</p>
                         <p>Địa chỉ: {product.address}</p>
                         <p>
-                          Loại hoa: {product.types.map((type) => type.name)}
-                        </p>{" "}
+                          Loại hoa:{" "}
+                          {product.types.map((type) => type.name).join(", ")}
+                        </p>
+
                         <Button
                           type="primary"
                           icon={<ShoppingCartOutlined />}
@@ -349,7 +351,7 @@ const ProductList: React.FC = () => {
                 />
                 <div style={{ flexGrow: 1 }}>
                   <p>{item.name}</p>
-                  <p>Số lượng: {item.quantity}</p>{" "}
+                  {/* <p>Số lượng: {item.quantity}</p>{" "} */}
                   {/* Hiển thị số lượng thay vì InputNumber */}
                 </div>
                 <div style={{ marginLeft: "10px" }}>

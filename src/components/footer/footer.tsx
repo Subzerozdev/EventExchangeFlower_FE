@@ -1,98 +1,92 @@
 import React from "react";
+import { Layout, Row, Col, Typography, Space } from "antd";
+import {
+  FacebookOutlined,
+  MailOutlined,
+  PhoneOutlined,
+} from "@ant-design/icons";
 import "./Footer.scss";
+
+const { Footer: AntFooter } = Layout;
+const { Title, Link, Text } = Typography;
 
 const Footer: React.FC = () => {
   return (
-    <footer className="footer">
+    <AntFooter className="footer">
       <div className="footer-container">
-        {/* Cột 1: Chăm sóc khách hàng */}
-        <div className="footer-column">
-          <h4>CHĂM SÓC KHÁCH HÀNG</h4>
-          <ul>
-            <li>
-              <a href="/TermsAndConditions">Trung Tâm Trợ Giúp</a>
-            </li>
-
-            <li>
-              <a href="/TermsAndConditions">Hướng Dẫn Bán Hàng</a>
-            </li>
-            <li>
-              <a href="/TermsAndConditions">Điều Khoản Và Quy Định Của Nền Tảng</a>
-            </li>
-
-
-
-          </ul>
-        </div>
-
-        {/* Cột 2: Về Shopee */}
-        {/* <div className="footer-column">
-          <h4>MỘT SỐ THÔNG TIN VỀ SHOP</h4>
-          <ul>
-            <li>
-              <a href="/careers">Thông Điệp Các Loại Hoa</a>
-            </li>
-
-            <li>
-              <a href="/seller">Chính Hãng</a>
-            </li>
-            <li>
-              <a href="/affiliate">Kênh Người Bán</a>
-            </li>
-          </ul>
-        </div> */}
-
-        {/* Cột 3: Thanh Toán */}
-        <div className="footer-column">
-          <h4>THANH TOÁN</h4>
-          <div className="payment-icons">
+        <Row justify="space-between" align="top">
+          {/* Column 1: Customer Care */}
+          <Col xs={24} sm={12} md={4} lg={4} className="footer-column">
+            <Title level={4}>CHĂM SÓC KHÁCH HÀNG</Title>
             <ul>
               <li>
-
-                {/* <img src="./img/img/MOMO.jpg" alt="MOMO" />
-                <img src="./img/img/ZALOPay.jpg" alt="ZaloPay" /> */}
-              </li>
-              <h4>HỖ TRỢ CÁC LOẠI NGÂN HÀNG</h4>
-              <li>
-                <img src="./img/img/VNPay.jpg" alt="VnPay" />
-                <img src="./img/img/Vietcombank.jpg" alt="VietcombankPay" />
-                {/* <img src="./img/img/Tecombank.jpg" alt="MOMO" /> */}
-                <img src="./img/img/BIDV.jpg" alt="ZaloPay" />
+                <Link href="/TermsAndConditions">Trung Tâm Trợ Giúp</Link>
               </li>
               <li>
-                <img src="./img/img/Vietinbank.jpg" alt="VietcombankPay" />
-                <img src="./img/img/MSB.jpg" alt="MOMO" />
-                <img src="./img/img/ACB.jpg" alt="ZaloPay" />
+                <Link href="/TermsAndConditions">Hướng Dẫn Bán Hàng</Link>
               </li>
               <li>
-                <img src="./img/img/Agribank.jpg" alt="VietcombankPay" />
-                <img src="./img/img/HDBank.jpg" alt="MOMO" />
-                <img src="./img/img/VIB2.jpg" alt="ZaloPay" />
+                <Link href="/TermsAndConditions">
+                  Điều Khoản Và Quy Định Của Nền Tảng
+                </Link>
               </li>
             </ul>
-          </div>
-        </div>
+          </Col>
 
-        {/* Cột 4: Theo Dõi Chúng Tôi Trên */}
-        <div className="footer-column">
-          <h4>THEO DÕI CHÚNG TÔI TRÊN</h4>
-          <ul>
-            <li>
-              <img src="./img/img/facebook4.jpg" alt="Facebook" />
-              <a href="https://facebook.com">Facebook</a>
-            </li>
-            {/* <li>
-              <img src="./img/img/instegram.jpg" alt="Instagram" />
-              <a href="https://instagram.com">Instagram</a>
-            </li>
-            <li>
-              <img src="./img/img/in4.jpg" alt="LinkedIn" />
-              <a href="https://linkedin.com">LinkedIn</a>
-            </li> */}
-          </ul>
-        </div>
+          {/* Column 2: Payment Options */}
+          <Col xs={24} sm={12} md={6} lg={6} className="footer-column">
+            <Title level={4}>THANH TOÁN</Title>
+            <h4>HỖ TRỢ CÁC LOẠI NGÂN HÀNG</h4>
+            <div className="payment-icons">
+              <ul>
+                <li>
+                  <img src="./img/img/VNPay.jpg" alt="VNPay" />
+                  <img src="./img/img/Vietcombank.jpg" alt="Vietcombank" />
+                  <img src="./img/img/BIDV.jpg" alt="BIDV" />
+                </li>
+                <li>
+                  <img src="./img/img/Vietinbank.jpg" alt="Vietinbank" />
+                  <img src="./img/img/MSB.jpg" alt="MSB" />
+                  <img src="./img/img/ACB.jpg" alt="ACB" />
+                </li>
+                <li>
+                  <img src="./img/img/Agribank.jpg" alt="Agribank" />
+                  <img src="./img/img/HDBank.jpg" alt="HDBank" />
+                  <img src="./img/img/VIB2.jpg" alt="VIB" />
+                </li>
+              </ul>
+            </div>
+          </Col>
+
+          {/* Column 3: Follow Us */}
+          <Col xs={24} sm={12} md={4} lg={4} className="footer-column">
+            <Title level={4}>THEO DÕI CHÚNG TÔI TRÊN</Title>
+            <ul>
+              <li>
+                <FacebookOutlined
+                  style={{ fontSize: "20px", marginRight: 8 }}
+                />
+                <Link href="https://facebook.com">Facebook</Link>
+              </li>
+            </ul>
+          </Col>
+
+          {/* Column 4: Contact Information */}
+          <Col xs={24} sm={12} md={5} lg={5} className="footer-column">
+            <Title level={4}>LIÊN HỆ</Title>
+            <Space direction="vertical">
+              <Text>
+                <PhoneOutlined style={{ marginRight: 8 }} /> +84 123 456 789
+              </Text>
+              <Text>
+                <MailOutlined style={{ marginRight: 8 }} /> hoaloicu@gmail.com
+              </Text>
+              <Text>223 Lâm Văn Bền, Phường Bình Thuận, Quận 7</Text>
+            </Space>
+          </Col>
+        </Row>
       </div>
-    </footer>
+    </AntFooter>
   );
 };
 

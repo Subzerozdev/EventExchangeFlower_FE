@@ -26,6 +26,11 @@ interface FormValues {
   note: string;
 }
 
+interface HttpError {
+  response?: {
+    status: number;
+  };
+}
 const Checkout: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useUser();
@@ -64,10 +69,7 @@ const Checkout: React.FC = () => {
     }
   }, [user, navigate]);
 
-  const totalPrice = cart.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const totalPrice = cart.reduce((total, item) => total + item.price, 0);
 
   const handleDelete = (id: number) => {
     const updatedCart = cart.filter((item) => item.id !== id);
@@ -135,14 +137,26 @@ const Checkout: React.FC = () => {
       } else {
         throw new Error("Thất bại khi đặt hàng");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      notification.error({
-        message: "Đặt hàng thất bại",
-        description: "Có lỗi xảy ra khi đặt hàng.",
-      });
-      addNotification("Bạn thanh toán không thành công vui lòng kiểm tra lại!");
-      navigate("/paymentFailure");
+    } catch (error: unknown) {
+      const httpError = error as HttpError;
+
+      if (httpError.response?.status === 400) {
+        notification.error({
+          message: "Đặt hàng thất bại",
+          description:
+            "Bạn không thể đặt hàng với sản phẩm của chính mình hoặc từ một shop khác.",
+        });
+      } else {
+        notification.error({
+          message: "Đặt hàng thất bại",
+          description: "Có lỗi xảy ra khi đặt hàng.",
+        });
+      }
+
+      addNotification(
+        "Bạn thanh toán không thành công, vui lòng kiểm tra lại!"
+      );
+      navigate("/errorPayment");
     } finally {
       setLoading(false);
     }
