@@ -181,12 +181,31 @@ const ProductList: React.FC = () => {
       case "za":
         sortedProducts.sort((a, b) => b.name.localeCompare(a.name));
         break;
-      case "newest":
+
+      case "startDateAsc":
         sortedProducts.sort(
           (a, b) =>
-            new Date(b.start_date).getTime() - new Date(a.start_date).getTime()
+            new Date(
+              a.start_date.replace(/(\d+)\D+(\d+)\D+(\d+)/, "$2/$1/$3")
+            ).getTime() -
+            new Date(
+              b.start_date.replace(/(\d+)\D+(\d+)\D+(\d+)/, "$2/$1/$3")
+            ).getTime()
         );
         break;
+      //Sắp xếp này bắt đầu giảm dần
+      // case "startDateDes":
+      //   sortedProducts.sort(
+      //     (a, b) =>
+      //       new Date(
+      //         b.start_date.replace(/(\d+)\D+(\d+)\D+(\d+)/, "$2/$1/$3")
+      //       ).getTime() -
+      //       new Date(
+      //         a.start_date.replace(/(\d+)\D+(\d+)\D+(\d+)/, "$2/$1/$3")
+      //       ).getTime()
+      //   );
+      //   break;
+
       case "priceAsc":
         sortedProducts.sort((a, b) => a.price - b.price);
         break;
@@ -355,7 +374,7 @@ const ProductList: React.FC = () => {
                   {/* Hiển thị số lượng thay vì InputNumber */}
                 </div>
                 <div style={{ marginLeft: "10px" }}>
-                  <p>{(item.price * item.quantity).toLocaleString("vi-VN")}₫</p>
+                  <p>{item.price.toLocaleString("vi-VN")}₫</p>
                 </div>
                 <Button
                   icon={<DeleteOutlined />}

@@ -190,6 +190,18 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
         >
           Giá cao xuống thấp
         </Button>
+        <Button
+          className={sortType === "startDateAsc" ? "active" : ""}
+          onClick={() => handleSortChange("startDateAsc")}
+        >
+          Ngày bắt đầu tăng dần
+        </Button>
+        {/* <Button
+          className={sortType === "startDateDes" ? "active" : ""}
+          onClick={() => handleSortChange("startDateDes")}
+        >
+          Ngày bắt đầu giảm dần
+        </Button> */}
       </div>
     </div>
   );

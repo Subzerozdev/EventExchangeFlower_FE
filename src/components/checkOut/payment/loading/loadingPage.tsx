@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { Spin } from "antd"; // Dùng để hiển thị loading
 import api from "../../../../config/api";
 
@@ -11,17 +11,25 @@ const LoadingPage: React.FC = () => {
   const queryParams = new URLSearchParams(location.search);
   const responseCode = queryParams.get("vnp_ResponseCode"); // Thay 'response_code' bằng tên thật của parameter trong URL
   const orderId = queryParams.get("orderID"); // Thay 'order_id' bằng tên thật của parameter trong URL
+  const [searchParams] = useSearchParams();
+  const orderIds = searchParams.getAll("orderID");
 
   useEffect(() => {
     // Gọi API với các parameter
     const fetchPaymentStatus = async () => {
       try {
         console.log(responseCode);
+        let formattedOrderIds = "";
+        for (const orderID of orderIds) {
+          formattedOrderIds += "&orderID=" + orderID;
+        }
+        console.log(formattedOrderIds);
         const response = await api.get(
-          `/payment/vnpay/callback?vnp_ResponseCode=${responseCode}&orderID=${orderId}`
+          `/payment/vnpay/callback?vnp_ResponseCode=${responseCode}${formattedOrderIds}`
         );
-        await api.post(`/api/transactions?orderID=${orderId}`);
+
         if (response.status === 200) {
+          await api.post(`/api/transactions?${formattedOrderIds}`);
           // Nếu thanh toán thành công, chuyển hướng đến trang thanh toán thành công
           navigate("/paymentSuccess");
         } else {
@@ -36,7 +44,7 @@ const LoadingPage: React.FC = () => {
     };
 
     fetchPaymentStatus();
-  }, [responseCode, orderId, navigate]);
+  }, [responseCode, orderId, navigate, orderIds]);
 
   return (
     <div className="loading-page">

@@ -94,29 +94,6 @@ const Orders: React.FC = () => {
     fetchOrders();
   }, []);
 
-  const handleConfirmOrderReceived = async (key: string) => {
-    try {
-      await api.put(`/api/receive/${key}`, { status: "COMPLETED" });
-
-      setOrders((prevOrders) =>
-        prevOrders.map((order) =>
-          order.key === key ? { ...order, status: "COMPLETED" } : order
-        )
-      );
-
-      notification.success({
-        message: "Xác nhận thành công",
-        description: "Đơn hàng đã được xác nhận là đã nhận hàng.",
-      });
-    } catch (error) {
-      console.log(error);
-      notification.error({
-        message: "Lỗi",
-        description: "Không thể xác nhận đơn hàng. Vui lòng thử lại.",
-      });
-    }
-  };
-
   const handleViewOrderDetails = (orderId: string) => {
     navigate(`/order_details/${orderId}`);
   };
@@ -202,24 +179,6 @@ const Orders: React.FC = () => {
         ),
     },
 
-    {
-      title: "Xác Nhận",
-      dataIndex: "check",
-      key: "check",
-      render: (_: string, record: Order) =>
-        record.showConfirmReceived ? (
-          <Button
-            type="primary"
-            onClick={() => handleConfirmOrderReceived(record.key)}
-          >
-            Đã nhận hàng
-          </Button>
-        ) : (
-          <span>
-            {record.status === "COMPLETED" ? "Đã nhận hàng" : "Chưa nhận"}
-          </span>
-        ),
-    },
     {
       title: "Chi Tiết",
       key: "details",
