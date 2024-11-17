@@ -18,7 +18,7 @@ const LoadingPage: React.FC = () => {
     // Gọi API với các parameter
     const fetchPaymentStatus = async () => {
       try {
-        console.log(responseCode);
+        // console.log(responseCode);
         let formattedOrderIds = "";
         for (const orderID of orderIds) {
           formattedOrderIds += "&orderID=" + orderID;

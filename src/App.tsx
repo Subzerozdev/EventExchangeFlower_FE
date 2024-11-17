@@ -44,6 +44,7 @@ import TermsAndConditions from "./components/Term/TermsAndConditions";
 import Details from "./pages/profile/orderHistory/DetailOrder/Detail";
 import AdminOrderManagement from "./pages/adminPage/OderManagement/AdminOrderManagement";
 import ErrorPayment from "./components/checkOut/payment/error/errorPayment";
+import AdminNotificationPage from "./pages/adminPage/ManageNotify/AdminNotificationPage";
 
 
 function App() {
@@ -152,7 +153,7 @@ function App() {
         },
         {
           path: "/errorPayment",
-          element: <ErrorPayment/>,
+          element: <ErrorPayment />,
         },
         {
           path: "feedBack",
@@ -214,10 +215,12 @@ function App() {
               element: <UserManagement />,
             },
             { path: "order-management", element: <AdminOrderManagement /> },
+            { path: "notifications", element: <AdminNotificationPage /> },
             {
               path: "types",
               element: <AddType />,
             },
+
             {
               path: "fee",
               element: <PlatformFee />,

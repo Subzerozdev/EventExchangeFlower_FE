@@ -9,9 +9,11 @@ import {
   UserOutlined,
   RedEnvelopeOutlined,
   ShoppingCartOutlined,
+  NotificationOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../../../context/UserContext';
 import './sideBar.scss';
+
 
 interface SidebarProps {
   openSidebarToggle: boolean;
@@ -60,6 +62,12 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/order-management')} className="btn-link">
             <ShoppingCartOutlined className="icon" /> Quản lý đơn hàng
+          </button>
+        </li>
+
+        <li className="sidebar-list-item">
+          <button onClick={() => navigate('/admin/notifications')} className="btn-link">
+            <NotificationOutlined className="icon" /> Quản lý Thông báo
           </button>
         </li>
 

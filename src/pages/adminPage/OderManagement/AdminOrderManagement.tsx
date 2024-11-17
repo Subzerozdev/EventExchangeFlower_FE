@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, message, Select, DatePicker, Slider, InputNumber, Row, Col, Button } from "antd";
+import { Table, message, Select, DatePicker, Slider, InputNumber, Row, Col, Button, Modal } from "antd";
 import api from "../../../config/api";
 import "./AdminOrderManagement.scss";
 
@@ -16,14 +16,30 @@ interface Order {
     totalMoney: number;
     orderDate: string;
     status: string;
+    validationImage: string;
+}
+
+interface Shop {
+    shopName: string | null;
+    bankName: string | null;
+    bankNumber: string | null;
+}
+
+interface Transaction {
+    id: number;
+    status: string;
+    amount: number;
+    create_at: string;
 }
 
 interface AdminOrder {
     order: Order;
+    shop: Shop;
+    transaction: Transaction;
     totalFee: number;
 }
 
-// Hàm chuyển đổi trạng thái đơn hàng từ tiếng Anh sang tiếng Việt
+
 const translateStatus = (status: string) => {
     switch (status) {
         case "AWAITING_PAYMENT":
@@ -36,7 +52,18 @@ const translateStatus = (status: string) => {
             return status;
     }
 };
-
+const formatTransactionStatus = (status: string) => {
+    switch (status) {
+        case "PENDING":
+            return "Đang chờ xử lý";
+        case "SUCCESS":
+            return "Thành công";
+        case "FAIL":
+            return "Thất bại";
+        default:
+            return status;
+    }
+};
 const AdminOrderManagement: React.FC = () => {
     const [orders, setOrders] = useState<AdminOrder[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<AdminOrder[]>([]);
@@ -44,6 +71,8 @@ const AdminOrderManagement: React.FC = () => {
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 15000000]);
+    const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
     const fetchOrders = async () => {
         setLoading(true);
@@ -89,6 +118,41 @@ const AdminOrderManagement: React.FC = () => {
         setFilteredOrders(filteredData);
     };
 
+    const handleViewDetails = (order: AdminOrder) => {
+        setSelectedOrder(order);
+        setIsModalVisible(true);
+    };
+    const handleConfirmDelivery = async (transactionId: number) => {
+        try {
+            await api.put(`/api/admin/transaction/${transactionId}`, {
+                status: "SUCCESS",
+            });
+            message.success("Xác nhận đã giao hàng thành công!");
+
+            // Cập nhật trạng thái trong danh sách
+            setOrders(prevOrders =>
+                prevOrders.map(order =>
+                    order.transaction.id === transactionId
+                        ? { ...order, transaction: { ...order.transaction, status: "SUCCESS" } }
+                        : order
+                )
+            );
+
+            setFilteredOrders(prevOrders =>
+                prevOrders.map(order =>
+                    order.transaction.id === transactionId
+                        ? { ...order, transaction: { ...order.transaction, status: "SUCCESS" } }
+                        : order
+                )
+            );
+
+            setIsModalVisible(false);
+        } catch (error) {
+            console.error("Lỗi khi xác nhận giao dịch:", error);
+            message.error("Không thể xác nhận giao dịch. Vui lòng thử lại.");
+        }
+    };
+
     const columns = [
         {
             title: "ID",
@@ -106,7 +170,7 @@ const AdminOrderManagement: React.FC = () => {
             key: "email",
         },
         {
-            title: "Tên khách hàng",
+            title: "Tên người mua hoa",
             dataIndex: ["order", "fullName"],
             key: "fullName",
         },
@@ -143,6 +207,15 @@ const AdminOrderManagement: React.FC = () => {
             dataIndex: ["order", "status"],
             key: "status",
             render: (status: string) => translateStatus(status), // Sử dụng hàm chuyển đổi trạng thái
+        },
+        {
+            title: "Xem chi tiết",
+            key: "action",
+            render: (record: AdminOrder) => (
+                <Button type="link" onClick={() => handleViewDetails(record)}>
+                    Xem chi tiết
+                </Button>
+            ),
         },
     ];
 
@@ -205,7 +278,7 @@ const AdminOrderManagement: React.FC = () => {
                         </Row>
                     </Col>
                     <Col span={2}>
-                        <Button type="primary" onClick={handleFilter}>Tìm kiếm theo giá</Button>
+                        <Button type="primary" onClick={handleFilter}>Tìm kiếm</Button>
                     </Col>
                 </Row>
             </div>
@@ -217,6 +290,36 @@ const AdminOrderManagement: React.FC = () => {
                 pagination={{ pageSize: 10 }}
                 bordered
             />
+            <Modal
+                title="Chi tiết đơn hàng"
+                visible={isModalVisible}
+                onCancel={() => setIsModalVisible(false)}
+                footer={null} // Không cần dùng footer
+            >
+                {selectedOrder && (
+                    <div>
+                        <p><b>Ảnh xác minh đã giao hàng:</b> <a href={selectedOrder.order.validationImage} target="_blank" rel="noopener noreferrer">Xem hình ảnh</a></p>
+                        <p><b>Tên của shop:</b> {selectedOrder.shop.shopName || "Không có"}</p>
+                        <p><b>Tên ngân hàng:</b> {selectedOrder.shop.bankName || "Không có"}</p>
+                        <p><b>Số tài khoản:</b> {selectedOrder.shop.bankNumber || "Không có"}</p>
+                        <p><b>Số tiền cần chuyển khoản cho người bán là:</b> {selectedOrder.transaction.amount.toLocaleString()} đ</p>
+                        <p><b>Trạng thái giao dịch:</b> {formatTransactionStatus(selectedOrder.transaction.status)}</p>
+
+                        {/* Hiển thị nút tại vị trí được chỉ định */}
+                        {selectedOrder.transaction.status === "PENDING" && (
+                            <Button
+                                type="primary"
+                                style={{ marginTop: "10px" }}
+                                onClick={() => handleConfirmDelivery(selectedOrder.transaction.id)}
+                            >
+                                Xác nhận đã giao hàng
+                            </Button>
+                        )}
+                    </div>
+                )}
+            </Modal>
+
+
         </div>
     );
 };

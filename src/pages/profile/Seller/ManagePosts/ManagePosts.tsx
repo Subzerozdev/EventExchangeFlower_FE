@@ -21,7 +21,7 @@ interface Post {
     types: { id: number; name: string }[];
     imageUrls: string[];
     thumbnail: string;
-    status: string; // Thêm trường trạng thái bài đăng
+    status: string;
 }
 
 interface Category {

@@ -19,10 +19,9 @@ interface Post {
 function ReviewPosts() {
     const [posts, setPosts] = useState<Post[]>([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [isApproveModalVisible, setIsApproveModalVisible] = useState(false);
     const [selectedPostId, setSelectedPostId] = useState<number | null>(null);
     const [currentImageIndexes, setCurrentImageIndexes] = useState<{ [key: number]: number }>({});
-
-
 
     useEffect(() => {
         fetchPosts();
@@ -32,7 +31,7 @@ function ReviewPosts() {
         try {
             const response = await api.get<{ posts: Post[] }>("/posts");
             const filteredPosts = response.data.posts.filter(
-                (post) => post.status !== "DELETED" && post.status !== "DISAPPROVE" && post.status !== "SOLD_OUT"
+                (post) => post.status !== "DELETED" && post.status !== "DISAPPROVE" && post.status !== "SOLD_OUT" && post.status !== "APPROVE"
             );
             setPosts(filteredPosts);
         } catch (error) {
@@ -41,15 +40,20 @@ function ReviewPosts() {
         }
     };
 
-    const handleApprove = async (id: number) => {
+    const showApproveConfirm = (id: number) => {
+        setSelectedPostId(id);
+        setIsApproveModalVisible(true);
+    };
+
+    const handleApprove = async () => {
+        if (selectedPostId === null) return;
         try {
-            await api.put(`/api/admin/posts/${id}/true`);
+            await api.put(`/api/admin/posts/${selectedPostId}/true`);
             message.success("Bài đăng đã được duyệt!");
             setPosts((prevPosts) =>
-                prevPosts.map((post) =>
-                    post.id === id ? { ...post, status: "APPROVE" } : post
-                )
+                prevPosts.filter((post) => post.id !== selectedPostId)
             );
+            setIsApproveModalVisible(false);
         } catch (error) {
             console.error(error);
             message.error("Có lỗi xảy ra khi duyệt bài đăng.");
@@ -78,6 +82,7 @@ function ReviewPosts() {
 
     const handleCancel = () => {
         setIsModalVisible(false);
+        setIsApproveModalVisible(false);
     };
 
     const renderStatus = (status: string) => {
@@ -106,7 +111,6 @@ function ReviewPosts() {
             [postId]: prevIndexes[postId] === 0 ? imageUrls.length - 1 : (prevIndexes[postId] || 0) - 1,
         }));
     };
-
 
     const columns = [
         {
@@ -150,8 +154,6 @@ function ReviewPosts() {
                             </div>
                         )
                     }
-
-
                 </div>
             ),
         },
@@ -183,7 +185,7 @@ function ReviewPosts() {
                 <div className="action-buttons">
                     <Button
                         type="primary"
-                        onClick={() => handleApprove(record.id)}
+                        onClick={() => showApproveConfirm(record.id)}
                         disabled={record.status === "APPROVE"}
                     >
                         Duyệt
@@ -220,6 +222,16 @@ function ReviewPosts() {
                 cancelText="Hủy"
             >
                 <p>Bạn có chắc chắn muốn từ chối bài đăng này không?</p>
+            </Modal>
+            <Modal
+                title="Xác nhận duyệt bài"
+                open={isApproveModalVisible}
+                onOk={handleApprove}
+                onCancel={handleCancel}
+                okText="Xác nhận"
+                cancelText="Hủy"
+            >
+                <p>Bạn có chắc chắn muốn duyệt bài đăng này không?</p>
             </Modal>
         </div>
     );
