@@ -45,6 +45,7 @@ import Details from "./pages/profile/orderHistory/DetailOrder/Detail";
 import AdminOrderManagement from "./pages/adminPage/OderManagement/AdminOrderManagement";
 import ErrorPayment from "./components/checkOut/payment/error/errorPayment";
 import AdminNotificationPage from "./pages/adminPage/ManageNotify/AdminNotificationPage";
+import AdminReports from "./pages/adminPage/adminReport/AdminReports";
 
 
 function App() {
@@ -216,6 +217,7 @@ function App() {
             },
             { path: "order-management", element: <AdminOrderManagement /> },
             { path: "notifications", element: <AdminNotificationPage /> },
+            { path: "reports", element: <AdminReports /> },
             {
               path: "types",
               element: <AddType />,

@@ -10,6 +10,7 @@ import {
   RedEnvelopeOutlined,
   ShoppingCartOutlined,
   NotificationOutlined,
+  WarningOutlined,
 } from '@ant-design/icons';
 import { useUser } from '../../../context/UserContext';
 import './sideBar.scss';
@@ -70,6 +71,12 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
             <NotificationOutlined className="icon" /> Quản lý Thông báo
           </button>
         </li>
+        <li className="sidebar-list-item">
+          <button onClick={() => navigate('/admin/reports')} className="btn-link">
+            <WarningOutlined className="icon" /> Quản lý Khiếu nại
+          </button>
+        </li>
+
 
 
         <li className="sidebar-list-item">

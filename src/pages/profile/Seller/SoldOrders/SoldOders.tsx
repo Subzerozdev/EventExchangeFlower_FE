@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Table, Tag, Button, message, Modal, Upload, UploadFile } from "antd";
+import { Table, Tag, Button, message, Modal, Upload, UploadFile, Image } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
-import './SoldOrders.scss'; // Import SCSS
+import "./SoldOrders.scss"; // Import SCSS
 import api from "../../../../config/api";
 import uploadFile from "../../../../utils/file"; // Hàm upload file lên Firebase
 
@@ -17,14 +17,8 @@ interface OrderRecord {
     address?: string;
     note?: string;
     orderDate?: string;
+    validationImage: string;
 }
-
-// Map trạng thái đơn hàng
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const statusMapping: { [key: string]: boolean } = {
-    COMPLETED: true,
-    CANCELLED: false,
-};
 
 
 
@@ -35,19 +29,17 @@ const SoldOrders = () => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
 
-    const navigate = useNavigate(); // Điều hướng
+    const navigate = useNavigate();
 
     // Lấy danh sách đơn hàng đã bán từ API
     const fetchSoldOrders = async () => {
         setLoading(true);
         try {
-
             const response = await api.get<OrderRecord[]>("/api/seller/orders", {
                 headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
             });
             setOrders(response.data);
             message.success("Tải danh sách đơn hàng thành công!");
-            console.log(response);
         } catch (error) {
             console.error("Lỗi:", error);
             message.error("Không thể tải danh sách đơn hàng.");
@@ -80,14 +72,13 @@ const SoldOrders = () => {
         }
 
         try {
-            // Upload file lên Firebase
             const uploadedFile = fileList[0].originFileObj as File;
             const imageUrl = await uploadFile(uploadedFile); // Nhận URL ảnh từ Firebase
 
             // Gửi URL ảnh qua API để lưu trong cơ sở dữ liệu
             await api.put(
                 `/api/seller/orders/${selectedOrderId}`,
-                { image: imageUrl }, // Payload chứa URL ảnh
+                { image: imageUrl },
                 {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -96,17 +87,15 @@ const SoldOrders = () => {
                 }
             );
 
-            // Hiển thị thông báo thành công và cập nhật danh sách đơn hàng
             message.success("Cập nhật trạng thái thành công!");
-            setIsModalVisible(false); // Ẩn modal
-            setFileList([]); // Xóa danh sách file đã upload
-            fetchSoldOrders(); // Lấy lại danh sách đơn hàng để cập nhật giao diện
+            setIsModalVisible(false);
+            setFileList([]);
+            fetchSoldOrders();
         } catch (error) {
             console.error("Lỗi khi upload ảnh hoặc cập nhật trạng thái:", error);
             message.error("Không thể cập nhật trạng thái đơn hàng.");
         }
     };
-
 
     const handleModalCancel = () => {
         setIsModalVisible(false);
@@ -134,6 +123,29 @@ const SoldOrders = () => {
                 </span>
             ),
         },
+        {
+            title: "Ảnh xác minh",
+            dataIndex: "validationImage",
+            key: "validationImage",
+            render: (image: string | undefined) => (
+                image ? (
+                    <Image
+                        src={image}
+                        alt="Ảnh xác minh"
+                        style={{
+                            width: 100,
+                            height: 100,
+                            borderRadius: "8px",
+                            objectFit: "cover",
+                        }}
+                        preview={{ mask: <span>Xem ảnh</span> }}
+                    />
+                ) : (
+                    <span>Không có ảnh</span>
+                )
+            ),
+        },
+
         {
             title: "Trạng thái",
             dataIndex: "status",
@@ -189,7 +201,29 @@ const SoldOrders = () => {
                 okText="Xác nhận"
                 cancelText="Hủy"
             >
-                <p>Vui lòng upload ảnh làm bằng chứng giao hàng thành công.</p>
+                {selectedOrderId && (
+                    <>
+                        <p>Ảnh xác minh hiện tại:</p>
+                        {orders.find((order) => order.id === selectedOrderId)?.validationImage ? (
+                            <Image
+                                src={
+                                    orders.find((order) => order.id === selectedOrderId)?.validationImage
+                                }
+                                alt="Ảnh xác minh hiện tại"
+                                style={{
+                                    width: 200,
+                                    height: 200,
+                                    borderRadius: "8px",
+                                    objectFit: "cover",
+                                }}
+                                preview // Kích hoạt chế độ xem trước
+                            />
+                        ) : (
+                            <p>Không có ảnh xác minh hiện tại.</p>
+                        )}
+                    </>
+                )}
+                <p>Vui lòng upload ảnh mới làm bằng chứng giao hàng thành công.</p>
                 <Upload
                     listType="picture"
                     fileList={fileList}
