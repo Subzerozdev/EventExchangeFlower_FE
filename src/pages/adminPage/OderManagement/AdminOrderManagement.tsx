@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Table, message, Select, DatePicker, Slider, InputNumber, Row, Col, Button, Modal } from "antd";
 import api from "../../../config/api";
 import "./AdminOrderManagement.scss";
@@ -39,42 +39,41 @@ interface AdminOrder {
     totalFee: number;
 }
 
-
+// Utility functions for status translation
 const translateStatus = (status: string) => {
-    switch (status) {
-        case "AWAITING_PAYMENT":
-            return "Chờ thanh toán";
-        case "AWAITING_PICKUP":
-            return "Chờ lấy hàng";
-        case "COMPLETED":
-            return "Hoàn thành";
-        default:
-            return status;
-    }
+    const statusMap: Record<string, string> = {
+        AWAITING_PAYMENT: "Chờ thanh toán",
+        AWAITING_PICKUP: "Chờ lấy hàng",
+        COMPLETED: "Hoàn thành",
+    };
+    return statusMap[status] || status;
 };
+
 const formatTransactionStatus = (status: string) => {
-    switch (status) {
-        case "PENDING":
-            return "Đang chờ xử lý";
-        case "SUCCESS":
-            return "Thành công";
-        case "FAIL":
-            return "Thất bại";
-        default:
-            return status;
-    }
+    const transactionStatusMap: Record<string, string> = {
+        PENDING: "Đang chờ xử lý",
+        SUCCESS: "Thành công",
+        FAIL: "Thất bại",
+    };
+    return transactionStatusMap[status] || status;
 };
+
 const AdminOrderManagement: React.FC = () => {
     const [orders, setOrders] = useState<AdminOrder[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<AdminOrder[]>([]);
     const [loading, setLoading] = useState(false);
+
+    // Filter states
     const [statusFilter, setStatusFilter] = useState<string | null>(null);
     const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([null, null]);
     const [priceRange, setPriceRange] = useState<[number, number]>([0, 15000000]);
+
+    // Modal states
     const [selectedOrder, setSelectedOrder] = useState<AdminOrder | null>(null);
     const [isModalVisible, setIsModalVisible] = useState(false);
 
-    const fetchOrders = async () => {
+    // Fetch orders from API
+    const fetchOrders = useCallback(async () => {
         setLoading(true);
         try {
             const response = await api.get<AdminOrder[]>("/api/admin/orders");
@@ -87,49 +86,40 @@ const AdminOrderManagement: React.FC = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, []);
 
     useEffect(() => {
         fetchOrders();
-    }, []);
+    }, [fetchOrders]);
 
+    // Filter orders
     const handleFilter = () => {
-        let filteredData = orders;
+        const [startDate, endDate] = dateRange;
 
-        // Lọc theo tình trạng
-        if (statusFilter) {
-            filteredData = filteredData.filter(order => order.order.status === statusFilter);
-        }
+        const filtered = orders.filter(({ order }) => {
+            const matchesStatus = !statusFilter || order.status === statusFilter;
+            const matchesDateRange =
+                (!startDate || !endDate || (new Date(order.orderDate) >= startDate && new Date(order.orderDate) <= endDate));
+            const matchesPriceRange = order.totalMoney >= priceRange[0] && order.totalMoney <= priceRange[1];
+            return matchesStatus && matchesDateRange && matchesPriceRange;
+        });
 
-        // Lọc theo khoảng ngày
-        if (dateRange[0] && dateRange[1]) {
-            const [start, end] = dateRange;
-            filteredData = filteredData.filter(order => {
-                const orderDate = new Date(order.order.orderDate);
-                return orderDate >= start! && orderDate <= end!;
-            });
-        }
-
-        // Lọc theo khoảng giá
-        filteredData = filteredData.filter(order =>
-            order.order.totalMoney >= priceRange[0] && order.order.totalMoney <= priceRange[1]
-        );
-
-        setFilteredOrders(filteredData);
+        setFilteredOrders(filtered);
     };
 
+    // Handle viewing order details
     const handleViewDetails = (order: AdminOrder) => {
         setSelectedOrder(order);
         setIsModalVisible(true);
     };
+
+    // Confirm delivery
     const handleConfirmDelivery = async (transactionId: number) => {
         try {
-            await api.put(`/api/admin/transaction/${transactionId}`, {
-                status: "SUCCESS",
-            });
+            await api.put(`/api/admin/transaction/${transactionId}`, { status: "SUCCESS" });
             message.success("Xác nhận đã giao hàng thành công!");
 
-            // Cập nhật trạng thái trong danh sách
+            // Update orders and filteredOrders
             setOrders(prevOrders =>
                 prevOrders.map(order =>
                     order.transaction.id === transactionId
@@ -137,7 +127,6 @@ const AdminOrderManagement: React.FC = () => {
                         : order
                 )
             );
-
             setFilteredOrders(prevOrders =>
                 prevOrders.map(order =>
                     order.transaction.id === transactionId
@@ -145,7 +134,6 @@ const AdminOrderManagement: React.FC = () => {
                         : order
                 )
             );
-
             setIsModalVisible(false);
         } catch (error) {
             console.error("Lỗi khi xác nhận giao dịch:", error);
@@ -154,36 +142,12 @@ const AdminOrderManagement: React.FC = () => {
     };
 
     const columns = [
-        {
-            title: "ID",
-            dataIndex: ["order", "id"],
-            key: "id",
-        },
-        {
-            title: "Số điện thoại",
-            dataIndex: ["order", "phoneNumber"],
-            key: "phoneNumber",
-        },
-        {
-            title: "Email",
-            dataIndex: ["order", "email"],
-            key: "email",
-        },
-        {
-            title: "Tên người mua hoa",
-            dataIndex: ["order", "fullName"],
-            key: "fullName",
-        },
-        {
-            title: "Địa chỉ",
-            dataIndex: ["order", "address"],
-            key: "address",
-        },
-        {
-            title: "Ghi chú",
-            dataIndex: ["order", "note"],
-            key: "note",
-        },
+        { title: "ID", dataIndex: ["order", "id"], key: "id" },
+        { title: "Số điện thoại", dataIndex: ["order", "phoneNumber"], key: "phoneNumber" },
+        { title: "Email", dataIndex: ["order", "email"], key: "email" },
+        { title: "Tên người mua hoa", dataIndex: ["order", "fullName"], key: "fullName" },
+        { title: "Địa chỉ", dataIndex: ["order", "address"], key: "address" },
+        { title: "Ghi chú", dataIndex: ["order", "note"], key: "note" },
         {
             title: "Tổng tiền",
             dataIndex: ["order", "totalMoney"],
@@ -206,7 +170,7 @@ const AdminOrderManagement: React.FC = () => {
             title: "Trạng thái",
             dataIndex: ["order", "status"],
             key: "status",
-            render: (status: string) => translateStatus(status), // Sử dụng hàm chuyển đổi trạng thái
+            render: translateStatus,
         },
         {
             title: "Xem chi tiết",
@@ -222,6 +186,8 @@ const AdminOrderManagement: React.FC = () => {
     return (
         <div className="admin-order-management">
             <h2>Quản lý đơn hàng</h2>
+
+            {/* Filter Section */}
             <div className="filter-container">
                 <Row gutter={16}>
                     <Col span={6}>
@@ -229,7 +195,7 @@ const AdminOrderManagement: React.FC = () => {
                             placeholder="Chọn tình trạng"
                             allowClear
                             style={{ width: "100%" }}
-                            onChange={(value) => setStatusFilter(value || null)}
+                            onChange={value => setStatusFilter(value || null)}
                         >
                             <Option value="AWAITING_PAYMENT">Chờ thanh toán</Option>
                             <Option value="AWAITING_PICKUP">Chờ lấy hàng</Option>
@@ -239,7 +205,7 @@ const AdminOrderManagement: React.FC = () => {
                     <Col span={8}>
                         <RangePicker
                             style={{ width: "100%" }}
-                            onChange={(dates) => setDateRange(dates ? [dates[0]?.toDate() || null, dates[1]?.toDate() || null] : [null, null])}
+                            onChange={dates => setDateRange(dates ? [dates[0]?.toDate() || null, dates[1]?.toDate() || null] : [null, null])}
                         />
                     </Col>
                     <Col span={8}>
@@ -249,8 +215,7 @@ const AdminOrderManagement: React.FC = () => {
                             min={0}
                             max={15000000}
                             step={100000}
-                            tooltip={{ open: true }}
-                            onChange={(values) => setPriceRange(values as [number, number])}
+                            onChange={values => setPriceRange(values as [number, number])}
                         />
                         <Row gutter={8} style={{ marginTop: 8 }}>
                             <Col span={12}>
@@ -258,10 +223,8 @@ const AdminOrderManagement: React.FC = () => {
                                     min={0}
                                     max={15000000}
                                     value={priceRange[0]}
-                                    onChange={(value) => setPriceRange([value ?? 0, priceRange[1]])}
+                                    onChange={value => setPriceRange([value ?? 0, priceRange[1]])}
                                     style={{ width: "100%" }}
-                                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    parser={value => parseInt(value!.replace(/,*/g, ""))}
                                 />
                             </Col>
                             <Col span={12}>
@@ -269,57 +232,59 @@ const AdminOrderManagement: React.FC = () => {
                                     min={0}
                                     max={15000000}
                                     value={priceRange[1]}
-                                    onChange={(value) => setPriceRange([priceRange[0], value ?? 15000000])}
+                                    onChange={value => setPriceRange([priceRange[0], value ?? 15000000])}
                                     style={{ width: "100%" }}
-                                    formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
-                                    parser={value => parseInt(value!.replace(/,*/g, ""))}
                                 />
                             </Col>
                         </Row>
                     </Col>
                     <Col span={2}>
-                        <Button type="primary" onClick={handleFilter}>Tìm kiếm</Button>
+                        <Button type="primary" onClick={handleFilter}>
+                            Tìm kiếm
+                        </Button>
                     </Col>
                 </Row>
             </div>
+
+            {/* Order Table */}
             <Table
                 columns={columns}
                 dataSource={filteredOrders}
-                rowKey={(record) => record.order.id}
+                rowKey={record => record.order.id}
                 loading={loading}
                 pagination={{ pageSize: 10 }}
                 bordered
             />
+
+            {/* Modal for Order Details */}
             <Modal
                 title="Chi tiết đơn hàng"
                 visible={isModalVisible}
                 onCancel={() => setIsModalVisible(false)}
-                footer={null} // Không cần dùng footer
+                footer={null}
             >
                 {selectedOrder && (
                     <div>
-                        <p><b>Ảnh xác minh đã giao hàng:</b> <a href={selectedOrder.order.validationImage} target="_blank" rel="noopener noreferrer">Xem hình ảnh</a></p>
+                        <p>
+                            <b>Ảnh xác minh đã giao hàng:</b>{" "}
+                            <a href={selectedOrder.order.validationImage} target="_blank" rel="noopener noreferrer">
+                                Xem hình ảnh
+                            </a>
+                        </p>
                         <p><b>Tên của shop:</b> {selectedOrder.shop.shopName || "Không có"}</p>
                         <p><b>Tên ngân hàng:</b> {selectedOrder.shop.bankName || "Không có"}</p>
                         <p><b>Số tài khoản:</b> {selectedOrder.shop.bankNumber || "Không có"}</p>
                         <p><b>Số tiền cần chuyển khoản cho người bán là:</b> {selectedOrder.transaction.amount.toLocaleString()} đ</p>
                         <p><b>Trạng thái giao dịch:</b> {formatTransactionStatus(selectedOrder.transaction.status)}</p>
 
-                        {/* Hiển thị nút tại vị trí được chỉ định */}
                         {selectedOrder.transaction.status === "PENDING" && (
-                            <Button
-                                type="primary"
-                                style={{ marginTop: "10px" }}
-                                onClick={() => handleConfirmDelivery(selectedOrder.transaction.id)}
-                            >
+                            <Button type="primary" style={{ marginTop: "10px" }} onClick={() => handleConfirmDelivery(selectedOrder.transaction.id)}>
                                 Xác nhận đã giao hàng
                             </Button>
                         )}
                     </div>
                 )}
             </Modal>
-
-
         </div>
     );
 };
