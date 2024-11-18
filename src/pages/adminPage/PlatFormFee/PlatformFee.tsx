@@ -19,7 +19,7 @@ const PlatformFee: React.FC = () => {
 
     const fetchFee = async () => {
         try {
-            const response = await api.get<Fee>("/api/admin/fee");
+            const response = await api.get<Fee>("/api/user/fee");
             const feeData = response.data;
             setFee(feeData);
             setNewAmount(feeData.amount);
