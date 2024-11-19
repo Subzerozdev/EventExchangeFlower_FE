@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Table, message } from 'antd';
 
 import api from '../../../config/api';
