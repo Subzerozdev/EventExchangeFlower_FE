@@ -14,7 +14,7 @@ const ErrorPayment: React.FC = () => {
       <Result
         status="error"
         title="Thanh toán không thành công"
-        subTitle="Xin lỗi, bạn không thể mua hàng của chính mình hoặc mua sản phẩm khác shop. Vui lòng chọn sản phẩm khác!"
+        subTitle="Xin lỗi, bạn không thể mua hàng của chính mình. Vui lòng chọn sản phẩm khác!"
         extra={[
           <Button
             key="buy"

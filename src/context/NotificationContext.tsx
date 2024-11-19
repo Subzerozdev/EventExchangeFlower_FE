@@ -60,7 +60,7 @@ export const NotificationProvider: React.FC<NotificationProviderProps> = ({
   // Hàm xóa thông báo
   const removeNotification = async (id: number) => {
     try {
-      await api.delete(`/notification/${id}`); // Gọi API xóa thông báo
+      await api.put(`/api/notification/${id}`); // Gọi API xóa thông báo
       setNotifications((prevNotifications) =>
         prevNotifications.filter((notification) => notification.id !== id)
       );
