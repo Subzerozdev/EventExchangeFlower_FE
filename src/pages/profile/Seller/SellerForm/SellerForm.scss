@@ -1,14 +1,8 @@
-/* Định nghĩa các biến màu sắc */
-$primary-color: #1890ff; /* Màu chính cho nút */
-$border-color: #d9d9d9; /* Màu viền */
-$background-color: #f5f5f5; /* Màu nền của form */
-$error-color: #ff4d4f; /* Màu thông báo lỗi */
-
 .seller-form {
-  background-color: $background-color;
+  background-color: #f5f5f5; /* Màu nền của form */
   padding: 20px;
   border-radius: 8px;
-  border: 1px solid $border-color;
+  border: 1px solid #d9d9d9; /* Màu viền */
   max-width: 600px;
   margin: 0 auto;
 
@@ -24,35 +18,35 @@ $error-color: #ff4d4f; /* Màu thông báo lỗi */
     textarea,
     .ant-select-selector {
       border-radius: 4px;
-      border: 1px solid $border-color;
+      border: 1px solid #d9d9d9; /* Màu viền */
       transition: border-color 0.3s;
 
       &:focus,
       &:hover {
-        border-color: $primary-color;
-        box-shadow: 0 0 5px rgba($primary-color, 0.5);
+        border-color: #1890ff; /* Màu chính */
+        box-shadow: 0 0 5px rgba(24, 144, 255, 0.5); /* Màu chính với hiệu ứng */
       }
     }
 
     .ant-form-item-explain-error {
-      color: $error-color;
+      color: #ff4d4f; /* Màu thông báo lỗi */
       font-size: 12px;
     }
   }
 
   .ant-btn-primary {
-    background-color: $primary-color;
-    border-color: $primary-color;
+    background-color: #1890ff; /* Màu chính */
+    border-color: #1890ff;
     border-radius: 4px;
     font-weight: bold;
 
     &:hover {
-      background-color: darken($primary-color, 10%);
-      border-color: darken($primary-color, 10%);
+      background-color: #167abc; /* Màu tối hơn của #1890ff */
+      border-color: #167abc;
     }
 
     &:focus {
-      box-shadow: 0 0 5px rgba($primary-color, 0.5);
+      box-shadow: 0 0 5px rgba(24, 144, 255, 0.5); /* Hiệu ứng focus */
     }
   }
 }
