@@ -1,60 +1,55 @@
-.notification-bell {
-    .ant-dropdown-menu {
-      background-color: #f9f9f9;
-      border: 1px solid #eaeaea;
-      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-      border-radius: 8px;
-    }
-  
-    .notification-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 16px;
-      font-size: 14px;
-      transition: background-color 0.2s ease;
-  
-      &:hover {
-        background-color: #f0f0f0;
-      }
-  
-      .notification-message {
-        color: #333;
-      }
-  
-      .notification-close {
-        color: #999;
-        cursor: pointer;
-        font-size: 16px;
-  
-        &:hover {
-          color: #ff4d4f;
-        }
-      }
-    }
-  
-    .no-notification {
-      text-align: center;
-      padding: 20px;
-      font-size: 14px;
-      color: #999;
-    }
-  
-    .notification-badge {
-      .ant-badge-count {
-        background-color: #ff4d4f;
-        box-shadow: 0 0 0 1px #fff;
-      }
-  
-      .ant-btn {
-        background: none;
-        border: none;
-        box-shadow: none;
-  
-        &:hover {
-          background-color: #f0f0f0;
-        }
-      }
+
+
+.notification-menu {
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: #fff;
+
+  &__empty {
+    padding: 10px;
+    text-align: center;
+    color: #8c8c8c;
+  }
+}
+
+.notification-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+
+  &__content {
+    flex-grow: 1;
+  }
+
+  &__sender {
+    font-size: 14px;
+    color: #595959;
+  }
+
+  &__message {
+    margin: 5px 0;
+    color: #595959;
+  }
+
+  &__meta {
+    font-size: 12px;
+    color: #8c8c8c;
+  }
+
+  &__close-btn {
+    color: #ff4d4f;
+
+    &:hover {
+      color: #ff7875;
     }
   }
-  
+}
+
+.notification-list-item {
+  padding: 0;
+}

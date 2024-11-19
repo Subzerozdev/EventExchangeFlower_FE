@@ -35,6 +35,7 @@ interface Product {
   category: { id: number; name: string }; // Category
   status: string;
   types: Type[];
+  shop_name: string;
 }
 interface Type {
   id: number;
@@ -298,15 +299,30 @@ const ProductList: React.FC = () => {
                   onClick={() => navigate(`/productDetail/${product.id}`)}
                 >
                   <Card.Meta
-                    title={product.name}
+                    title={
+                      <h2 className="product-card__title">{product.name}</h2>
+                    }
                     description={
-                      <div>
-                        <h3>Giá: {product.price.toLocaleString("vi-VN")}₫</h3>
-                        <p>Loại sự kiện: {product.category.name}</p>
-                        <p>Ngày bắt đầu: {product.start_date}</p>
-                        <p>Ngày kết thúc: {product.end_date}</p>
-                        <p>Địa chỉ: {product.address}</p>
-                        <p>
+                      <div className="product-card__details">
+                        <h3 className="product-card__price">
+                          Giá: {product.price.toLocaleString("vi-VN")}₫
+                        </h3>
+                        <p className="product-card__shop">
+                          Tên shop: {product.shop_name}
+                        </p>
+                        <p className="product-card__category">
+                          Loại sự kiện: {product.category.name}
+                        </p>
+                        <p className="product-card__date">
+                          Ngày bắt đầu: {product.start_date}
+                        </p>
+                        <p className="product-card__date">
+                          Ngày kết thúc: {product.end_date}
+                        </p>
+                        <p className="product-card__address">
+                          Địa chỉ: {product.address}
+                        </p>
+                        <p className="product-card__type">
                           Loại hoa:{" "}
                           {product.types.map((type) => type.name).join(", ")}
                         </p>
@@ -314,7 +330,7 @@ const ProductList: React.FC = () => {
                         <Button
                           type="primary"
                           icon={<ShoppingCartOutlined />}
-                          style={{ marginTop: "10px", marginRight: "20px" }}
+                          className="product-card__add-to-cart"
                           onClick={(e) => {
                             e.stopPropagation(); // Ngăn chặn onClick của Card khi bấm vào nút
                             addToCart(product);

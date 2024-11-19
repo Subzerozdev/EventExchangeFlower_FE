@@ -5,7 +5,7 @@ import "./checkOut.scss";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import api from "../../config/api";
-import { useNotification } from "../../context/NotificationContext";
+
 import { RadioChangeEvent } from "antd/lib/radio";
 
 // Interface cho thông tin sản phẩm trong giỏ hàng
@@ -38,7 +38,7 @@ const Checkout: React.FC = () => {
   const [editProfile, setEditProfile] = useState(false);
   const [form] = Form.useForm();
   const [cart, setCart] = useState<Product[]>([]);
-  const { addNotification } = useNotification();
+
   const [isModalVisible, setIsModalVisible] = useState(false);
 
   const handleEditProfile = () => {
@@ -121,7 +121,6 @@ const Checkout: React.FC = () => {
         if (vnpayResult) {
           window.location.href = vnpayResult;
           localStorage.removeItem("cart");
-          addNotification("Bạn đã thanh toán thành công 1 đơn hàng!");
         } else {
           const failureUrl = response.data.failureUrl;
           if (failureUrl) {
@@ -153,9 +152,6 @@ const Checkout: React.FC = () => {
         });
       }
 
-      addNotification(
-        "Bạn thanh toán không thành công, vui lòng kiểm tra lại!"
-      );
       navigate("/errorPayment");
     } finally {
       setLoading(false);

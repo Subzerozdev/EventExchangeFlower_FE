@@ -1,55 +1,82 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+// context/NotificationContext.tsx
+import React, {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  useEffect,
+} from "react";
+import api from "../config/api";
 
-
-// Định nghĩa kiểu cho một thông báo
+// Định nghĩa kiểu Notification
 interface Notification {
   id: number;
   message: string;
+  sender: string;
+  createDate: string; // Đã ép kiểu từ LocalDateTime về string
+  notificationType: "REMIND" | "INFORMATION" | "WARNING"; // Các loại thông báo
 }
 
-// Định nghĩa kiểu cho context
+// Định nghĩa kiểu context
 interface NotificationContextType {
   notifications: Notification[];
-  addNotification: (message: string) => void;
-  removeNotification: (id: number) => void;  // Thêm hàm removeNotification
+  loadNotifications: () => void;
+  removeNotification: (id: number) => void;
 }
 
-// Tạo context cho thông báo
-const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
+const NotificationContext = createContext<NotificationContextType | undefined>(
+  undefined
+);
 
-// Hook để sử dụng context
 export const useNotification = () => {
   const context = useContext(NotificationContext);
   if (!context) {
-    throw new Error('useNotification must be used within a NotificationProvider');
+    throw new Error(
+      "useNotification must be used within a NotificationProvider"
+    );
   }
   return context;
 };
 
-// Giao diện cho prop `children`
 interface NotificationProviderProps {
   children: ReactNode;
 }
 
-// Provider để quản lý thông báo
-export const NotificationProvider: React.FC<NotificationProviderProps> = ({ children }) => {
+export const NotificationProvider: React.FC<NotificationProviderProps> = ({
+  children,
+}) => {
   const [notifications, setNotifications] = useState<Notification[]>([]);
 
-  // Hàm để thêm thông báo mới
-  const addNotification = (message: string) => {
-    const newNotification = { id: Date.now(), message };
-    setNotifications((prevNotifications) => [...prevNotifications, newNotification]);
+  // Hàm load thông báo từ API
+  const loadNotifications = async () => {
+    try {
+      const response = await api.get<Notification[]>("/api/notification");
+      setNotifications(response.data); // Gán dữ liệu thông báo
+    } catch (error) {
+      console.error("Failed to fetch notifications", error);
+    }
   };
 
-  // Hàm để xóa thông báo theo id
-  const removeNotification = (id: number) => {
-    setNotifications((prevNotifications) =>
-      prevNotifications.filter((notification) => notification.id !== id)
-    );
+  // Hàm xóa thông báo
+  const removeNotification = async (id: number) => {
+    try {
+      await api.delete(`/notification/${id}`); // Gọi API xóa thông báo
+      setNotifications((prevNotifications) =>
+        prevNotifications.filter((notification) => notification.id !== id)
+      );
+    } catch (error) {
+      console.error("Failed to delete notification", error);
+    }
   };
+
+  useEffect(() => {
+    loadNotifications(); // Load thông báo khi component được mount
+  }, []);
 
   return (
-    <NotificationContext.Provider value={{ notifications, addNotification, removeNotification }}>
+    <NotificationContext.Provider
+      value={{ notifications, loadNotifications, removeNotification }}
+    >
       {children}
     </NotificationContext.Provider>
   );

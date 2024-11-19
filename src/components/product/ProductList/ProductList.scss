@@ -204,3 +204,59 @@
     color: #666; // Màu xám nhạt cho dòng hướng dẫn
   }
 }
+
+
+.product-card {
+  &__title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 10px;
+  }
+
+  &__details {
+    padding: 10px 0;
+    border-top: 1px solid #f0f0f0;
+    margin-top: 10px;
+
+    p {
+      margin: 5px 0;
+      font-size: 14px;
+      color: #666;
+    }
+  }
+
+  &__price {
+    font-size: 18px;
+    font-weight: bold;
+    color: #ff4d4f;
+  }
+
+  &__shop,
+  &__category,
+  &__date,
+  &__address,
+  &__type {
+    font-size: 14px;
+    color: #595959;
+  }
+
+  &__type {
+    color: #1890ff;
+  }
+
+  &__add-to-cart {
+    margin-top: 15px;
+    background-color: #1890ff;
+    border: none;
+    color: white;
+    font-size: 16px;
+    padding: 10px 20px;
+    border-radius: 4px;
+
+    &:hover {
+      background-color: #40a9ff;
+    }
+  }
+}
+

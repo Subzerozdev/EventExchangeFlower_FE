@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { notification, Table, Button } from "antd"; // Import Modal
+import { notification, Table, Button, Modal, Input } from "antd"; // Import Modal
 import moment from "moment";
 import api from "../../../config/api"; // Đường dẫn API
 import "./Orders.scss";
@@ -16,6 +16,7 @@ interface ApiOrder {
   totalMoney: string;
   status: string;
   check: string;
+  validationImage: string;
 }
 
 interface Order {
@@ -29,22 +30,8 @@ interface Order {
   check: string;
   showConfirmReceived: boolean;
   hasFeedback: boolean;
+  validationImage: string;
 }
-
-const translateStatus = (status: string): string => {
-  switch (status) {
-    case "AWAITING_PAYMENT":
-      return "Đang chờ thanh toán";
-    case "AWAITING_PICKUP":
-      return "Đang chờ lấy hàng";
-    case "COMPLETED":
-      return "Hoàn thành";
-    case "CANCELLED":
-      return "Đã hủy";
-    default:
-      return "Không xác định";
-  }
-};
 
 const Orders: React.FC = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -52,12 +39,19 @@ const Orders: React.FC = () => {
   const navigate = useNavigate();
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 4;
+  const [isReportModalVisible, setReportModalVisible] = useState(false);
+  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  const [reportForm, setReportForm] = useState({
+    problem: "",
+    content: "",
+  });
 
   useEffect(() => {
     const fetchOrders = async () => {
       setLoading(true);
       try {
         const response = await api.get<ApiOrder[]>("/api/orders");
+        console.log(response);
         const feedbackStatus = localStorage.getItem("feedbackStatus")
           ? JSON.parse(localStorage.getItem("feedbackStatus") || "{}")
           : {};
@@ -77,6 +71,7 @@ const Orders: React.FC = () => {
           check: order.check,
           showConfirmReceived: order.status === "AWAITING_PICKUP",
           hasFeedback: feedbackStatus[order.id] || false,
+          validationImage: order.validationImage,
         }));
 
         setOrders(fetchedOrders);
@@ -124,6 +119,48 @@ const Orders: React.FC = () => {
     // Điều hướng đến trang phản hồi
     window.location.href = `/feedBack`;
   };
+  //Mở form report
+  const handleOpenReportModal = (orderId: string) => {
+    setCurrentOrderId(orderId);
+    setReportModalVisible(true);
+  };
+  //đóng fomr report
+  const handleCloseReportModal = () => {
+    setReportModalVisible(false);
+    setCurrentOrderId(null);
+    setReportForm({ problem: "", content: "" });
+  };
+  //Gửi report cho admin
+  const handleSubmitReport = async () => {
+    if (!reportForm.problem || !reportForm.content || !currentOrderId) {
+      notification.warning({
+        message: "Lỗi",
+        description: "Vui lòng điền đầy đủ thông tin khiếu nại.",
+      });
+      return;
+    }
+
+    try {
+      await api.post("/api/user/report", {
+        problem: reportForm.problem,
+        content: reportForm.content,
+        orderId: currentOrderId,
+      });
+
+      notification.success({
+        message: "Thành công",
+        description: "Khiếu nại của bạn đã được gửi, đang chờ xử lý.",
+      });
+
+      handleCloseReportModal();
+    } catch (error) {
+      console.error(error);
+      notification.error({
+        message: "Lỗi",
+        description: "Không thể gửi khiếu nại, vui lòng thử lại.",
+      });
+    }
+  };
 
   const columns = [
     {
@@ -155,12 +192,82 @@ const Orders: React.FC = () => {
       title: "Trạng Thái",
       dataIndex: "status",
       key: "status",
-      render: (status: string) => translateStatus(status), // Dịch trạng thái
+      render: (status: string) => {
+        let color = "";
+        let icon = "";
+        let text = "";
+        switch (status) {
+          case "AWAITING_PAYMENT":
+            color = "orange";
+            icon = "💳"; // Biểu tượng thanh toán
+            text = "Đang chờ thanh toán";
+            break;
+          case "AWAITING_PICKUP":
+            color = "blue";
+            icon = "📦"; // Biểu tượng hàng chờ lấy
+            text = "Đang chờ lấy hàng";
+            break;
+          case "COMPLETED":
+            color = "green";
+            icon = "✅"; // Biểu tượng hoàn thành
+            text = "Hoàn thành";
+            break;
+          case "CANCELLED":
+            color = "red";
+            icon = "❌"; // Biểu tượng hủy
+            text = "Đã hủy";
+            break;
+          default:
+            color = "gray";
+            icon = "❓"; // Biểu tượng không xác định
+            text = "Không xác định";
+        }
+
+        return (
+          <div
+            style={{
+              color: color,
+              fontWeight: "bold",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <span style={{ fontSize: "18px" }}>{icon}</span>
+            {text}
+          </div>
+        );
+      },
     },
+
     {
       title: "Ghi chú",
       dataIndex: "note",
       key: "note",
+    },
+    {
+      title: " Shop Xác Minh",
+      dataIndex: "validationImage",
+      key: "validationImage",
+      render: (validationImage: string) => (
+        <div style={{ textAlign: "center" }}>
+          {validationImage ? (
+            <img
+              src={validationImage}
+              alt="Xác minh"
+              style={{
+                width: "80px", // Kích thước ảnh
+                height: "80px",
+                objectFit: "cover", // Cắt ảnh nếu không đúng tỷ lệ
+                borderRadius: "8px", // Bo góc ảnh
+                border: "1px solid #ddd", // Viền nhẹ
+              }}
+            />
+          ) : (
+            <span>Không có hình ảnh</span>
+          )}
+        </div>
+      ),
     },
     {
       title: "Đánh Giá",
@@ -178,6 +285,34 @@ const Orders: React.FC = () => {
           <span>{record.hasFeedback ? "Đã đánh giá" : "Chưa hoàn thành"}</span>
         ),
     },
+    {
+      title: "Khiếu nại",
+      key: "report",
+      render: (_: string, record: Order) => (
+        <Button
+          type="primary"
+          onClick={() => handleOpenReportModal(record.key)} // Mở form khiếu nại
+        >
+          Khiếu nại
+        </Button>
+      ),
+    },
+    // {
+    //   title: "Trạng thái khiếu nại",
+    //   key: "reportStatus",
+    //   render: (_: string, record: Order) => {
+    //     switch (record.status) {
+    //       case "PROCESSING":
+    //         return <span style={{ color: "orange" }}>Đang chờ duyệt</span>;
+    //       case "COMPLETED":
+    //         return <span style={{ color: "green" }}>Đã duyệt</span>;
+    //       case "REJECTED":
+    //         return <span style={{ color: "red" }}>Đã xử lý</span>;
+    //       default:
+    //         return <span>Không xác định</span>;
+    //     }
+    //   },
+    // },
 
     {
       title: "Chi Tiết",
@@ -215,6 +350,37 @@ const Orders: React.FC = () => {
         bordered
         scroll={{ x: "max-content" }} // Kích hoạt thanh cuộn ngang
       />
+
+      <Modal
+        title="Gửi khiếu nại" // fom khiếu nại
+        visible={isReportModalVisible}
+        onCancel={handleCloseReportModal}
+        onOk={handleSubmitReport}
+        okText="Gửi"
+        cancelText="Hủy"
+      >
+        <div>
+          <label>Vấn đề:</label>
+          <Input
+            value={reportForm.problem}
+            onChange={(e) =>
+              setReportForm({ ...reportForm, problem: e.target.value })
+            }
+            placeholder="Nhập vấn đề bạn gặp phải"
+          />
+        </div>
+        <div style={{ marginTop: "10px" }}>
+          <label>Nội dung:</label>
+          <Input.TextArea
+            value={reportForm.content}
+            onChange={(e) =>
+              setReportForm({ ...reportForm, content: e.target.value })
+            }
+            placeholder="Nhập nội dung chi tiết"
+            rows={4}
+          />
+        </div>
+      </Modal>
     </div>
   );
 };

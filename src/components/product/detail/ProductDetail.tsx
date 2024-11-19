@@ -232,6 +232,23 @@ const ProductDetail: React.FC = () => {
                 <p>
                   Thời gian: {product.start_date} - {product.end_date}
                 </p>
+                <p
+                  style={{
+                    backgroundColor: "#fff5c2", // Màu nền vàng nhạt
+                    border: "1px solid #ffd43b", 
+                    padding: "10px",
+                    borderRadius: "8px", 
+                    fontWeight: "bold", 
+                    color: "#856404", // Màu chữ nâu vàng
+                    display: "flex",
+                    alignItems: "center", 
+                    gap: "8px", 
+                    margin: "10px 0", 
+                  }}
+                >
+                  <span style={{ fontSize: "20px", color: "#ff8800" }}>⚠️</span>
+                  Lưu ý: Hàng sẽ được giao sau ngày kết thúc sự kiện trong 48 giờ
+                </p>
               </div>
             </Col>
           </Row>

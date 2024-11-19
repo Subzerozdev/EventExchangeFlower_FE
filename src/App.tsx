@@ -14,7 +14,6 @@ import ProtectedRoute from "./components/routes/ProtectedRoute"; // Import Prote
 import AddCategory from "./pages/adminPage/CRUDcategory/AddCategory";
 import AllProduct from "./components/product";
 
-
 // Import các trang của Seller
 import SellerForm from "./pages/profile/Seller/SellerForm/SellerForm";
 import ManagePosts from "./pages/profile/Seller/ManagePosts/ManagePosts";
@@ -46,7 +45,6 @@ import AdminOrderManagement from "./pages/adminPage/OderManagement/AdminOrderMan
 import ErrorPayment from "./components/checkOut/payment/error/errorPayment";
 import AdminNotificationPage from "./pages/adminPage/ManageNotify/AdminNotificationPage";
 import AdminReports from "./pages/adminPage/adminReport/AdminReports";
-
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
