@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Table, Select, Input, Button, Form, message } from 'antd';
 import api from '../../../config/api';
+import { render } from 'sass';
 
 const { Option } = Select;
 
@@ -79,6 +80,18 @@ const AdminNotificationPage = () => {
             title: 'Loại thông báo',
             dataIndex: 'notificationType',
             key: 'notificationType',
+            render: (type: string) => {
+                switch (type) {
+                    case "REMIND":
+                        return 'Nhắc nhở';
+                    case "WARNING":
+                        return "Cảnh báo";
+                    case "INFORMATION":
+                        return "Thông tin";
+                    default:
+                        return type;
+                }
+            }
         },
         {
             title: 'Email người nhận',
