@@ -184,7 +184,7 @@ const SoldOrders = () => {
 
     return (
         <div className="sold-orders-container">
-            <h2>Quản lý đơn hàng đã bán</h2>
+            <h2>Quản lý đơn hàng </h2>
             <Table
                 dataSource={orders}
                 columns={columns}

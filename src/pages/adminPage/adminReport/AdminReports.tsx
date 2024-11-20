@@ -97,7 +97,7 @@ const AdminReports = () => {
 
     return (
         <div>
-            <h1>Quản lý đơn khiếu nại</h1>
+            <h1>Quản lý đơn </h1>
             <Table
                 dataSource={reports}
                 columns={columns}

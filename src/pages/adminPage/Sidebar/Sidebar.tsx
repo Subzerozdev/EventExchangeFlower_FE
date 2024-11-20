@@ -73,7 +73,7 @@ const Sidebar = ({ openSidebarToggle }: SidebarProps) => {
         </li>
         <li className="sidebar-list-item">
           <button onClick={() => navigate('/admin/reports')} className="btn-link">
-            <WarningOutlined className="icon" /> Quản lý Khiếu nại
+            <WarningOutlined className="icon" /> Quản lý đơn
           </button>
         </li>
 

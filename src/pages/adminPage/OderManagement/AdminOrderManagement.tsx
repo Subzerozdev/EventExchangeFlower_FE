@@ -80,6 +80,7 @@ const AdminOrderManagement: React.FC = () => {
             setOrders(response.data);
             setFilteredOrders(response.data);
             message.success("Tải danh sách đơn hàng thành công!");
+            console.log(response);
         } catch (error) {
             console.error("Lỗi khi tải danh sách đơn hàng:", error);
             message.error("Không thể tải danh sách đơn hàng.");
@@ -176,11 +177,14 @@ const AdminOrderManagement: React.FC = () => {
             title: "Xem chi tiết",
             key: "action",
             render: (record: AdminOrder) => (
-                <Button type="link" onClick={() => handleViewDetails(record)}>
-                    Xem chi tiết
-                </Button>
+                record.transaction ? (
+                    <Button type="link" onClick={() => handleViewDetails(record)}>
+                        Xem chi tiết
+                    </Button>
+                ) : null
             ),
         },
+
     ];
 
     return (

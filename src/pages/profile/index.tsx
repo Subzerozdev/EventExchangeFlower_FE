@@ -52,7 +52,7 @@ function Profile() {
           key: "manage-posts",
         },
         {
-          label: "Đơn hàng đã bán",
+          label: "Quản lý đơn hàng",
           key: "sold-orders",
         },
         {
