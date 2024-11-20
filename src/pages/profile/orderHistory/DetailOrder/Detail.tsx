@@ -14,6 +14,7 @@ interface OrderDetail {
     address: string;
     thumbnail: string;
     price: number;
+    end_date: string;
   };
 }
 
@@ -49,7 +50,7 @@ const Details = () => {
         orderDetail: OrderDetail[];
         sellerInformation: Seller;
       }>(`/api/orders/${id}`);
-      
+      console.log(response);
       setOrder(response.data.order); // Lưu thông tin Order vào state
       setOrderDetails(response.data.orderDetail);
       setSeller(response.data.sellerInformation); // Lưu thông tin người bán vào state
@@ -66,7 +67,6 @@ const Details = () => {
     fetchOrderDetails();
   }, [id]);
 
-
   const renderProductDetails = (detail: OrderDetail) => (
     <List.Item key={detail.id}>
       <List.Item.Meta
@@ -75,16 +75,59 @@ const Details = () => {
             width={100}
             src={detail.post?.thumbnail || "default-image-url"}
             alt={detail.post?.name || "Không có tên sản phẩm"}
-            style={{ borderRadius: "8px" }}
+            style={{
+              borderRadius: "8px",
+              boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+              border: "2px solid #0050b3",
+            }}
           />
         }
-        title={detail.post?.name || "Không có tên sản phẩm"}
-        description={`Giá: ${
-          detail.post?.price ? detail.post.price.toLocaleString() : "Không xác định"
-        } đ | Số lượng: ${detail.numberOfProducts || 1}`}
+        title={
+          <span
+            style={{ fontSize: "18px", fontWeight: "bold", color: "#0050b3" }}
+          >
+            {detail.post?.name || "Không có tên sản phẩm"}
+          </span>
+        }
+        description={
+          <>
+            <div
+              style={{ fontSize: "16px", fontWeight: "600", color: "#52c41a" }}
+            >
+              Giá:{" "}
+              {detail.post?.price
+                ? detail.post.price.toLocaleString()
+                : "Không xác định"}{" "}
+              đ | Số lượng: {detail.numberOfProducts || 1}
+            </div>
+            <div
+              className="product-end-date"
+              style={{
+                fontSize: "14px",
+                color: "#595959",
+                marginTop: "4px",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <i
+                className="anticon anticon-calendar"
+                style={{ color: "#ff4d4f" }}
+              />{" "}
+              Ngày kết thúc sự kiện:{" "}
+              <span style={{ fontWeight: "500", color: "#ff4d4f" }}>
+                {detail.post?.end_date
+                  ? new Date(detail.post.end_date).toLocaleDateString("vi-VN")
+                  : "Không xác định"}
+              </span>
+            </div>
+          </>
+        }
       />
+
       <div className="product-total">
-        Tổng tiền: {`${detail.totalMoney ? detail.totalMoney.toLocaleString() : "0"} đ`}
+        Tổng tiền:{" "}
+        {`${detail.totalMoney ? detail.totalMoney.toLocaleString() : "0"} đ`}
       </div>
     </List.Item>
   );
