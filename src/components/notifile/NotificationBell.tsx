@@ -8,22 +8,36 @@ const { Text } = Typography;
 
 // Định nghĩa kiểu cho Notification
 interface Notification {
-  id: number;
-  message: string;
-  sender: string;
-  createDate: string; // Đã ép kiểu từ LocalDateTime về string
-  notificationType: "REMIND" | "INFORMATION" | "WARNING"; // Các loại thông báo
+  id: number; // Mã định danh của thông báo
+  message: string; // Nội dung thông báo
+  sender: string; // Người gửi thông báo
+  createDate: string; // Ngày tạo thông báo (dạng chuỗi)
+  notificationType: "REMIND" | "INFORMATION" | "WARNING"; // Loại thông báo
 }
 
+// Hàm dịch tên người gửi từ tiếng Anh sang tiếng Việt
+const translateSender = (sender: string): string => {
+  switch (sender) {
+    case "System":
+      return "Hệ thống";
+    case "Admin":
+      return "Quản trị viên";
+    default:
+      return sender;
+  }
+};
+
 const NotificationBell: React.FC = () => {
+  // Lấy danh sách thông báo và hàm xóa thông báo từ context
   const { notifications, removeNotification } = useNotification();
 
-  // Render từng thông báo
+  // Hàm render từng thông báo
   const renderNotificationItem = (notification: Notification) => (
     <div className="notification-item">
       <div className="notification-item__content">
+        {/* Hiển thị người gửi đã được dịch */}
         <Text strong className="notification-item__sender">
-          {notification.sender}
+          {translateSender(notification.sender)}
         </Text>
         <p className="notification-item__message">{notification.message}</p>
         <Text type="secondary" className="notification-item__meta">
