@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Table, Select, Input, Button, Form, message } from 'antd';
 import api from '../../../config/api';
-import { render } from 'sass';
+
 
 const { Option } = Select;
 

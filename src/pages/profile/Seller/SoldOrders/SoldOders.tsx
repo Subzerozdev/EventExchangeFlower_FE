@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Table, Tag, Button, message, Modal, Upload, UploadFile, Image } from "antd";
+import { Table, Tag, Button, message, Modal, Upload, UploadFile, Image, Input, Form } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import "./SoldOrders.scss"; // Import SCSS
@@ -20,14 +20,14 @@ interface OrderRecord {
     validationImage: string;
 }
 
-
-
 const SoldOrders = () => {
     const [orders, setOrders] = useState<OrderRecord[]>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
+    const [cancelModalVisible, setCancelModalVisible] = useState<boolean>(false);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
+    const [cancelForm] = Form.useForm();
 
     const navigate = useNavigate();
 
@@ -102,6 +102,39 @@ const SoldOrders = () => {
         setFileList([]);
     };
 
+    const handleCancelOrder = (orderId: number) => {
+        setSelectedOrderId(orderId);
+        setCancelModalVisible(true);
+    };
+
+    const handleCancelOrderConfirm = async (values: { content: string }) => {
+        if (!selectedOrderId) return;
+
+        try {
+            await api.delete(`/api/seller/orders/${selectedOrderId}`, {
+                data: {
+                    problem: "Hủy Đơn Hàng",
+                    content: values.content,
+                },
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
+                    "Content-Type": "application/json",
+                },
+            });
+            message.success("Hủy đơn hàng thành công!");
+            setCancelModalVisible(false);
+            fetchSoldOrders();
+        } catch (error) {
+            console.error("Lỗi khi hủy đơn hàng:", error);
+            message.error("Không thể hủy đơn hàng.");
+        }
+    };
+
+    const handleCancelModalCancel = () => {
+        setCancelModalVisible(false);
+        cancelForm.resetFields();
+    };
+
     const columns = [
         {
             title: "Mã đơn hàng",
@@ -123,29 +156,6 @@ const SoldOrders = () => {
                 </span>
             ),
         },
-        {
-            title: "Ảnh xác minh",
-            dataIndex: "validationImage",
-            key: "validationImage",
-            render: (image: string | undefined) => (
-                image ? (
-                    <Image
-                        src={image}
-                        alt="Ảnh xác minh"
-                        style={{
-                            width: 100,
-                            height: 100,
-                            borderRadius: "8px",
-                            objectFit: "cover",
-                        }}
-                        preview={{ mask: <span>Xem ảnh</span> }}
-                    />
-                ) : (
-                    <span>Không có ảnh</span>
-                )
-            ),
-        },
-
         {
             title: "Trạng thái",
             dataIndex: "status",
@@ -174,6 +184,13 @@ const SoldOrders = () => {
                     >
                         Đã giao thành công
                     </Button>
+                    <Button
+                        danger
+                        onClick={() => handleCancelOrder(record.id)}
+                        disabled={record.status === "COMPLETED"}
+                    >
+                        Hủy đơn hàng
+                    </Button>
                     <Button type="link" onClick={() => handleViewOrderDetails(record.id)}>
                         Xem chi tiết
                     </Button>
@@ -184,7 +201,7 @@ const SoldOrders = () => {
 
     return (
         <div className="sold-orders-container">
-            <h2>Quản lý đơn hàng </h2>
+            <h2>Quản lý đơn hàng</h2>
             <Table
                 dataSource={orders}
                 columns={columns}
@@ -207,7 +224,8 @@ const SoldOrders = () => {
                         {orders.find((order) => order.id === selectedOrderId)?.validationImage ? (
                             <Image
                                 src={
-                                    orders.find((order) => order.id === selectedOrderId)?.validationImage
+                                    orders.find((order) => order.id === selectedOrderId)
+                                        ?.validationImage
                                 }
                                 alt="Ảnh xác minh hiện tại"
                                 style={{
@@ -216,7 +234,7 @@ const SoldOrders = () => {
                                     borderRadius: "8px",
                                     objectFit: "cover",
                                 }}
-                                preview // Kích hoạt chế độ xem trước
+                                preview
                             />
                         ) : (
                             <p>Không có ảnh xác minh hiện tại.</p>
@@ -228,10 +246,43 @@ const SoldOrders = () => {
                     listType="picture"
                     fileList={fileList}
                     onChange={handleUploadChange}
-                    beforeUpload={() => false} // Không tự động upload
+                    beforeUpload={() => false}
                 >
                     <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                 </Upload>
+            </Modal>
+
+            <Modal
+                title="Hủy đơn hàng"
+                visible={cancelModalVisible}
+                onCancel={handleCancelModalCancel}
+                footer={null}
+            >
+                <Form
+                    form={cancelForm}
+                    onFinish={handleCancelOrderConfirm}
+                    layout="vertical"
+                    initialValues={{ problem: "Hủy Đơn Hàng" }}
+                >
+                    <Form.Item label="Mã đơn hàng">
+                        <strong>{selectedOrderId}</strong>
+                    </Form.Item>
+                    <Form.Item
+                        label="Lý do hủy"
+                        name="content"
+                        rules={[{ required: true, message: "Vui lòng nhập lý do hủy đơn hàng!" }]}
+                    >
+                        <Input.TextArea rows={4} placeholder="Nhập lý do hủy..." />
+                    </Form.Item>
+                    <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                            Xác nhận hủy
+                        </Button>
+                        <Button style={{ marginLeft: "10px" }} onClick={handleCancelModalCancel}>
+                            Hủy
+                        </Button>
+                    </Form.Item>
+                </Form>
             </Modal>
         </div>
     );
