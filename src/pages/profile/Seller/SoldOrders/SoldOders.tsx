@@ -162,11 +162,11 @@ const SoldOrders = () => {
             key: "status",
             render: (status: string) => {
                 const color =
-                    status === "COMPLETED" ? "green" : status === "CANCELLED" ? "red" : "blue";
+                    status === "COMPLETED" ? "green" : status === "STOPPED" ? "red" : "blue";
                 const label =
                     status === "COMPLETED"
                         ? "Hoàn thành"
-                        : status === "CANCELLED"
+                        : status === "STOPPED"
                             ? "Đã hủy"
                             : "Đang xử lý";
                 return <Tag color={color}>{label}</Tag>;

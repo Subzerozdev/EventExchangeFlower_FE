@@ -45,6 +45,7 @@ const translateStatus = (status: string) => {
         AWAITING_PAYMENT: "Chờ thanh toán",
         AWAITING_PICKUP: "Chờ lấy hàng",
         COMPLETED: "Hoàn thành",
+        STOPPED: "Đơn hàng đã hủy",
     };
     return statusMap[status] || status;
 };
@@ -153,13 +154,13 @@ const AdminOrderManagement: React.FC = () => {
             title: "Tổng tiền",
             dataIndex: ["order", "totalMoney"],
             key: "totalMoney",
-            render: (totalMoney: number) => `${totalMoney.toLocaleString()} đ`,
+            render: (totalMoney: number) => `${totalMoney.toLocaleString()}đ`,
         },
         {
             title: "Phí nền tảng",
             dataIndex: "totalFee",
             key: "totalFee",
-            render: (totalFee: number) => `${totalFee.toLocaleString()} đ`,
+            render: (totalFee: number) => `${totalFee.toLocaleString()}đ`,
         },
         {
             title: "Ngày đặt hàng",
