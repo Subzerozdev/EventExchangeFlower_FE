@@ -23,7 +23,7 @@ const RefundForm: React.FC = () => {
 
   const handleSubmit = async (values: RefundFormValues) => {
     try {
-      const response = await api.post("/api/user/refund/", {
+      const response = await api.post("/api/user/refund", {
         ...values,
         problem: "Hoàn tiền đơn hàng",
       });

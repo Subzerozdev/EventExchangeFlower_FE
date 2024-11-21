@@ -17,6 +17,7 @@ interface ApiOrder {
   status: string;
   check: string;
   validationImage: string;
+  stopReason?: string;
 }
 
 interface Order {
@@ -212,11 +213,12 @@ const Orders: React.FC = () => {
             icon = "✅"; // Biểu tượng hoàn thành
             text = "Hoàn thành";
             break;
-          case "CANCELLED":
+          case "STOPPED":
             color = "red";
             icon = "❌"; // Biểu tượng hủy
             text = "Đã hủy";
             break;
+
           default:
             color = "gray";
             icon = "❓"; // Biểu tượng không xác định
