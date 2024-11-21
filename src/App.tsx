@@ -45,6 +45,7 @@ import AdminOrderManagement from "./pages/adminPage/OderManagement/AdminOrderMan
 import ErrorPayment from "./components/checkOut/payment/error/errorPayment";
 import AdminNotificationPage from "./pages/adminPage/ManageNotify/AdminNotificationPage";
 import AdminReports from "./pages/adminPage/adminReport/AdminReports";
+import RefundForm from "./pages/backMoney/backMoney";
 
 function App() {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -157,6 +158,10 @@ function App() {
         {
           path: "feedBack",
           element: <FeedbackForm />,
+        },
+        {
+          path:"backMoney",
+          element:<RefundForm/>
         },
 
         // Route dành cho Seller (phân quyền)
