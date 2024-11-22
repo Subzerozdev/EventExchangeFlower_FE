@@ -202,6 +202,12 @@ const ProductFilter: React.FC<ProductFilterProps> = ({
         >
           Ngày bắt đầu giảm dần
         </Button> */}
+        {/* <Button
+          className={sortType === "endDateAsc" ? "active" : ""}
+          onClick={() => handleSortChange("endDateAsc")}
+        >
+          Ngày kết thúc tăng dần
+        </Button> */}
       </div>
     </div>
   );

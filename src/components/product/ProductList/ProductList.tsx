@@ -194,6 +194,18 @@ const ProductList: React.FC = () => {
             ).getTime()
         );
         break;
+        //sắp xếp ngày kêt thúc tăng dần
+        // case "endDateAsc":
+        //   sortedProducts.sort(
+        //     (a, b) =>
+        //       new Date(
+        //         a.end_date.replace(/(\d+)\D+(\d+)\D+(\d+)/, "$2/$1/$3")
+        //       ).getTime() -
+        //       new Date(
+        //         b.end_date.replace(/(\d+)\D+(\d+)\D+(\d+)/, "$2/$1/$3")
+        //       ).getTime()
+        //   );
+        // break;
       //Sắp xếp này bắt đầu giảm dần
       // case "startDateDes":
       //   sortedProducts.sort(

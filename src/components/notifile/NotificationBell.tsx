@@ -22,9 +22,22 @@ const translateSender = (sender: string): string => {
       return "Hệ thống";
     case "Admin":
       return "Quản trị viên";
+
     default:
       return sender;
   }
+};
+const translateType = (notificationType: string): string => {
+  switch (notificationType) {
+    case "INFORMATION":
+      return "THÔNG TIN";
+    default:
+      return notificationType;
+  }
+};
+const formatDate = (dateString: string): string => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString("vi-VN"); // Chuyển đổi sang định dạng ngày-tháng-năm của Việt Nam
 };
 
 const NotificationBell: React.FC = () => {
@@ -39,9 +52,11 @@ const NotificationBell: React.FC = () => {
         <Text strong className="notification-item__sender">
           {translateSender(notification.sender)}
         </Text>
+
         <p className="notification-item__message">{notification.message}</p>
         <Text type="secondary" className="notification-item__meta">
-          {notification.createDate} - {notification.notificationType}
+          {formatDate(notification.createDate)} -{" "}
+          {translateType(notification.notificationType)}
         </Text>
       </div>
       <Button
