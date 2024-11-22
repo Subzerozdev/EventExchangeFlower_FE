@@ -122,20 +122,20 @@ const AdminOrderManagement: React.FC = () => {
             message.success("Xác nhận đã giao hàng thành công!");
 
             // Update orders and filteredOrders
-            setOrders(prevOrders =>
-                prevOrders.map(order =>
-                    order.transaction.id === transactionId
-                        ? { ...order, transaction: { ...order.transaction, status: "SUCCESS" } }
-                        : order
-                )
-            );
-            setFilteredOrders(prevOrders =>
-                prevOrders.map(order =>
-                    order.transaction.id === transactionId
-                        ? { ...order, transaction: { ...order.transaction, status: "SUCCESS" } }
-                        : order
-                )
-            );
+            // setOrders(prevOrders =>
+            //     prevOrders.map(order =>
+            //         order.transaction.id === transactionId
+            //             ? { ...order, transaction: { ...order.transaction, status: "SUCCESS" } }
+            //             : order
+            //     )
+            // );
+            // setFilteredOrders(prevOrders =>
+            //     prevOrders.map(order =>
+            //         order.transaction.id === transactionId
+            //             ? { ...order, transaction: { ...order.transaction, status: "SUCCESS" } }
+            //             : order
+            //     )
+            // );
             setIsModalVisible(false);
         } catch (error) {
             console.error("Lỗi khi xác nhận giao dịch:", error);

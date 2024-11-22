@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  Table,
-  Tag,
-  Button,
-  message,
-  Modal,
-  Upload,
-  UploadFile,
-  Image,
-  Input,
-  Form,
-} from "antd";
+import { Table, Tag, Button, message, Modal, Upload, UploadFile, Image, Input, Form } from "antd";
 import { useNavigate } from "react-router-dom";
 import { UploadOutlined } from "@ant-design/icons";
 import "./SoldOrders.scss"; // Import SCSS
@@ -163,8 +152,7 @@ const SoldOrders = () => {
       key: "totalMoney",
       render: (total: number) => (
         <span className="currency">
-          {total.toLocaleString("vi-VN")}{" "}
-          <span className="currency-symbol">đ</span>
+          {total.toLocaleString("vi-VN")} <span className="currency-symbol">đ</span>
         </span>
       ),
     },
@@ -172,22 +160,23 @@ const SoldOrders = () => {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
+      sorter: (a: OrderRecord, b: OrderRecord) => {
+        const statusOrder = ["PROCESSING", "COMPLETED", "STOPPED"]; // Thứ tự ưu tiên
+        return statusOrder.indexOf(a.status) - statusOrder.indexOf(b.status);
+      },
       render: (status: string) => {
         const color =
-          status === "COMPLETED"
-            ? "green"
-            : status === "STOPPED"
-            ? "red"
-            : "blue";
+          status === "COMPLETED" ? "green" : status === "STOPPED" ? "red" : "blue";
         const label =
           status === "COMPLETED"
             ? "Hoàn thành"
             : status === "STOPPED"
-            ? "Đã hủy"
-            : "Đang xử lý";
+              ? "Đã hủy"
+              : "Đang xử lý";
         return <Tag color={color}>{label}</Tag>;
       },
     },
+
     {
       title: "Hành động",
       key: "action",
@@ -196,18 +185,14 @@ const SoldOrders = () => {
           <Button
             type="primary"
             onClick={() => handleCompleteOrder(record.id)}
-            disabled={
-              record.status === "COMPLETED" || record.status === "STOPPED"
-            }
+            disabled={record.status === "COMPLETED"}
           >
             Đã giao thành công
           </Button>
           <Button
             danger
             onClick={() => handleCancelOrder(record.id)}
-            disabled={
-              record.status === "COMPLETED" || record.status === "STOPPED"
-            }
+            disabled={record.status === "COMPLETED"}
           >
             Hủy đơn hàng
           </Button>
@@ -241,8 +226,7 @@ const SoldOrders = () => {
         {selectedOrderId && (
           <>
             <p>Ảnh xác minh hiện tại:</p>
-            {orders.find((order) => order.id === selectedOrderId)
-              ?.validationImage ? (
+            {orders.find((order) => order.id === selectedOrderId)?.validationImage ? (
               <Image
                 src={
                   orders.find((order) => order.id === selectedOrderId)
@@ -291,9 +275,7 @@ const SoldOrders = () => {
           <Form.Item
             label="Lý do hủy"
             name="content"
-            rules={[
-              { required: true, message: "Vui lòng nhập lý do hủy đơn hàng!" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng nhập lý do hủy đơn hàng!" }]}
           >
             <Input.TextArea rows={4} placeholder="Nhập lý do hủy..." />
           </Form.Item>
@@ -301,10 +283,7 @@ const SoldOrders = () => {
             <Button type="primary" htmlType="submit">
               Xác nhận hủy
             </Button>
-            <Button
-              style={{ marginLeft: "10px" }}
-              onClick={handleCancelModalCancel}
-            >
+            <Button style={{ marginLeft: "10px" }} onClick={handleCancelModalCancel}>
               Hủy
             </Button>
           </Form.Item>
